@@ -35,13 +35,16 @@ def get_task(session):
 	
 	try:
 		resp = session.post(url = url, data = json.dumps(data), timeout = timeout);
-		print(resp.text)
+
 		ret = json.loads(resp.text)
 		
 		log(str(ret['code']) +  ":"  +  ret['msg'])
 		if ret['code'] == 200:
 			task = ret['data']
 
+		#endif
+		if ret['code'] == 400:
+			task = ''
 		#endif
 	except:
 		traceback.print_exc()

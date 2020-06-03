@@ -38,7 +38,7 @@ def ping(session):
 	
 	try:
 		resp = session.post(url = url, data = json.dumps(data), timeout = timeout);
-		print(resp.text)
+
 		ret = json.loads(resp.text)
 		
 		log(str(ret['code']) +  ":"  +  ret['msg'])
