@@ -2,12 +2,14 @@
 
 #-----------------------------
 version=$(cat VERSION)
-echo 'Installing Job Center ('+${version}+')...'
+echo 'Installing Job Center ('${version}')...'
 
 echo 'Building docker image...'
-#image
-docker build --build-arg version=${version} -f ./Dockerfile -t jobcenter:${version} .
-
+cd ..
+cp ./deploy/Dockerfile ./
+docker build --build-arg VER=1.0.0 -f ./Dockerfile -t jobcenter:${version} .
+rm Dockerfile
+cd ./deploy
 
 #make dir for data
 if [ ! -d "/data" ]; then

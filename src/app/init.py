@@ -6,6 +6,11 @@ import redis
 
 from django.http import HttpResponse, HttpResponseRedirect
 
+
+def redirect(url):
+	
+	return HttpResponseRedirect(url)
+
 def response(code, msg, data):
 	
 	data = {"code":code, "msg": msg, "data": data}
@@ -93,6 +98,6 @@ def filedirfromhash(hash):
 
 r = redis.Redis(host = '127.0.0.1', port = 2019, db = 0);
 
-__all__ = ['response', 'time', 'json', 'md5', 'readfile', 'writefile', 'existfile', 'makedirforhash', 'filedirfromhash', 'r']
+__all__ = ['redirect', 'response', 'time', 'json', 'md5', 'readfile', 'writefile', 'existfile', 'makedirforhash', 'filedirfromhash', 'r']
 
 

@@ -3,7 +3,7 @@
 from .init import *
 
 def index(request):
-	return HttpResponseRedirect("/index.html")
+	return redirect("/index.html")
 
 def sysstate(request):
 	
