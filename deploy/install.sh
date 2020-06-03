@@ -28,6 +28,6 @@ docker run \
 -v /data/jobcenterdata:/jobcenterdata \
 --restart=always \
 -d jobcenter:${version} \
-bash startkjobcenter.sh
+bash startjobcenter.sh
 
 echo 'Job Center service started'
