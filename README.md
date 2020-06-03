@@ -28,11 +28,11 @@ http://127.0.0.1:2020
 # How to use
 安装redis服务，使用配置文件 redis.conf 启动redis服务
 
-进入src
-
-安装requirements.txt
+进入src安装requirements.txt
 pip install -r requirements.txt -i https://pypi.douban.com/simple/
 
+配置缓存目录
+src/app/init.py 中 修改79行
 
 启动服务
 python3 jobcenter.py
