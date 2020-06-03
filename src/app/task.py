@@ -145,7 +145,7 @@ def finish(request):
 		
 		task_key = 'task_' + jsondata['worker_group'] + '_' + jsondata['worker_key'] + '_' + jsondata['worker_role'] + '_' + str(task_info['job_id']) + '_' + task_info['hash']
 		
-		old_task_state = r.hset(task_key, 'state')
+		old_task_state = r.hget(task_key, 'state')
 		if old_task_state != None:
 			old_task_state = old_task_state.decode()
 			
