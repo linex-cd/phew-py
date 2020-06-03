@@ -42,7 +42,6 @@ def ping(session):
 		log(str(ret['code']) +  ":"  +  ret['msg'])
 		if ret['code'] == 200:
 			return True
-
 		#endif
 	except:
 		traceback.print_exc()
