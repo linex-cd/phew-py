@@ -18,7 +18,7 @@ def create_session():
 #enddef
 
 
-def finish_task(session, job, task):
+def finish_task(session, task):
 	
 	result = None
 	
@@ -30,7 +30,6 @@ def finish_task(session, job, task):
 	
 	data['worker_id'] = config.worker_id
 	
-	data['job'] = job
 	data['task'] = task
 	
 	
@@ -59,20 +58,19 @@ def finish_task(session, job, task):
 
 def main():
 
-	job = {}
-	job['job_id'] = 4399
 	
 	task = {}
+	task['job_id'] = 4399
 	task['hash'] = '4a3af7e431970ad0a3b37c1ae20f1506'
+	task['state'] = 'done'
 	
 	result = {}
-	result['state'] = 'done'
 	result['ocr'] = 'thisistheresult'
 	
 	task['result'] = json.dumps(result)
 
 	session = create_session()
-	rs = finish_task(session = session, job = job, task = task)
+	rs = finish_task(session = session, task = task)
 	
 	print(rs)
 	
