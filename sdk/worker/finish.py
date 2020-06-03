@@ -45,7 +45,6 @@ def finish_task(session, job, task):
 		log(str(ret['code']) +  ":"  +  ret['msg'])
 		if ret['code'] == 200:
 			result = ret['data']
-
 		#endif
 	except:
 		traceback.print_exc()

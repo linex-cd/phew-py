@@ -41,7 +41,6 @@ def get_task(session):
 		log(str(ret['code']) +  ":"  +  ret['msg'])
 		if ret['code'] == 200:
 			task = ret['data']
-
 		#endif
 		if ret['code'] == 400:
 			task = ''
