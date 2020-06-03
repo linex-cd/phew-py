@@ -139,12 +139,11 @@ def finish(request):
 		
 		#############################
 		#update task result and state
-		job_info = jsondata['job']
 		task_info = jsondata['task']
 		
-		job_key = 'job_' + jsondata['worker_group'] + '_' + jsondata['worker_key'] + '_' + jsondata['worker_role'] + '_' + str(job_info['job_id'])
+		job_key = 'job_' + jsondata['worker_group'] + '_' + jsondata['worker_key'] + '_' + jsondata['worker_role'] + '_' + str(task_info['job_id'])
 		
-		task_key = 'task_' + jsondata['worker_group'] + '_' + jsondata['worker_key'] + '_' + jsondata['worker_role'] + '_' + str(job_info['job_id']) + '_' + task_info['hash']
+		task_key = 'task_' + jsondata['worker_group'] + '_' + jsondata['worker_key'] + '_' + jsondata['worker_role'] + '_' + str(task_info['job_id']) + '_' + task_info['hash']
 		
 		old_task_state = r.hset(task_key, 'state')
 		if old_task_state != None:
@@ -160,7 +159,7 @@ def finish(request):
 		r.hset(task_key, 'result', task_info['result'])
 		
 		#remove from tasks_pending set 
-		tasks_pending_key = 'tasks_pending_' + jsondata['worker_group'] + '_' + jsondata['worker_key'] + '_' + jsondata['worker_role']+ '_' + str(job_info['job_id'])
+		tasks_pending_key = 'tasks_pending_' + jsondata['worker_group'] + '_' + jsondata['worker_key'] + '_' + jsondata['worker_role']+ '_' + str(task_info['job_id'])
 		r.srem(tasks_pending_key, task_key)
 		
 		#check if tasks_pending set is empty
