@@ -83,9 +83,10 @@ def get(request):
 				break
 			#endif
 			
+			task_info['job_id'] = r.hget(task_key, 'job_id').decode()
 			task_info['addressing'] = r.hget(task_key, 'addressing').decode()
 			task_info['port'] = r.hget(task_key, 'port').decode()
-			task_info['state'] = r.hget(task_key, 'state').decode()
+			task_info['hash'] = r.hget(task_key, 'hash').decode()
 						
 			#read data from disk if done
 			if task_info['addressing'] == 'binary':
@@ -166,8 +167,7 @@ def finish(request):
 		if r.scard(tasks_pending_key) == 0: 
 			#add a job to set as unread
 			jobs_done_key = 'jobs_done_' + jsondata['worker_group'] + '_' + jsondata['worker_key'] + '_' + jsondata['worker_role']
-			job_key = 'job_' + jsondata['worker_group'] + '_' + jsondata['worker_key'] + '_' + jsondata['worker_role'] + '_' + str(job_info['job_id'])
-			
+
 			r.sadd(jobs_done_key, job_key)
 		#endif
 		

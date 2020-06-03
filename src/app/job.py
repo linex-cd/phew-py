@@ -85,6 +85,8 @@ def assign(request):
 			task_key = 'task_' + jsondata['worker_group'] + '_' + jsondata['worker_key'] + '_' + jsondata['worker_role'] + '_' + str(job_info['job_id']) + '_' + task_info['hash']
 			r.hset(task_key, 'state', 'assigned')
 			
+			r.hset(task_key, 'job_id', job_info['job_id'])
+			
 			r.hset(task_key, 'hash', task_info['hash'])
 			
 			r.hset(task_key, 'addressing', task_info['addressing'])
