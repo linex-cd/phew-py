@@ -20,7 +20,6 @@ def create_session():
 
 def finish_task(session, task):
 	
-	result = None
 	
 	data = {}
 	
@@ -43,7 +42,7 @@ def finish_task(session, task):
 		
 		log(str(ret['code']) +  ":"  +  ret['msg'])
 		if ret['code'] == 200:
-			result = ret['data']
+			return True
 		#endif
 	except:
 		traceback.print_exc()
@@ -51,7 +50,7 @@ def finish_task(session, task):
 	
 	#endtry
 	
-	return result
+	return False
 	
 #enddef
 
