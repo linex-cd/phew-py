@@ -26,6 +26,8 @@ def ping(request):
 		r.hset(worker_node_key, 'location', jsondata['worker_location'])
 		r.hset(worker_node_key, 'state', 'online')
 		
+		data = 'pong'
+		
 	else:
 		code = 403
 		msg = 'method not allowed'	

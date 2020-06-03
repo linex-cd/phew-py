@@ -20,6 +20,8 @@ def create_session():
 
 def finish_task(session, job, task):
 	
+	result = None
+	
 	data = {}
 	
 	data['worker_group'] = config.worker_group
@@ -42,16 +44,16 @@ def finish_task(session, job, task):
 		
 		log(str(ret['code']) +  ":"  +  ret['msg'])
 		if ret['code'] == 200:
-			task = ret['data']
+			result = ret['data']
 
 		#endif
 	except:
 		traceback.print_exc()
-		log('get task error')
+		log('finish task error')
 	
 	#endtry
 	
-	return task
+	return result
 	
 #enddef
 

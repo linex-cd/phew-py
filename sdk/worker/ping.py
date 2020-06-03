@@ -20,7 +20,7 @@ def create_session():
 
 def ping(session):
 	
-	task = None
+	result = None
 	
 	data = {}
 	
@@ -43,16 +43,16 @@ def ping(session):
 		
 		log(str(ret['code']) +  ":"  +  ret['msg'])
 		if ret['code'] == 200:
-			task = ret['data']
+			result = ret['data']
 
 		#endif
 	except:
 		traceback.print_exc()
-		log('get task error')
+		log('ping error')
 	
 	#endtry
 	
-	return task
+	return result
 	
 #enddef
 
