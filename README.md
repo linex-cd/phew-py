@@ -26,15 +26,14 @@ A jobs scheduling center
 http://127.0.0.1:2020
 
 # How to use
+安装redis服务，使用配置文件 redis.conf 启动redis服务
+
 进入src
-cd src
 
 安装requirements.txt
 pip install -r requirements.txt -i https://pypi.douban.com/simple/
 
-添加执行权限
-chmod +x startkjobcenter.sh
 
 启动服务
-./startkjobcenter.sh
+python3 jobcenter.py
 
