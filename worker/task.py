@@ -142,6 +142,8 @@ def task_thread():
 			note, result = port_task(task)
 			if result != None:
 				state = 'done'
+			else:
+				result = ''
 			#endif		
 			
 		except:
