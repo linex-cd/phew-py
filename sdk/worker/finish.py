@@ -62,6 +62,7 @@ def main():
 	task['job_id'] = 4399
 	task['hash'] = '4a3af7e431970ad0a3b37c1ae20f1506'
 	task['state'] = 'done'
+	task['note'] = ''
 	
 	result = {}
 	result['ocr'] = 'thisistheresult'

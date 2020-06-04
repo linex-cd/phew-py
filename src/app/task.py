@@ -156,6 +156,7 @@ def finish(request):
 		#endif
 			
 		r.hset(task_key, 'state', task_info['state'])
+		r.hset(task_key, 'note', task_info['note'])
 		r.hset(task_key, 'result', task_info['result'])
 		
 		#remove from tasks_pending set 
