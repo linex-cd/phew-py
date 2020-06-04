@@ -71,16 +71,16 @@ def main():
 	task = {}
 	task['job_id'] = job_id
 	task['addressing'] = 'URL'
-	task['port'] = 'ocr'
-	task['data'] = 'http://127.0.0.1:2020/1.jpg'
+	task['port'] = 'pdf'
+	task['data'] = 'http://127.0.0.1:2020/1.pdf'
 	
 	tasks.append(task)
 	
 	task = {}
 	task['job_id'] = job_id
 	task['addressing'] = 'URL'
-	task['port'] = 'ocr'
-	task['data'] = 'http://127.0.0.1:2020/2.jpg'
+	task['port'] = 'test'
+	task['data'] = 'http://127.0.0.1:2020/2.pdf'
 	
 	tasks.append(task)
 	
