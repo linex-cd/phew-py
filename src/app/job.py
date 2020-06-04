@@ -64,6 +64,10 @@ def assign(request):
 		job_key = 'job_' + jsondata['worker_group'] + '_' + jsondata['worker_key'] + '_' + jsondata['worker_role'] + '_' + str(job_info['job_id'])
 		r.hset(job_key, 'state', 'assigned')
 		
+		# add create timestamp
+		r.hset(job_key, 'create_time', int(time.time()))
+		r.hset(job_key, 'finish_time', '')
+		
 		r.hset(job_key, 'vendor_id', jsondata['vendor_id'])
 		
 		r.hset(job_key, 'worker_group', jsondata['worker_group'])
@@ -85,6 +89,12 @@ def assign(request):
 			task_key = 'task_' + jsondata['worker_group'] + '_' + jsondata['worker_key'] + '_' + jsondata['worker_role'] + '_' + str(job_info['job_id']) + '_' + task_info['hash']
 			r.hset(task_key, 'state', 'assigned')
 			r.hset(task_key, 'note', '')
+			
+			# add create timestamp
+			r.hset(task_key, 'create_time', int(time.time()))
+			r.hset(task_key, 'start_time', '')
+			r.hset(task_key, 'finish_time', '')
+			
 			
 			r.hset(task_key, 'job_id', job_info['job_id'])
 			
@@ -186,6 +196,8 @@ def detail(request):
 		job_info['description'] = r.hget(job_key, 'description').decode()
 		job_info['priority'] = r.hget(job_key, 'priority').decode()
 		job_info['state'] = r.hget(job_key, 'state').decode()
+		job_info['create_time'] = r.hget(job_key, 'create_time').decode()
+		job_info['finish_time'] = r.hget(job_key, 'finish_time').decode()
 		
 		data['job'] = job_info
 		
@@ -202,6 +214,9 @@ def detail(request):
 			task_info['state'] = r.hget(task_key, 'state').decode()
 			task_info['note'] = r.hget(task_key, 'note').decode()
 			task_info['hash'] = r.hget(task_key, 'hash').decode()
+			task_info['create_time'] = r.hget(task_key, 'create_time').decode()
+			task_info['start_time'] = r.hget(task_key, 'start_time').decode()
+			task_info['finish_time'] = r.hget(task_key, 'finish_time').decode()
 			
 			
 			#read result from disk if done

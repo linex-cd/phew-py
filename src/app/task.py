@@ -87,7 +87,10 @@ def get(request):
 			task_info['addressing'] = r.hget(task_key, 'addressing').decode()
 			task_info['port'] = r.hget(task_key, 'port').decode()
 			task_info['hash'] = r.hget(task_key, 'hash').decode()
-						
+			
+			# add start timestamp
+			r.hset(task_key, 'start_time', int(time.time()))
+				
 			#read data from disk if done
 			if task_info['addressing'] == 'binary':
 				taskdata_filename = filedirfromhash(task_info['hash']) + task_info['hash'] + '.taskdata'
@@ -99,11 +102,16 @@ def get(request):
 				else:
 					#mark task as error and then repop a new task
 					r.hset(task_key, 'state', 'error')
+					
+					# add finish timestamp
+					r.hset(task_key, 'finish_time', int(time.time()))
+			
 					continue
 				#endif
 			else:
 				task_info['data'] = r.hget(task_key, 'data').decode()
 				r.hset(task_key, 'state', 'pending')
+				
 				break
 			#endif
 			
@@ -154,7 +162,10 @@ def finish(request):
 				task_info['state'] = old_task_state
 			#endif
 		#endif
-			
+		
+		# add finish timestamp
+		r.hset(task_key, 'finish_time', int(time.time()))
+		
 		r.hset(task_key, 'state', task_info['state'])
 		r.hset(task_key, 'note', task_info['note'])
 		r.hset(task_key, 'result', task_info['result'])
@@ -169,6 +180,9 @@ def finish(request):
 			jobs_done_key = 'jobs_done_' + jsondata['worker_group'] + '_' + jsondata['worker_key'] + '_' + jsondata['worker_role']
 
 			r.sadd(jobs_done_key, job_key)
+			
+			#add finish timestamp
+			r.hset(job_key, 'finish_time', int(time.time()))
 		#endif
 		
 	else:
