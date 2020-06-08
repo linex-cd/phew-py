@@ -84,6 +84,7 @@ def get(request):
 			#endif
 			
 			task_info['job_id'] = r.hget(task_key, 'job_id').decode()
+			task_info['meta'] = r.hget(task_key, 'meta').decode()
 			task_info['addressing'] = r.hget(task_key, 'addressing').decode()
 			task_info['port'] = r.hget(task_key, 'port').decode()
 			task_info['hash'] = r.hget(task_key, 'hash').decode()

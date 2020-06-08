@@ -65,12 +65,14 @@ def main():
 	job_info['job_id'] = str(job_id)
 	job_info['description'] = description
 	job_info['priority'] = priority
+	job_info['meta'] = '{"from_node":1}'
 	
 	tasks = []
 	
 	task = {}
 	task['job_id'] = job_id
 	task['addressing'] = 'URL'
+	task['meta'] = '{"table_name":"sheet"}'
 	task['port'] = 'pdf'
 	task['data'] = 'http://127.0.0.1:2020/1.pdf'
 	
@@ -79,6 +81,7 @@ def main():
 	task = {}
 	task['job_id'] = job_id
 	task['addressing'] = 'URL'
+	task['meta'] = '{"abc":"def"}'
 	task['port'] = 'test'
 	task['data'] = 'http://127.0.0.1:2020/2.pdf'
 	

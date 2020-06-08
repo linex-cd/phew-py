@@ -74,6 +74,7 @@ def assign(request):
 		r.hset(job_key, 'worker_key', jsondata['worker_key'])
 		r.hset(job_key, 'worker_role', jsondata['worker_role'])
 		
+		r.hset(job_key, 'meta', job_info['meta'])
 		r.hset(job_key, 'description', job_info['description'])
 		r.hset(job_key, 'priority', job_info['priority'])
 		
@@ -100,6 +101,7 @@ def assign(request):
 			
 			r.hset(task_key, 'hash', task_info['hash'])
 			
+			r.hset(task_key, 'meta', task_info['meta'])
 			r.hset(task_key, 'addressing', task_info['addressing'])
 			r.hset(task_key, 'port', task_info['port'])
 			
@@ -193,6 +195,7 @@ def detail(request):
 		data['worker_role'] = r.hget(job_key, 'worker_role').decode()
 		
 
+		job_info['meta'] = r.hget(job_key, 'meta').decode()
 		job_info['description'] = r.hget(job_key, 'description').decode()
 		job_info['priority'] = r.hget(job_key, 'priority').decode()
 		job_info['state'] = r.hget(job_key, 'state').decode()
@@ -209,6 +212,7 @@ def detail(request):
 		
 		for task_key in task_keys:
 			task_info = {}
+			task_info['meta'] = r.hget(task_key, 'meta').decode()
 			task_info['addressing'] = r.hget(task_key, 'addressing').decode()
 			task_info['port'] = r.hget(task_key, 'port').decode()
 			task_info['state'] = r.hget(task_key, 'state').decode()
