@@ -54,14 +54,6 @@ def done_job(session):
 
 def main():
 
-	job_id = 4399
-	description = '众所周知，机器学习是个氪金游戏。'
-	priority = 5
-	
-	job_info = {}
-	job_info['job_id'] = str(job_id)
-	
-	
 	session = create_session()
 	rs = done_job(session = session)
 	

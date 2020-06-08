@@ -179,7 +179,7 @@ def finish(request):
 			#add a job to set as unread
 			jobs_done_key = 'jobs_done_' + jsondata['worker_group'] + '_' + jsondata['worker_key'] + '_' + jsondata['worker_role']
 
-			r.sadd(jobs_done_key, job_key)
+			r.sadd(jobs_done_key, task_info['job_id'])
 			
 			#add finish timestamp
 			r.hset(job_key, 'finish_time', int(time.time()))
