@@ -40,7 +40,7 @@ def detail_job(session, job):
 
 		ret = json.loads(resp.text)
 		
-		log(str(ret['code']) +  ":"  +  ret['msg'])
+		log('[detail_job]' + str(ret['code']) +  ":"  +  ret['msg'])
 		if ret['code'] == 200:
 			result = ret['data'] 
 		#endif

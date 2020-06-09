@@ -41,7 +41,7 @@ def ping(session):
 
 		ret = json.loads(resp.text)
 		
-		log(str(ret['code']) +  ":"  +  ret['msg'])
+		log('[ping]' + str(ret['code']) +  ":"  +  ret['msg'])
 		if ret['code'] == 200:
 			result = ret['data']
 		#endif

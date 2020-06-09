@@ -38,7 +38,7 @@ def get_task(session):
 
 		ret = json.loads(resp.text)
 		
-		log(str(ret['code']) +  ":"  +  ret['msg'])
+		log('[get_task]' + str(ret['code']) +  ":"  +  ret['msg'])
 		if ret['code'] == 200:
 			task = ret['data']
 		#endif

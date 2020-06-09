@@ -40,7 +40,7 @@ def assign_job(session, job, tasks):
 
 		ret = json.loads(resp.text)
 		
-		log(str(ret['code']) +  ":"  +  ret['msg'])
+		log('[assign_job]' + str(ret['code']) +  ":"  +  ret['msg'])
 		if ret['code'] == 200:
 			return True
 		#endif

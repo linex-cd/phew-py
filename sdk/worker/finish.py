@@ -40,7 +40,7 @@ def finish_task(session, task):
 
 		ret = json.loads(resp.text)
 		
-		log(str(ret['code']) +  ":"  +  ret['msg'])
+		log('[finish_task]' + str(ret['code']) +  ":"  +  ret['msg'])
 		if ret['code'] == 200:
 			return True
 		#endif

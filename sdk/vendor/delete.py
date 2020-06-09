@@ -39,7 +39,7 @@ def delete_job(session, job):
 
 		ret = json.loads(resp.text)
 		
-		log(str(ret['code']) +  ":"  +  ret['msg'])
+		log('[delete_job]' + str(ret['code']) +  ":"  +  ret['msg'])
 		if ret['code'] == 200:
 			return True
 		#endif

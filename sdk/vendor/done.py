@@ -38,7 +38,7 @@ def done_job(session):
 
 		ret = json.loads(resp.text)
 		
-		log(str(ret['code']) +  ":"  +  ret['msg'])
+		log('[done_job]' + str(ret['code']) +  ":"  +  ret['msg'])
 		if ret['code'] == 200:
 			return ret['data']
 		#endif
