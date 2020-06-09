@@ -107,9 +107,9 @@ def assign(request):
 			work_key = 'work-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role'] + '-' + str(job_info['priority'])
 			r.lpush(work_key, task_key)
 			
-			#add task to tasks_pending to wait for job state check
-			tasks_pending_key = 'tasks_pending-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']+ '-' + str(job_info['job_id'])
-			r.sadd(tasks_pending_key, task_key)
+			#add task to tasks_waiting to wait for job state check
+			tasks_waiting_key = 'tasks_waiting-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']+ '-' + str(job_info['job_id'])
+			r.sadd(tasks_waiting_key, task_key)
 
 		#endfor
 		

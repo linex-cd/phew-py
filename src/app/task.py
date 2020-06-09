@@ -87,7 +87,7 @@ def get(request):
 				if existfile(taskdata) == True:
 					taskdata = readfile(taskdata_filename)
 					task_info['data'] = r.hget(task_key, 'data').decode()
-					r.hset(task_key, 'state', 'pending')
+					r.hset(task_key, 'state', 'waiting')
 					break
 				else:
 					#mark task as error and then repop a new task
@@ -100,7 +100,7 @@ def get(request):
 				#endif
 			else:
 				task_info['data'] = r.hget(task_key, 'data').decode()
-				r.hset(task_key, 'state', 'pending')
+				r.hset(task_key, 'state', 'waiting')
 				
 				break
 			#endif
@@ -108,6 +108,10 @@ def get(request):
 		#endwhile
 		
 		data = task_info
+		
+		#added to tasks_pending set
+		tasks_pending_key = 'tasks_pending-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']+ '-' + str(job_info['job_id'])
+		r.sadd(tasks_pending_key, task_key)
 		
 		#update worker node hit counter
 		worker_node_key = 'worker-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role'] + '-' + str(jsondata['worker_id'])
@@ -120,7 +124,7 @@ def get(request):
 		#endif
 
 		r.hset(worker_node_key, 'hit', worker_node_hit)
-			
+		
 	else:
 		code = 403
 		msg = 'method not allowed'	
@@ -162,12 +166,16 @@ def finish(request):
 		r.hset(task_key, 'note', task_info['note'])
 		r.hset(task_key, 'result', task_info['result'])
 		
-		#remove from tasks_pending set 
-		tasks_pending_key = 'tasks_pending-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']+ '-' + str(task_info['job_id'])
+		#remove from tasks_waiting set 
+		tasks_waiting_key = 'tasks_waiting-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']+ '-' + str(task_info['job_id'])
+		r.srem(tasks_waiting_key, task_key)
+		
+		#remove from tasks_pending set
+		tasks_pending_key = 'tasks_pending-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']+ '-' + str(job_info['job_id'])
 		r.srem(tasks_pending_key, task_key)
 		
-		#check if tasks_pending set is empty
-		if r.scard(tasks_pending_key) == 0: 
+		#check if tasks_waiting set is empty
+		if r.scard(tasks_waiting_key) == 0: 
 			#add a job to set as unread
 			jobs_done_key = 'jobs_done-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']
 
