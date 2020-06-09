@@ -44,7 +44,7 @@ def get_task(session):
 		if ret['code'] == 200:
 			task = ret['data']
 		#endif
-		if ret['code'] == 400:
+		if ret['code'] == 404:
 			task = ''
 		#endif
 	except:
