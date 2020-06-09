@@ -19,7 +19,8 @@ def create_session():
 
 
 def done_job(session):
-
+	result = None
+	
 	data = {}
 	
 	data['worker_group'] = config.worker_group
@@ -39,7 +40,7 @@ def done_job(session):
 		
 		log(str(ret['code']) +  ":"  +  ret['msg'])
 		if ret['code'] == 200:
-			return True
+			return ret['data']
 		#endif
 	except:
 		traceback.print_exc()
@@ -47,7 +48,7 @@ def done_job(session):
 	
 	#endtry
 	
-	return False
+	return result
 	
 #enddef
 
