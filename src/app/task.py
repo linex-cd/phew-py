@@ -110,7 +110,7 @@ def get(request):
 		data = task_info
 		
 		#added to tasks_pending set
-		tasks_pending_key = 'tasks_pending-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']+ '-' + str(job_info['job_id'])
+		tasks_pending_key = 'tasks_pending-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']+ '-' + str(task_info['job_id'])
 		r.sadd(tasks_pending_key, task_key)
 		
 		#update worker node hit counter
