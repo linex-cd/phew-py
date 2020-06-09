@@ -46,17 +46,6 @@ def get(request):
 		
 		jsondata = json.loads(request.body.decode())
 		
-		#update worker node ping state
-		worker_node_key = 'worker_' + jsondata['worker_group'] + '_' + jsondata['worker_key'] + '_' + jsondata['worker_role'] + '_' + str(jsondata['worker_id'])
-		
-		worker_node_hit = r.hget(worker_node_key, 'hit')
-		if worker_node_hit == None:
-			worker_node_hit = 1
-		else:
-			worker_node_hit = int(worker_node_hit) + 1
-		#endif
-
-		r.hset(worker_node_key, 'hit', worker_node_hit)
 		
 		#############################
 		#get all work list keys
@@ -119,6 +108,18 @@ def get(request):
 		#endwhile
 		
 		data = task_info
+		
+		#update worker node hit counter
+		worker_node_key = 'worker_' + jsondata['worker_group'] + '_' + jsondata['worker_key'] + '_' + jsondata['worker_role'] + '_' + str(jsondata['worker_id'])
+		
+		worker_node_hit = r.hget(worker_node_key, 'hit')
+		if worker_node_hit == None:
+			worker_node_hit = 1
+		else:
+			worker_node_hit = int(worker_node_hit) + 1
+		#endif
+
+		r.hset(worker_node_key, 'hit', worker_node_hit)
 			
 	else:
 		code = 403
@@ -135,17 +136,7 @@ def finish(request):
 	if request.method == 'POST':
 		
 		jsondata = json.loads(request.body.decode())
-		
-		#update worker node ping state
-		worker_node_key = 'worker_' + jsondata['worker_group'] + '_' + jsondata['worker_key'] + '_' + jsondata['worker_role'] + '_' + str(jsondata['worker_id'])
-		
-		worker_node_hit = r.hget(worker_node_key, 'hit')
-		if worker_node_hit == None:
-			worker_node_hit = 1
-		else:
-			worker_node_hit = int(worker_node_hit) + 1
-		#endif
-		
+				
 		#############################
 		#update task result and state
 		task_info = jsondata['task']

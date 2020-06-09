@@ -46,19 +46,7 @@ def assign(request):
 		jsondata = json.loads(request.body.decode())
 		
 		job_info = jsondata['job']
-		
-		#update vendor node ping state
-		vendor_node_key = 'vendor_' + jsondata['worker_group'] + '_' + jsondata['worker_key'] + '_' + jsondata['worker_role'] + '_' + str(jsondata['vendor_id'])
-		
-		vendor_node_hit = r.hget(vendor_node_key, 'hit')
-		if vendor_node_hit == None:
-			vendor_node_hit = 1
-		else:
-			vendor_node_hit = int(vendor_node_hit) + 1
-		#endif
-		
-		r.hset(vendor_node_key, 'hit', vendor_node_hit)
-		
+				
 		#############################
 		# make job record
 		job_key = 'job_' + jsondata['worker_group'] + '_' + jsondata['worker_key'] + '_' + jsondata['worker_role'] + '_' + str(job_info['job_id'])
@@ -124,6 +112,19 @@ def assign(request):
 			r.sadd(tasks_pending_key, task_key)
 
 		#endfor
+		
+		#update vendor node hit counter
+		vendor_node_key = 'vendor_' + jsondata['worker_group'] + '_' + jsondata['worker_key'] + '_' + jsondata['worker_role'] + '_' + str(jsondata['vendor_id'])
+		
+		vendor_node_hit = r.hget(vendor_node_key, 'hit')
+		if vendor_node_hit == None:
+			vendor_node_hit = 1
+		else:
+			vendor_node_hit = int(vendor_node_hit) + 1
+		#endif
+		
+		r.hset(vendor_node_key, 'hit', vendor_node_hit)
+		
 	#endif
 				
 	return response(code, msg, data)
