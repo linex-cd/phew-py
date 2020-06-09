@@ -10,7 +10,7 @@ def ping(request):
 	if request.method == 'POST':
 		jsondata = json.loads(request.body.decode())
 		
-		vendor_node_key = 'vendor_' + jsondata['worker_group'] + '_' + jsondata['worker_key'] + '_' + jsondata['worker_role'] + '_' + str(jsondata['vendor_id'])
+		vendor_node_key = 'vendor-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role'] + '-' + str(jsondata['vendor_id'])
 		
 		vendor_node_ip = request.META['REMOTE_ADDR']
 		if 'HTTP_X_FORWARDED_FOR' in request.META.keys():
@@ -49,7 +49,7 @@ def assign(request):
 				
 		#############################
 		# make job record
-		job_key = 'job_' + jsondata['worker_group'] + '_' + jsondata['worker_key'] + '_' + jsondata['worker_role'] + '_' + str(job_info['job_id'])
+		job_key = 'job-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role'] + '-' + str(job_info['job_id'])
 		r.hset(job_key, 'state', 'assigned')
 		
 		# add create timestamp
@@ -75,7 +75,7 @@ def assign(request):
 				task_info['data'] = task_info['data'].encode()
 			task_info['hash'] = md5(task_info['data'])
 			
-			task_key = 'task_' + jsondata['worker_group'] + '_' + jsondata['worker_key'] + '_' + jsondata['worker_role'] + '_' + str(job_info['job_id']) + '_' + task_info['hash']
+			task_key = 'task-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role'] + '-' + str(job_info['job_id']) + '-' + task_info['hash']
 			r.hset(task_key, 'state', 'assigned')
 			r.hset(task_key, 'note', '')
 			
@@ -104,17 +104,17 @@ def assign(request):
 			
 			
 			#allocate task to work priority list
-			work_key = 'work_' + jsondata['worker_group'] + '_' + jsondata['worker_key'] + '_' + jsondata['worker_role'] + '_' + str(job_info['priority'])
+			work_key = 'work-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role'] + '-' + str(job_info['priority'])
 			r.lpush(work_key, task_key)
 			
 			#add task to tasks_pending to wait for job state check
-			tasks_pending_key = 'tasks_pending_' + jsondata['worker_group'] + '_' + jsondata['worker_key'] + '_' + jsondata['worker_role']+ '_' + str(job_info['job_id'])
+			tasks_pending_key = 'tasks_pending-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']+ '-' + str(job_info['job_id'])
 			r.sadd(tasks_pending_key, task_key)
 
 		#endfor
 		
 		#update vendor node hit counter
-		vendor_node_key = 'vendor_' + jsondata['worker_group'] + '_' + jsondata['worker_key'] + '_' + jsondata['worker_role'] + '_' + str(jsondata['vendor_id'])
+		vendor_node_key = 'vendor-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role'] + '-' + str(jsondata['vendor_id'])
 		
 		vendor_node_hit = r.hget(vendor_node_key, 'hit')
 		if vendor_node_hit == None:
@@ -142,11 +142,11 @@ def delete(request):
 		job_info = jsondata['job']
 		
 		#set state to deleted
-		job_key = 'job_' + jsondata['worker_group'] + '_' + jsondata['worker_key'] + '_' + jsondata['worker_role'] + '_' + str(job_info['job_id'])
+		job_key = 'job-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role'] + '-' + str(job_info['job_id'])
 		r.hset(job_key, 'state', 'deleted')
 		
 		#seek all task in job and delete
-		task_key_pattern = 'task_' + jsondata['worker_group'] + '_' + jsondata['worker_key'] + '_' + jsondata['worker_role'] + '_' + str(job_info['job_id']) + "_*"
+		task_key_pattern = 'task-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role'] + '-' + str(job_info['job_id']) + "-*"
 		task_keys = r.keys(task_key_pattern)
 		
 		for task_key in task_keys:
@@ -168,7 +168,7 @@ def done(request):
 		jsondata = json.loads(request.body.decode())
 		
 		#seek all jobs done
-		jobs_done_key = 'jobs_done_' + jsondata['worker_group'] + '_' + jsondata['worker_key'] + '_' + jsondata['worker_role']
+		jobs_done_key = 'jobs_done-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']
 		job_keys = r.smembers(jobs_done_key)
 		job_keys = list(job_keys)
 		data['done'] = job_keys
@@ -189,7 +189,7 @@ def detail(request):
 		
 		job_info = jsondata['job']
 		
-		job_key = 'job_' + jsondata['worker_group'] + '_' + jsondata['worker_key'] + '_' + jsondata['worker_role'] + '_' + str(job_info['job_id'])
+		job_key = 'job-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role'] + '-' + str(job_info['job_id'])
 		
 		
 		data['worker_group'] = r.hget(job_key, 'worker_group').decode()
@@ -208,7 +208,7 @@ def detail(request):
 		#read result from task
 		tasklist = []
 		
-		task_key_pattern = 'task_' + jsondata['worker_group'] + '_' + jsondata['worker_key'] + '_' + jsondata['worker_role'] + '_' + str(job_info['job_id']) + "_*"
+		task_key_pattern = 'task-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role'] + '-' + str(job_info['job_id']) + "-*"
 		task_keys = r.keys(task_key_pattern)
 		
 		for task_key in task_keys:
@@ -256,8 +256,8 @@ def mark(request):
 		
 		job_info = jsondata['job']
 		#mark a job as read by remove from set
-		jobs_done_key = 'jobs_done_' + jsondata['worker_group'] + '_' + jsondata['worker_key'] + '_' + jsondata['worker_role']
-		job_key = 'job_' + jsondata['worker_group'] + '_' + jsondata['worker_key'] + '_' + jsondata['worker_role'] + '_' + str(job_info['job_id'])
+		jobs_done_key = 'jobs_done-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']
+		job_key = 'job-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role'] + '-' + str(job_info['job_id'])
 		
 		r.srem(jobs_done_key, job_key)
 	

@@ -10,7 +10,7 @@ def ping(request):
 	if request.method == 'POST':
 		jsondata = json.loads(request.body.decode())
 		
-		worker_node_key = 'worker_' + jsondata['worker_group'] + '_' + jsondata['worker_key'] + '_' + jsondata['worker_role'] + '_' + str(jsondata['worker_id'])
+		worker_node_key = 'worker-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role'] + '-' + str(jsondata['worker_id'])
 		
 		worker_node_ip = request.META['REMOTE_ADDR']
 		if 'HTTP_X_FORWARDED_FOR' in request.META.keys():
@@ -49,7 +49,7 @@ def get(request):
 		
 		#############################
 		#get all work list keys
-		work_key_pattern = 'work_' + jsondata['worker_group'] + '_' + jsondata['worker_key'] + '_' + jsondata['worker_role'] + '_*'
+		work_key_pattern = 'work-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role'] + '-*'
 		work_keys = r.keys(work_key_pattern)
 		
 		if len(work_keys) == 0:
@@ -110,7 +110,7 @@ def get(request):
 		data = task_info
 		
 		#update worker node hit counter
-		worker_node_key = 'worker_' + jsondata['worker_group'] + '_' + jsondata['worker_key'] + '_' + jsondata['worker_role'] + '_' + str(jsondata['worker_id'])
+		worker_node_key = 'worker-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role'] + '-' + str(jsondata['worker_id'])
 		
 		worker_node_hit = r.hget(worker_node_key, 'hit')
 		if worker_node_hit == None:
@@ -141,9 +141,9 @@ def finish(request):
 		#update task result and state
 		task_info = jsondata['task']
 		
-		job_key = 'job_' + jsondata['worker_group'] + '_' + jsondata['worker_key'] + '_' + jsondata['worker_role'] + '_' + str(task_info['job_id'])
+		job_key = 'job-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role'] + '-' + str(task_info['job_id'])
 		
-		task_key = 'task_' + jsondata['worker_group'] + '_' + jsondata['worker_key'] + '_' + jsondata['worker_role'] + '_' + str(task_info['job_id']) + '_' + task_info['hash']
+		task_key = 'task-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role'] + '-' + str(task_info['job_id']) + '-' + task_info['hash']
 		
 		old_task_state = r.hget(task_key, 'state')
 		if old_task_state != None:
@@ -163,13 +163,13 @@ def finish(request):
 		r.hset(task_key, 'result', task_info['result'])
 		
 		#remove from tasks_pending set 
-		tasks_pending_key = 'tasks_pending_' + jsondata['worker_group'] + '_' + jsondata['worker_key'] + '_' + jsondata['worker_role']+ '_' + str(task_info['job_id'])
+		tasks_pending_key = 'tasks_pending-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']+ '-' + str(task_info['job_id'])
 		r.srem(tasks_pending_key, task_key)
 		
 		#check if tasks_pending set is empty
 		if r.scard(tasks_pending_key) == 0: 
 			#add a job to set as unread
-			jobs_done_key = 'jobs_done_' + jsondata['worker_group'] + '_' + jsondata['worker_key'] + '_' + jsondata['worker_role']
+			jobs_done_key = 'jobs_done-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']
 
 			r.sadd(jobs_done_key, task_info['job_id'])
 			
