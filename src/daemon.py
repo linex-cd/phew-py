@@ -6,6 +6,7 @@ def deamon_thread(timeout = 60):
 	print("started deamon thread, timeout = %d" % timeout)
 	
 	while True:
+		print("seeking all tasks pending...")
 		#seek all tasks pending
 		tasks_pending_key_pattern = 'tasks_pending-*'
 		
@@ -27,7 +28,7 @@ def deamon_thread(timeout = 60):
 					priority = r.hget(task_key, 'priority')
 					
 					#task-Nanjing-testkey12345-textise-528-00cc0111177002930684f5aeef5d4181
-					tmp = task_key.split("-")
+					tmp = task_key.decode().split("-")
 					worker_group = tmp[1]
 					worker_key = tmp[2]
 					worker_role = tmp[3]
