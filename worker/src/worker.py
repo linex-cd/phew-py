@@ -1,7 +1,7 @@
 
 import threading
-from task import task_thread
-from ping import ping_thread
+from task_thread import main as task_thread
+from ping_thread import main as ping_thread
 
 def main():
 	thread_list = list()
