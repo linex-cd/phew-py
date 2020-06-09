@@ -86,6 +86,7 @@ def assign(request):
 			
 			
 			r.hset(task_key, 'job_id', job_info['job_id'])
+			r.hset(task_key, 'priority', job_info['priority'])
 			
 			r.hset(task_key, 'hash', task_info['hash'])
 			

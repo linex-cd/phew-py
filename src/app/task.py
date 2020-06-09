@@ -73,6 +73,7 @@ def get(request):
 			#endif
 			
 			task_info['job_id'] = r.hget(task_key, 'job_id').decode()
+			task_info['priority'] = r.hget(task_key, 'priority').decode()
 			task_info['meta'] = r.hget(task_key, 'meta').decode()
 			task_info['addressing'] = r.hget(task_key, 'addressing').decode()
 			task_info['port'] = r.hget(task_key, 'port').decode()
@@ -171,7 +172,7 @@ def finish(request):
 		r.srem(tasks_waiting_key, task_key)
 		
 		#remove from tasks_pending set
-		tasks_pending_key = 'tasks_pending-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']+ '-' + str(job_info['job_id'])
+		tasks_pending_key = 'tasks_pending-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']+ '-' + str(task_info['job_id'])
 		r.srem(tasks_pending_key, task_key)
 		
 		#check if tasks_waiting set is empty
