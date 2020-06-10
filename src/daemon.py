@@ -34,8 +34,8 @@ def deamon_thread(timeout = 60):
 					r.srem(tasks_waiting_key, task_key)
 					
 					#if last one task is timeout, the mark the job as done
-					#check if tasks_waiting set is empty
-					if r.scard(tasks_waiting_key) == 0: 
+					#check if tasks_waiting and tasks_pending set are empty
+					if r.scard(tasks_waiting_key) == 0 and r.scard(tasks_pending_key) == 0: 
 						#add a job to set as unread
 						
 						tmp = tasks_waiting_key.split('-')

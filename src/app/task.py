@@ -175,8 +175,8 @@ def finish(request):
 		tasks_pending_key = 'tasks_pending-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']+ '-' + str(task_info['job_id'])
 		r.srem(tasks_pending_key, task_key)
 		
-		#check if tasks_waiting set is empty
-		if r.scard(tasks_waiting_key) == 0: 
+		#check if tasks_waiting and tasks_pending set are empty
+		if r.scard(tasks_waiting_key) == 0 and r.scard(tasks_pending_key) == 0: 
 			#add a job to set as unread
 			jobs_done_key = 'jobs_done-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']
 
