@@ -19,6 +19,8 @@ def deamon_thread(timeout = 60):
 			
 			#remove from pending set if timeout and mark timeout
 			for task_key in task_keys:
+			
+				job_id = r.hget(task_key, 'job_id')
 				task_create_time = r.hget(task_key, 'start_time')
 				
 				if int(time.time()) - int(task_create_time) > timeout:
@@ -30,6 +32,26 @@ def deamon_thread(timeout = 60):
 					
 					tasks_waiting_key = tasks_pending_key.replace('tasks_pending-', 'tasks_waiting-')
 					r.srem(tasks_waiting_key, task_key)
+					
+					#if last one task is timeout, the mark the job as done
+					#check if tasks_waiting set is empty
+					if r.scard(tasks_waiting_key) == 0: 
+						#add a job to set as unread
+						
+						tmp = tasks_waiting_key.decode().slipt('-')
+						worker_group = tmp[1]
+						worker_key = tmp[2]
+						worker_role = tmp[3]
+						
+						job_key = 'job-' + worker_group + '-' + worker_group + '-' + worker_role+ '-' + str(job_id)
+		
+						jobs_done_key = 'jobs_done-' + worker_group + '-' + worker_key + '-' + worker_role
+
+						r.sadd(jobs_done_key, job_id)
+						
+						#add finish timestamp
+						r.hset(job_key, 'finish_time', int(time.time()))
+					#endif
 					
 				#endif
 
