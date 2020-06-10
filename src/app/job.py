@@ -171,7 +171,12 @@ def done(request):
 		#seek all jobs done
 		jobs_done_key = 'jobs_done-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']
 		job_keys = r.smembers(jobs_done_key)
-		job_keys = list(job_keys)
+		tmp = list(job_keys)
+		
+		job_keys = []
+		for job_key in tmp:
+			job_keys.append(job_key.decode())
+		#endfor
 		data['done'] = job_keys
 
 	#endif

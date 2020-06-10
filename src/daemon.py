@@ -38,7 +38,7 @@ def deamon_thread(timeout = 60):
 					if r.scard(tasks_waiting_key) == 0: 
 						#add a job to set as unread
 						
-						tmp = tasks_waiting_key.decode().slipt('-')
+						tmp = tasks_waiting_key.split('-')
 						worker_group = tmp[1]
 						worker_key = tmp[2]
 						worker_role = tmp[3]
