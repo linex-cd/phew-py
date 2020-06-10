@@ -30,7 +30,7 @@ def deamon_thread(timeout = 60):
 					r.hset(task_key, 'state', 'timeout')
 					r.srem(tasks_pending_key, task_key)
 					
-					tasks_waiting_key = tasks_pending_key.replace('tasks_pending-', 'tasks_waiting-')
+					tasks_waiting_key = tasks_pending_key.decode().replace('tasks_pending-', 'tasks_waiting-')
 					r.srem(tasks_waiting_key, task_key)
 					
 					#if last one task is timeout, the mark the job as done
