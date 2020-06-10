@@ -184,6 +184,7 @@ def finish(request):
 			
 			#add finish timestamp
 			r.hset(job_key, 'finish_time', int(time.time()))
+			r.hset(job_key, 'state', 'done')
 		#endif
 		
 	else:

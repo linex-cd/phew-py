@@ -265,9 +265,8 @@ def mark(request):
 		job_info = jsondata['job']
 		#mark a job as read by remove from set
 		jobs_done_key = 'jobs_done-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']
-		job_key = 'job-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role'] + '-' + str(job_info['job_id'])
-		
-		r.srem(jobs_done_key, job_key)
+
+		r.srem(jobs_done_key, str(job_info['job_id']))
 	
 	#endif
 	

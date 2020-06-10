@@ -43,7 +43,7 @@ def deamon_thread(timeout = 60):
 						worker_key = tmp[2]
 						worker_role = tmp[3]
 						
-						job_key = 'job-' + worker_group + '-' + worker_group + '-' + worker_role+ '-' + str(job_id)
+						job_key = 'job-' + worker_group + '-' + worker_key + '-' + worker_role+ '-' + str(job_id)
 		
 						jobs_done_key = 'jobs_done-' + worker_group + '-' + worker_key + '-' + worker_role
 
@@ -51,6 +51,7 @@ def deamon_thread(timeout = 60):
 						
 						#add finish timestamp
 						r.hset(job_key, 'finish_time', int(time.time()))
+						r.hset(job_key, 'state', 'done')
 					#endif
 					
 				#endif
