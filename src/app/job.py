@@ -269,6 +269,52 @@ def mark(request):
 #enddef
 
 
+def retry(request):
+	code = 200
+	msg = 'ok'
+	data = {}
+
+	if request.method == 'POST':
+		jsondata = json.loads(request.body.decode())
+		
+		job_info = jsondata['job']
+	
+		#read result from task
+		tasklist = []
+		
+		task_key_pattern = 'task-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role'] + '-' + str(job_info['job_id']) + "-*"
+		task_keys = r.keys(task_key_pattern)
+	
+		task_keys = list(task_keys)
+		
+		
+		#repush to the right of list if timeout
+		for task_key in task_keys:
+			task_state = r.hget(task_key, 'state').decode()
+			
+			
+			if task_state == 'timeout' or task_state == 'error':
+				
+				priority = r.hget(task_key, 'priority')
+				work_key = 'work-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role'] + '-' + str(priority)
+			
+				r.rpush(work_key, task_key)
+				
+			#endif
+			
+			#remove from pending set
+			r.srem(tasks_pending_key, task_key)
+			
+		#endfor
+			
+	
+	#endif
+	
+	return response(code, msg, data)
+
+#enddef
+
+
 if __name__ == '__main__':
 	pass
 #end
