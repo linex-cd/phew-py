@@ -78,6 +78,7 @@ def assign(request):
 			task_key = 'task-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role'] + '-' + str(job_info['job_id']) + '-' + task_info['hash']
 			r.hset(task_key, 'state', 'assigned')
 			r.hset(task_key, 'note', '')
+			r.hset(task_key, 'result', '')
 			
 			# add create timestamp
 			r.hset(task_key, 'create_time', int(time.time()))
@@ -93,6 +94,7 @@ def assign(request):
 			r.hset(task_key, 'meta', task_info['meta'])
 			r.hset(task_key, 'addressing', task_info['addressing'])
 			r.hset(task_key, 'port', task_info['port'])
+			
 			
 			if task_info['addressing'] == 'binary':
 				taskdata_filename = filedirfromhash(task_info['hash']) + task_info['hash'] + '.taskdata'
@@ -228,8 +230,9 @@ def detail(request):
 			task_info['create_time'] = r.hget(task_key, 'create_time').decode()
 			task_info['start_time'] = r.hget(task_key, 'start_time').decode()
 			task_info['finish_time'] = r.hget(task_key, 'finish_time').decode()
+			task_info['result'] = r.hget(task_key, 'result').decode()
 			
-			
+			'''
 			#read result from disk if done
 			result = ''
 			if task_info['state'] == 'done' or task_info['state'] == 'deleted':
@@ -239,9 +242,8 @@ def detail(request):
 				#endif
 			
 			#endif
-			
-			task_info['result'] = result
-			
+			'''
+
 			tasklist.append(task_info)
 		#endfor
 		data['tasks'] = tasklist
