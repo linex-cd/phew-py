@@ -26,7 +26,10 @@ def deamon_thread(timeout = 60):
 					print("mark task timeout:%s" % task_key.decode())
 					
 					r.hset(task_key, 'state', 'timeout')
-					r.srem(tasks_pending_key, task_key)					
+					r.srem(tasks_pending_key, task_key)
+					
+					tasks_waiting_key = tasks_pending_key.replace('tasks_pending-', 'tasks_waiting-')
+					r.srem(tasks_waiting_key, task_key)
 					
 				#endif
 
