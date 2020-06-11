@@ -154,10 +154,10 @@ def delete(request):
 		
 		for task_key in task_keys:
 			#only mark delete state
-			r.hset(task_key, 'state', 'deleted')
+			#r.hset(task_key, 'state', 'deleted')
 			
 			#delete task
-			#r.delete(task_key)
+			r.delete(task_key)
 		#endfor
 	#endif	
 
