@@ -27,6 +27,7 @@ def prepare_task(task):
 	is_tables = json.loads(task['is_tables'])
 	is_head = is_tables[0] if len(is_tables) > 0 else ''
 	saved_path = task['saved_path']
+	priority = task['priority']
 
 	topic = None
 	if str(from_instant_id).startswith('cv_node'):
@@ -42,7 +43,6 @@ def prepare_task(task):
 	
 	job_id = id
 	description = bmsah
-	priority = 5
 
 	job_info = {}
 	job_info['job_id'] = str(job_id)

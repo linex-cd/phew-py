@@ -26,6 +26,7 @@ class TaskRecord(Base):
 	
 	id = Column(Integer, primary_key=True, autoincrement=True)
 	task_id = Column(Integer, nullable=False)
+	priority = Column(Integer, nullable=False)
 	bmsah = Column(Text())
 	images = Column(Text(), nullable=False)
 	is_tables = Column(Text(), nullable=False)
@@ -60,6 +61,7 @@ class TaskRecord(Base):
 		data = json.loads(message)
 		record = TaskRecord()
 		record.task_id = data['task_id']
+		record.priority = data['priority']  if 'priority' in data else 8
 		record.bmsah = data['bmsah']
 		record.images = json.dumps(data['images'], ensure_ascii=False)
 		record.is_tables = json.dumps(data['is_tables'], ensure_ascii=False)
