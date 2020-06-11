@@ -14,7 +14,7 @@ from db import TaskRecord
 
 from phewsdk.done import done_job
 from phewsdk.detail import detail_job
-from phewsdk.mark import mark_job
+from phewsdk.read import read_job
 
 import config
 
@@ -150,7 +150,7 @@ def main():
 					job_info = {}
 					job_info['job_id'] = str(job_id)
 
-					mark_job(session = session, job = job_info)
+					read_job(session = session, job = job_info)
 
 				
 				except Exception:

@@ -11,7 +11,7 @@ A jobs scheduling center
  - done			完成的任务
  - delete		移除任务	
  - detail		任务详情
- - mark			标记任务已读
+ - read			标记任务已读
  - ping			保持节点状态
  - retry		重试失败或超时的任务
  

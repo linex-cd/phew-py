@@ -20,7 +20,7 @@ def create_session():
 #enddef
 
 
-def mark_job(session, job):
+def read_job(session, job):
 	
 	data = {}
 	
@@ -41,13 +41,13 @@ def mark_job(session, job):
 
 		ret = json.loads(resp.text)
 		
-		log('[mark_job]' + str(ret['code']) +  ":"  +  ret['msg'])
+		log('[read_job]' + str(ret['code']) +  ":"  +  ret['msg'])
 		if ret['code'] == 200:
 			return True
 		#endif
 	except:
 		traceback.print_exc()
-		log('mark job error')
+		log('read job error')
 	
 	#endtry
 	
@@ -62,10 +62,9 @@ def main():
 
 	job_info = {}
 	job_info['job_id'] = str(job_id)
-	job_info['state'] = 'xxx'
 
 	session = create_session()
-	rs = mark_job(session = session, job = job_info)
+	rs = read_job(session = session, job = job_info)
 	
 	print(rs)
 	

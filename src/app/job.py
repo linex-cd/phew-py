@@ -254,7 +254,7 @@ def detail(request):
 
 #enddef
 
-def mark(request):
+def read(request):
 	code = 200
 	msg = 'ok'
 	data = {}
