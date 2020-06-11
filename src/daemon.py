@@ -20,7 +20,7 @@ def deamon_thread(timeout = 60):
 			#remove from pending set if timeout and mark timeout
 			for task_key in task_keys:
 			
-				job_id = r.hget(task_key, 'job_id')
+				job_id = r.hget(task_key, 'job_id').decode()
 				task_create_time = r.hget(task_key, 'start_time')
 				
 				if int(time.time()) - int(task_create_time) > timeout:
@@ -43,7 +43,7 @@ def deamon_thread(timeout = 60):
 						worker_key = tmp[2]
 						worker_role = tmp[3]
 						
-						job_key = 'job-' + worker_group + '-' + worker_key + '-' + worker_role+ '-' + str(job_id)
+						job_key = 'job-' + worker_group + '-' + worker_key + '-' + worker_role+ '-' + job_id
 		
 						jobs_done_key = 'jobs_done-' + worker_group + '-' + worker_key + '-' + worker_role
 
