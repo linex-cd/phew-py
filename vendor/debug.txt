@@ -1,0 +1,14 @@
+nvidia-docker run \
+--name textise_vendor_debug \
+--network=host \
+-v /data/yn/dzjz/:/juanzong \
+-v /data/dockerdata/ocr:/data \
+-e INSTANT_ID=textise_vendor_node_debug \
+-e KAFKA_SERVER=192.168.2.31 \
+-e DB=postgresql://postgres:postgres@192.168.2.31:5432/cv \
+-e OSS_ACCESS_KEY_ID=xxx \
+-e OSS_ACCESS_KEY_SECRET=xxx \
+-e OSS_BUCKET=xxx \
+-e OSS_ENDPOINT=xxx\
+-it textise_vendor:3.0.0 \
+bash
