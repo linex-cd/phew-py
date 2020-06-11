@@ -24,6 +24,19 @@ else
     echo "第二参数是部署的起始节点数，默认0"
 fi
 
+JOBCENTER_SERVER=127.0.0.1:2020
+
+if [ -n "$3" ]; then
+    JOBCENTER_SERVER=$3
+else
+    echo "第三参数是任务中心服务器的地址，默认127.0.0.1:2020"
+fi
+
+
+WORKER_GROUP=Nanjing
+WORKER_KEY=testkey12345
+WORKER_ROLE=textise
+
 
 for i in `seq ${node_count}`
 do
@@ -40,6 +53,10 @@ nvidia-docker run \
 --name ${container_name} \
 -v /data/yn/dzjz/:/juanzong \
 --network=host \
+-e JOBCENTER_SERVER=${JOBCENTER_SERVER} \
+-e WORKER_GROUP=${WORKER_GROUP} \
+-e WORKER_KEY=${WORKER_KEY} \
+-e WORKER_ROLE=${WORKER_ROLE} \
 -e WORKER_ID=${WORKER_ID} \
 -e WORKER_NAME=${WORKER_NAME} \
 -e WORKER_LOCATION=${WORKER_LOCATION} \

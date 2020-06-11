@@ -11,16 +11,21 @@ KAFKA_SERVER=192.168.2.31
 DB=postgresql://postgres:postgres@192.168.2.31:5432/cv
 
 #aliyun oss
-OSS_ACCESS_KEY_ID=xxx
-OSS_ACCESS_KEY_SECRET=xxx
-OSS_BUCKET=xxx
-OSS_ENDPOINT=xxx
-#-----------------------------
+OSS_ACCESS_KEY_ID=xxxx
+OSS_ACCESS_KEY_SECRET=xxxx
+OSS_BUCKET=xxxx
+OSS_ENDPOINT=xxxx
 
+#-----------------------------
 #image
 docker build -f ./Dockerfile -t textise_vendor:${version} .
 
-#vendor service
+#-----------------------------
+#config
+WORKER_GROUP=Nanjing
+WORKER_KEY=testkey12345
+WORKER_ROLE=textise
+
 node_id=1
 
 if [ -n "$1" ]; then
@@ -32,11 +37,21 @@ fi
 INSTANT_ID=textise_vendor_node_${node_id}
 container_name=textise_vendor_${node_id}
 
+VENDOR_ID=${node_id}
+VENDOR_NAME=Nanjing-Dev-vendor-node-${node_id}
+VENDOR_LOCATION=南京
+
 nvidia-docker run \
 --name=${container_name} \
 --network=host \
 -v /data/yn/dzjz/:/juanzong \
 -v /data/dockerdata/ocr:/data \
+-e VENDOR_ID=${VENDOR_ID} \
+-e VENDOR_NAME=${VENDOR_NAME} \
+-e VENDOR_LOCATION=${VENDOR_LOCATION} \
+-e WORKER_GROUP=${WORKER_GROUP} \
+-e WORKER_KEY=${WORKER_KEY} \
+-e WORKER_ROLE=${WORKER_ROLE} \
 -e INSTANT_ID=${INSTANT_ID} \
 -e KAFKA_SERVER=${KAFKA_SERVER} \
 -e DB=${DB} \
