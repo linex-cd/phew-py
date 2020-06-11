@@ -153,8 +153,11 @@ def delete(request):
 		task_keys = r.keys(task_key_pattern)
 		
 		for task_key in task_keys:
+			#only mark delete state
 			r.hset(task_key, 'state', 'deleted')
 			
+			#delete task
+			#r.delete(task_key)
 		#endfor
 	#endif	
 
