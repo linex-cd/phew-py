@@ -102,6 +102,7 @@ class TaskRecord(Base):
 			task['is_tables'] = record.is_tables
 			task['saved_path'] = record.saved_path
 			task['from_instant_id'] = record.from_instant_id
+			task['priority'] = record.priority
 
 			tasks.append(task)
 		return tasks
