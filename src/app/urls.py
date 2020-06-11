@@ -20,7 +20,7 @@ urlpatterns = [
 	path('job/delete', job.delete),
 	path('job/done', job.done),
 	path('job/detail', job.detail),
-	path('job/mark', job.mark),
+	path('job/read', job.read),
 	
 	path('task/ping', task.ping),
 	path('task/get', task.get),
