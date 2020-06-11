@@ -33,7 +33,7 @@ def read_job(session, job):
 
 	data['job'] = job
 
-	url = 'http://' + config.jobcenter_server + '/job/mark'
+	url = 'http://' + config.jobcenter_server + '/job/read'
 	timeout = 30
 	
 	try:
