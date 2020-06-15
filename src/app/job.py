@@ -66,6 +66,8 @@ def assign(request):
 		r.hset(job_key, 'description', job_info['description'])
 		r.hset(job_key, 'priority', job_info['priority'])
 		
+		r.hset(job_key, 'length', len(jsondata['length']))
+		
 		
 		tasks = jsondata['tasks']
 		for task_info in tasks:
@@ -210,6 +212,7 @@ def detail(request):
 		job_info['meta'] = r.hget(job_key, 'meta').decode()
 		job_info['description'] = r.hget(job_key, 'description').decode()
 		job_info['priority'] = r.hget(job_key, 'priority').decode()
+		job_info['length'] = r.hget(job_key, 'length').decode()
 		job_info['state'] = r.hget(job_key, 'state').decode()
 		job_info['create_time'] = r.hget(job_key, 'create_time').decode()
 		job_info['finish_time'] = r.hget(job_key, 'finish_time').decode()
