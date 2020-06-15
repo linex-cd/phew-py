@@ -39,6 +39,7 @@ from os import remove as os_remove;
 from os import makedirs as os_makedirs;
 from os.path import join as os_path_exists;
 from os.path import isfile as os_path_isfile;
+from os.path import getsize as os_path_getsize;
 
 def readfile(filename):
 	
@@ -81,6 +82,14 @@ def existfile(filename):
 	return False;
 #enddef
 
+def filesize(filename):
+	if os_path_exists(filename) and os_path_isfile(filename) and os_access(filename, os_W_OK):
+		return os_path_getsize(filename);
+	#endif
+	return 0;
+#enddef
+
+
 datapath = '/jobcenterdata/taskcache/'
 def makedirforhash(hash):
 	
@@ -96,8 +105,9 @@ def filedirfromhash(hash):
 #enddef
 
 
-r = redis.Redis(host = '127.0.0.1', port = 2019, db = 0);
+#r = redis.Redis(host = '127.0.0.1', port = 2019, db = 0);
+r = redis.Redis(host = '192.168.2.29', port = 2019, db = 0);
 
-__all__ = ['redirect', 'response', 'time', 'json', 'md5', 'readfile', 'writefile', 'existfile', 'makedirforhash', 'filedirfromhash', 'r']
+__all__ = ['redirect', 'response', 'time', 'json', 'md5', 'readfile', 'writefile', 'existfile', 'filesize', 'makedirforhash', 'filedirfromhash', 'r']
 
 

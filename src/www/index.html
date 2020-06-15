@@ -82,7 +82,7 @@
                 <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
                     <div class="wb-traffic-inner notika-shadow sm-res-mg-t-30 tb-res-mg-t-30">
                         <div class="website-traffic-ctn">
-                            <h2><span class="totalcounter" id="tasks">0</span></h2>
+                            <h2><span class="jobcounter" id="job_total">0</span></h2>
                             <p>总处理任务数</p>
                         </div>
                         <div class="sparkline-bar-stats1">9,4,8,6,5,6,4,8,3,5,9,5</div>
@@ -91,7 +91,7 @@
                 <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
                     <div class="wb-traffic-inner notika-shadow sm-res-mg-t-30 tb-res-mg-t-30">
                         <div class="website-traffic-ctn">
-                            <h2><span class="totalcounter" id="files">0</span></h2>
+                            <h2><span class="jobcounter" id="task_total">0</span></h2>
                             <p>总处理文件数</p>
                         </div>
                         <div class="sparkline-bar-stats2">1,4,8,3,5,6,4,8,3,3,9,5</div>
@@ -100,7 +100,7 @@
                 <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
                     <div class="wb-traffic-inner notika-shadow sm-res-mg-t-30 tb-res-mg-t-30 dk-res-mg-t-30">
                         <div class="website-traffic-ctn">
-                            <h2><span class="totalcounter" id="inqueuetasks">0</span></h2>
+                            <h2><span class="jobcounter" id="job_pending">0</span></h2>
                             <p>队列任务数</p>
                         </div>
                         <div class="sparkline-bar-stats3">4,2,8,2,5,6,3,8,3,5,9,5</div>
@@ -109,7 +109,7 @@
                 <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
                     <div class="wb-traffic-inner notika-shadow sm-res-mg-t-30 tb-res-mg-t-30 dk-res-mg-t-30">
                         <div class="website-traffic-ctn">
-                            <h2><span class="totalcounter" id="inqueuefiles">0</span></h2>
+                            <h2><span class="jobcounter" id="task_pending">0</span></h2>
                             <p>队列文件数</p>
                         </div>
                         <div class="sparkline-bar-stats4">2,4,8,4,5,7,4,7,3,5,7,5</div>
@@ -119,7 +119,9 @@
         </div>
     </div>
     <!-- End Status area-->
-    <!-- Start Sale Statistic area-->
+	<div style="height:30px" ></div>
+	<!-- 
+    <\!-- Start Sale Statistic area--\>
     <div class="sale-statistic-area">
         <div class="container">
             <div class="row">
@@ -173,7 +175,9 @@
             </div>
         </div>
     </div>
-    <!-- End Sale Statistic area-->
+    <\!-- End Sale Statistic area--\>
+	
+	-->
     <!-- Start Email Statistic area-->
     <div class="notika-email-post-area">
         <div class="container">
@@ -186,10 +190,10 @@
 							</div>
                             <div class="email-statis-wrap">
                                 <div class="email-round-nock">
-                                    <input type="text" class="knob" id="load" value="0" data-rel="55" data-linecap="round" data-width="130" data-bgcolor="#E4E4E4" data-fgcolor="#00c292" data-thickness=".10" data-readonly="true">
+                                    <input type="text" class="knob" id="gpu" value="0" data-rel="55" data-linecap="round" data-width="130" data-bgcolor="#E4E4E4" data-fgcolor="#00c292" data-thickness=".10" data-readonly="true">
                                 </div>
                                 <div class="email-ctn-nock">
-                                    <p>任务负载</p>
+                                    <p>GPU</p>
                                 </div>
                             </div>
                             <div class="email-round-gp">
@@ -211,10 +215,10 @@
                                 </div>
                                 <div class="email-round-pro sm-res-ds-n lg-res-mg-bl">
                                     <div class="email-signle-gp">
-                                        <input type="text" class="knob" id="gpu" value="0" data-rel="45" data-linecap="round" data-width="90" data-bgcolor="#E4E4E4" data-fgcolor="#00c292" data-thickness=".10" data-readonly="true" disabled>
+                                        <input type="text" class="knob" id="db" value="0" data-rel="45" data-linecap="round" data-width="90" data-bgcolor="#E4E4E4" data-fgcolor="#00c292" data-thickness=".10" data-readonly="true" disabled>
                                     </div>
                                     <div class="email-ctn-nock">
-                                        <p>GPU</p>
+                                        <p>DATABASE</p>
                                     </div>
                                 </div>
 							</div>
@@ -267,68 +271,9 @@
                                         </tr>
                                     </thead>
 									
-                                    <tbody>
+                                    <tbody id='latest_job'>
 									
-                                        <tr>
-                                            <td class="f-500 c-cyan">4555</td>
-                                            <td>浦检起诉受[2020]33072600752号</td>
-                                            <td class="f-500 c-cyan">921</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="f-500 c-cyan">4556</td>
-                                            <td>仙检起诉受[2020]33102400660号</td>
-                                            <td class="f-500 c-cyan">240</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="f-500 c-cyan">8778</td>
-                                            <td>瓯检起诉受[2020]33030401209号</td>
-                                            <td class="f-500 c-cyan">400</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="f-500 c-cyan">5667</td>
-                                            <td>临检起诉受[2020]33108201089号</td>
-                                            <td class="f-500 c-cyan">870</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="f-500 c-cyan">2886</td>
-                                            <td>盐检起诉受[2020]33042400755号</td>
-                                            <td class="f-500 c-cyan">790</td>
-                                        </tr>
-										 <tr>
-                                            <td class="f-500 c-cyan">7586</td>
-                                            <td>遂检起诉受[2020]33112300424号</td>
-                                            <td class="f-500 c-cyan">390</td>
-                                        </tr>
-										<tr>
-                                            <td class="f-500 c-cyan">7586</td>
-                                            <td>台温检捕受[2020]33108100612号</td>
-                                            <td class="f-500 c-cyan">390</td>
-                                        </tr>
-										<tr>
-                                            <td class="f-500 c-cyan">7586</td>
-                                            <td>台温检捕受[2020]33108100612号</td>
-                                            <td class="f-500 c-cyan">390</td>
-                                        </tr>
-										<tr>
-                                            <td class="f-500 c-cyan">7586</td>
-                                            <td>台温检捕受[2020]33108100612号</td>
-                                            <td class="f-500 c-cyan">390</td>
-                                        </tr>
-										<tr>
-                                            <td class="f-500 c-cyan">7586</td>
-                                            <td>台温检捕受[2020]33108100612号</td>
-                                            <td class="f-500 c-cyan">390</td>
-                                        </tr>
-										<tr>
-                                            <td class="f-500 c-cyan">7586</td>
-                                            <td>台温检捕受[2020]33108100612号</td>
-                                            <td class="f-500 c-cyan">390</td>
-                                        </tr>
-										<tr>
-                                            <td class="f-500 c-cyan">7586</td>
-                                            <td>台温检捕受[2020]33108100612号</td>
-                                            <td class="f-500 c-cyan">390</td>
-                                        </tr>
+                                       
 										
                                     </tbody>
 									
@@ -358,108 +303,8 @@
                         </div>
 						
                         <div class="recent-post-items">
-						<div class="notika-todo-scrollbar">
-                            <div class="recent-post-signle">
-                                    <div class="recent-post-flex rct-pt-mg">
-                                        <div class="recent-post-img">
-                                            <img src="img/img.png" alt="" />
-                                        </div>
-                                        <div class="recent-post-it-ctn">
-                                            <a href="#"><h5>浦检起诉受[2020]33072600752号</h5></a>
-                                            <a href="#"><p>5a18/0029.jpg</p></a>
-                                        </div>
-                                    </div>
-                            </div>
-							<div class="recent-post-signle">
-                                    <div class="recent-post-flex rct-pt-mg">
-                                        <div class="recent-post-img">
-                                            <img src="img/img.png" alt="" />
-                                        </div>
-                                        <div class="recent-post-it-ctn">
-                                            <a href="#"><h5>浦检起诉受[2020]33072600752号</h5></a>
-                                            <a href="#"><p>5a18/0028.jpg</p></a>
-                                        </div>
-                                    </div>
-                            </div>
-							<div class="recent-post-signle">
-                                    <div class="recent-post-flex rct-pt-mg">
-                                        <div class="recent-post-img">
-                                            <img src="img/img.png" alt="" />
-                                        </div>
-                                        <div class="recent-post-it-ctn">
-                                            <a href="#"><h5>浦检起诉受[2020]33072600752号</h5></a>
-                                            <a href="#"><p>5a18/0027.jpg</p></a>
-                                        </div>
-                                    </div>
-                            </div>
-							<div class="recent-post-signle">
-                                    <div class="recent-post-flex rct-pt-mg">
-                                        <div class="recent-post-img">
-                                            <img src="img/pdf.png" alt="" />
-                                        </div>
-                                        <div class="recent-post-it-ctn">
-                                            <a href="#"><h5>浦检起诉受[2020]33072600752号</h5></a>
-                                            <a href="#"><p>5a18/0026.pdf</p></a>
-                                        </div>
-                                    </div>
-                            </div>
-							<div class="recent-post-signle ">
-                                    <div class="recent-post-flex rct-pt-mg">
-                                        <div class="recent-post-img">
-                                            <img src="img/img.png" alt="" />
-                                        </div>
-                                        <div class="recent-post-it-ctn">
-                                            <a href="#"><h5>浦检起诉受[2020]33072600752号</h5></a>
-                                            <a href="#"><p>5a18/0025.jpg</p></a>
-                                        </div>
-                                    </div>
-                            </div>
-                            <div class="recent-post-signle">
-                                    <div class="recent-post-flex rct-pt-mg">
-                                        <div class="recent-post-img">
-                                            <img src="img/pdf.png" alt="" />
-                                        </div>
-                                        <div class="recent-post-it-ctn">
-                                            <a href="#"><h5>浦检起诉受[2020]33072600752号</h5></a>
-                                            <a href="#"><p>5a18/0021.pdf</p></a>
-                                        </div>
-                                    </div>
-                            </div>
-                            <div class="recent-post-signle">
-                                    <div class="recent-post-flex rct-pt-mg">
-                                        <div class="recent-post-img">
-                                            <img src="img/img.png" alt="" />
-                                        </div>
-                                        <div class="recent-post-it-ctn">
-                                            <a href="#"><h5>盐检起诉受[2020]33042400586号</h5></a>
-                                            <a href="#"><p>5a18/0028.jpg</p></a>
-                                        </div>
-                                    </div>
-                            </div>
-                            <div class="recent-post-signle">
-                                    <div class="recent-post-flex rct-pt-mg">
-                                        <div class="recent-post-img">
-                                            <img src="img/pdf.png" alt="" />
-                                        </div>
-                                        <div class="recent-post-it-ctn">
-                                            <a href="#"><h5>临检起诉受[2020]33108201035号</h5></a>
-                                            <a href="#"><p>5a18/0021.pdf</p></a>
-                                        </div>
-                                    </div>
-                            </div>
-                            <div class="recent-post-signle">
-                                
-                                    <div class="recent-post-flex rct-pt-mg">
-                                        <div class="recent-post-img">
-                                            <img src="img/img.png" alt="" />
-                                        </div>
-                                        <div class="recent-post-it-ctn">
-                                            <a href="#"><h5>盐检起诉受[2020]33042400586号</h5></a>
-                                            <a href="#"><p>5a18/0025.jpg</p></a>
-                                        </div>
-                                    </div>
-                                
-                            </div>
+						<div class="notika-todo-scrollbar" id="latest_task">
+                           
 							</div>
                             <div class="recent-post-signle">
                                 <a href="#">
@@ -488,17 +333,17 @@
                     <div class="realtime-wrap notika-shadow mg-t-30">
                         <div class="realtime-ctn">
                             <div class="realtime-title">
-                                <h2>任务地理分布 &nbsp;&nbsp;<span fontsize='-1' style='color:gray'>不含港澳台<span></h2>
+                                <h2>任务地理分布 &nbsp;&nbsp;<span fontsize='-2' style='color:gray'>地图不含港澳台<span></h2>
                             </div>
                         </div>
                         <div class="realtime-visitor-ctn">
                             <div class="realtime-vst-sg">
-                                <h4><span class="vendorcounter" id="vendors">0</span></h4>
-                                <p>任务源部署城市</p>
+                                <h4><span class="nodecounter" id="vendors">0</span></h4>
+                                <p>任务源</p>
                             </div>
                             <div class="realtime-vst-sg">
-                                <h4><span class="vendorcounter" id="cities">0</span></h4>
-                                <p>任务源</p>
+                                <h4><span class="nodecounter" id="workers">0</span></h4>
+                                <p>工作源</p>
                             </div>
                         </div>
                         <div class="realtime-map">
@@ -654,7 +499,7 @@
             <div class="row">
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                     <div class="footer-copy-right">
-                        <p>Copyright © 2020 Textise System</p>
+                        <p>Copyright © 2020 Phew Job Scheduling System</p>
                     </div>
                 </div>
             </div>

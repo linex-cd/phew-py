@@ -11,9 +11,8 @@ urlpatterns = [
 	path('', state.index),
 	
 	path('state/sysstate', state.sysstate),
-	path('state/totalcounter', state.totalcounter),
-	path('state/successcounter', state.successcounter),
-	path('state/vendorcounter', state.vendorcounter),
+	path('state/jobcounter', state.jobcounter),
+	path('state/nodecounter', state.nodecounter),
 	
 	path('job/ping', job.ping),
 	path('job/assign', job.assign),
