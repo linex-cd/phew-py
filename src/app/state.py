@@ -60,35 +60,19 @@ def sysstate(request):
 
 	return response(200, "ok", data)
 
-def jobcounter(request):
-	
-
+def latestwork(request):
 	if request.method == 'GET':
 		
 		job_total_pattern = 'job-*'
 		jobs = r.keys(job_total_pattern)
-		job_total = len(jobs)
-		
-		
-		job_pending = 0
-		task_total = 0
-		
+
 		job_latest = []
 		for job in jobs:
 		
 			job_key = job.decode()
 			
-			#job_pending
-			state = r.hget(job_key, 'state').decode()
-			if state == 'assigned':
-				job_pending = job_pending + 1
-			#endif
-			
-			#task_total
-			length = int(r.hget(job_key, 'length').decode())
-			task_total = task_total + length
-			
 			#latest
+			length = int(r.hget(job_key, 'length').decode())
 			description = r.hget(job_key, 'description').decode()
 			job_id = job_key.split("-")[-1]
 			create_time = r.hget(job_key, 'create_time').decode()
@@ -97,12 +81,10 @@ def jobcounter(request):
 			
 		#endfor
 		
-		work_pattern = 'work-*'
-		task_pending = len(r.keys(work_pattern))
-		
 		#job_latest sort by create_time
 		job_latest = sorted(job_latest, key=lambda x: (x[0]))
-		
+		job_latest = job_latest[:20]
+	
 		#task_latest
 		task_latest = []
 		tasks_pending_pattern = 'tasks_pending-*'
@@ -122,12 +104,127 @@ def jobcounter(request):
 		
 		
 		data  = {
+
+					'job_latest': job_latest,
+					'task_latest': task_latest,
+				}
+		
+
+	return response(200, "ok", data)
+
+
+def jobcounter(request):
+	
+
+	if request.method == 'GET':
+		
+		job_total_pattern = 'job-*'
+		jobs = r.keys(job_total_pattern)
+		job_total = len(jobs)
+		
+		
+		job_pending = 0
+		task_total = 0
+
+		for job in jobs:
+		
+			job_key = job.decode()
+			
+			#job_pending
+			state = r.hget(job_key, 'state').decode()
+			if state == 'assigned':
+				job_pending = job_pending + 1
+			#endif
+			
+			#task_total
+			length = int(r.hget(job_key, 'length').decode())
+			task_total = task_total + length
+			
+
+		#endfor
+		
+
+		#task_pending
+		work_pattern = 'work-*'
+		work_pending = len(r.keys(work_pattern))		
+		
+		
+
+		
+		data  = {
 					'job_total': job_total,
 					'task_total': task_total,
 					'job_pending': job_pending,
-					'task_pending': task_pending,
-					'job_latest': job_latest,
-					'task_latest': task_latest,
+					'work_pending': work_pending,
+				}
+		
+
+	return response(200, "ok", data)
+
+
+def inlist(request):
+	
+
+	if request.method == 'GET':
+		
+		job_total_pattern = 'job-*'
+		jobs = r.keys(job_total_pattern)
+		job_total = len(jobs)
+		
+		
+		job_pending = 0
+		task_total = 0
+		
+		jobs_list = []
+		for job in jobs:
+		
+			job_key = job.decode()
+			
+			#job_pending
+			state = r.hget(job_key, 'state').decode()
+			if state == 'assigned':
+				job_pending = job_pending + 1
+			#endif
+			
+			#task_total
+			length = int(r.hget(job_key, 'length').decode())
+			task_total = task_total + length
+			
+			#latest
+			description = r.hget(job_key, 'description').decode()
+			job_id = job_key.split("-")[-1]
+			create_time = r.hget(job_key, 'create_time').decode()
+			item = (create_time, length, job_id, description)
+			jobs_list.append(item)
+			
+		#endfor
+		
+		
+		#job_latest sort by create_time
+		jobs_list = sorted(jobs_list, key=lambda x: (x[0]))
+		
+		#work in list
+		work_pattern = 'work-*'
+		works = r.keys(work_pattern)
+		
+		works_list = []
+		for task in works:
+			job_key = 'job-' + task.decode()[5:-33]
+			item = {}
+			item['job_id'] = job_key.split("-")[-1]
+			item['description'] =  r.hget(job_key, 'description').decode()
+			
+			item['port'] =  r.hget(task, 'port').decode()
+			item['data'] =  r.hget(job_key, 'data').decode()
+			
+			works_list.append(item)
+		#endfor
+		
+		
+		
+		data  = {
+					'jobs_list': jobs_list,
+					'works_list': works_list,
 				}
 		
 

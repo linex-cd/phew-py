@@ -5,12 +5,16 @@
 			$("#job_total").text(ret['data']['job_total']);
 			$("#task_total").text(ret['data']['task_total']);
 			$("#job_pending").text(ret['data']['job_pending']);
-			$("#task_pending").text(ret['data']['task_pending']);
+			$("#work_pending").text(ret['data']['work_pending']);
 			
 			$('.jobcounter').counterUp({
 				delay: 10,
 				time: 1000
 			});	
+			
+		});  
+		
+		$.get("state/latestwork", function(ret){
 			
 			var latest_job_htmlstr = ''
 			var job_latest = ret['data']['job_latest']
@@ -22,7 +26,7 @@
 				var ts = time.toLocaleString()
 				var str = '<tr>\
 								<td class="f-500 c-cyan">'+item[2]+'</td>\
-								<td >'+item[3]+'&nbsp;&nbsp;&nbsp;<span style="color:gray;font-size:10px">'+ts+'<span></td>\
+								<td >'+item[3]+'&nbsp;&nbsp;&nbsp;<span style="color:gray;font-size:12px">'+ts+'<span></td>\
 								<td class="f-500 c-cyan">'+item[1]+'</td>\
 							</tr>'
 				latest_job_htmlstr = str + latest_job_htmlstr
@@ -50,7 +54,7 @@
 				latest_task_htmlstr = str + latest_task_htmlstr
 			}
 			if (latest_task_htmlstr == ''){
-				latest_task_htmlstr = '没有文件正在处理中'
+				latest_task_htmlstr = '<div>没有文件正在处理中<div>'
 			}
 			
 			
@@ -74,13 +78,19 @@
 			var len = workers.length
 			for(var i = 0; i < len; i++){
 				var item = workers[i]
+				
+				var isonline = ''
+				if (item['state']=='online'){
+					isonline = 'checked'
+				}
+				
 				var time = new Date()
 				time.setTime(parseInt(item['ping_time'])*1000)
 				var ts = time.toLocaleString()
 				var str = '<li class="list-group-item">\
 								<div class="checkbox checkbox-primary">\
-									<input class="todo-done" type="checkbox" checked="" readonly />\
-									<label>'+item['location']+':'+item['name']+'<br/>'+item['ip']+'&nbsp;&nbsp;'+ts+'</label>\
+									<input class="todo-done" type="checkbox" '+isonline+' readonly />\
+									<label>'+item['location']+':'+item['name']+'<br/><span style="color:gray;font-size:12px">'+item['ip']+'&nbsp;&nbsp;'+ts+'</span></label>\
 								</div>\
 							</li>'
 				workers_htmlstr = str + workers_htmlstr
@@ -95,13 +105,19 @@
 			var len = vendors.length
 			for(var i = 0; i < len; i++){
 				var item = vendors[i]
+				
+				var isonline = ''
+				if (item['state']=='online'){
+					isonline = 'checked'
+				}
+				
 				var time = new Date()
 				time.setTime(parseInt(item['ping_time'])*1000)
 				var ts = time.toLocaleString()
 				var str = '<li class="list-group-item">\
 								<div class="checkbox checkbox-primary">\
-									<input class="todo-done" type="checkbox" checked="" readonly />\
-									<label>'+item['location']+':'+item['name']+'<br/>'+item['ip']+'&nbsp;&nbsp;'+ts+'</label>\
+									<input class="todo-done" type="checkbox" '+isonline+' readonly />\
+									<label>'+item['location']+':'+item['name']+'<br/><span style="color:gray;font-size:12px">'+item['ip']+'&nbsp;&nbsp;'+ts+'</span></label>\
 								</div>\
 							</li>'
 				vendors_htmlstr = str + vendors_htmlstr
