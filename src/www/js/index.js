@@ -19,11 +19,12 @@
 				var item = job_latest[i]
 				var time = new Date()
 				time.setTime(parseInt(item[0])*1000)
+				var ts = time.toLocaleString()
 				var str = '<tr>\
-				<td class="f-500 c-cyan">'+item[2]+'</td>\
-				<td >'+item[3]+'&nbsp;&nbsp;&nbsp;<span style="color:gray;font-size:10px">'+time.toLocaleString()+'<span></td>\
-				<td class="f-500 c-cyan">'+item[1]+'</td>\
-				</tr>'
+								<td class="f-500 c-cyan">'+item[2]+'</td>\
+								<td >'+item[3]+'&nbsp;&nbsp;&nbsp;<span style="color:gray;font-size:10px">'+ts+'<span></td>\
+								<td class="f-500 c-cyan">'+item[1]+'</td>\
+							</tr>'
 				latest_job_htmlstr = str + latest_job_htmlstr
 			}
 			
@@ -59,13 +60,57 @@
 		});  
 		
 		$.get("state/nodecounter", function(ret){
-			$("#vendors").text(ret['data']['vendors']);
-			$("#workers").text(ret['data']['workers']);
+			$("#vendor_count").text(ret['data']['vendor_count']);
+			$("#worker_count").text(ret['data']['worker_count']);
 			
 			$('.nodecounter').counterUp({
 				delay: 10,
 				time: 1000
 			})
+			
+			var workers_htmlstr = ''
+			var workers = ret['data']['workers']
+			
+			var len = workers.length
+			for(var i = 0; i < len; i++){
+				var item = workers[i]
+				var time = new Date()
+				time.setTime(parseInt(item['ping_time'])*1000)
+				var ts = time.toLocaleString()
+				var str = '<li class="list-group-item">\
+								<div class="checkbox checkbox-primary">\
+									<input class="todo-done" type="checkbox" checked="" readonly />\
+									<label>'+item['location']+':'+item['name']+'<br/>'+item['ip']+'&nbsp;&nbsp;'+ts+'</label>\
+								</div>\
+							</li>'
+				workers_htmlstr = str + workers_htmlstr
+			}
+			if (workers_htmlstr == ''){
+				workers_htmlstr = '<div class="recent-post-signle">没有工作节点</div>'
+			}
+			
+			var vendors_htmlstr = ''
+			var vendors = ret['data']['vendors']
+			
+			var len = vendors.length
+			for(var i = 0; i < len; i++){
+				var item = vendors[i]
+				var time = new Date()
+				time.setTime(parseInt(item['ping_time'])*1000)
+				var ts = time.toLocaleString()
+				var str = '<li class="list-group-item">\
+								<div class="checkbox checkbox-primary">\
+									<input class="todo-done" type="checkbox" checked="" readonly />\
+									<label>'+item['location']+':'+item['name']+'<br/>'+item['ip']+'&nbsp;&nbsp;'+ts+'</label>\
+								</div>\
+							</li>'
+				vendors_htmlstr = str + vendors_htmlstr
+			}
+			if (vendors_htmlstr == ''){
+				vendors_htmlstr = '<div class="recent-post-signle">没有业务节点</div>'
+			}
+			
+			$('#node-list').html(vendors_htmlstr+workers_htmlstr);
 		});  
 
 		$.get("state/sysstate", function(ret){

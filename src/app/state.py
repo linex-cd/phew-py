@@ -141,14 +141,38 @@ def nodecounter(request):
 	if request.method == 'GET':
 		
 		vendor_pattern = 'vendor-*'
-		vendor_count = len(r.keys(vendor_pattern))
+		vendor_keys = r.keys(vendor_pattern)
+		vendor_count = len(vendor_keys)
+		vendors = []
+		for vendor_key in vendor_keys:
+			item = {}
+			itemkeys = r.hgetall(vendor_key)
+			for itemkey in itemkeys:
+				item[itemkey.decode()] = r.hget(vendor_key, itemkey).decode()
+			#endfor
+			vendors.append(item)
+		#endfor
+		
 		
 		worker_pattern = 'worker-*'
-		worker_count = len(r.keys(worker_pattern))
+		worker_keys = r.keys(worker_pattern)
+		worker_count = len(worker_keys)
+		workers = []
+		for worker_key in worker_keys:
+			item = {}
+			itemkeys = r.hgetall(worker_key)
+			for itemkey in itemkeys:
+				item[itemkey.decode()] = r.hget(worker_key, itemkey).decode()
+			#endfor
+			workers.append(item)
+		#endfor
+		
+		
 		data  = {
 					'vendor_count': vendor_count,
 					'worker_count': worker_count,
-					'workers': worker_count,
+					'vendors': vendors,
+					'workers': workers,
 				}
 		
 
