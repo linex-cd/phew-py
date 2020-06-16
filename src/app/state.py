@@ -54,7 +54,10 @@ def sysstate(request):
 		#temp
 		temp = 0
 		if hasattr(psutil, 'sensors_temperatures'):
-			temp = int(psutil.sensors_temperatures()['coretemp'][0].current)
+			tempdata = psutil.sensors_temperatures()
+			if 'coretemp' in tempdata:
+				temp = int(tempdata['coretemp'][0].current)
+			#endif
 		#endif
 			
 		data  = {
