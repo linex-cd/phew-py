@@ -90,6 +90,9 @@ def main():
 					#endif
 					
 					result = json.loads(result)
+					if 'bbox' not in result:
+						result = {"bbox": [], "ocr": [], "hocr": [] }
+					#endif
 					
 					bbox.append([result['bbox']])
 					content.append([result['ocr']])
