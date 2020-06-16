@@ -15,12 +15,12 @@ def health_thread(timeout = 300):
 			ping_time = int(r.hget(vendor_key, 'ping_time').decode())
 			state = r.hget(vendor_key, 'state').decode()
 			if state == 'online':
-				if time.time() - ping_time > timeout
+				if time.time() - ping_time > timeout:
 					r.hset(vendor_key, 'state', 'offline')
 				#endif
 			#endif
 			if state == 'offline':
-				if time.time() - ping_time < timeout
+				if time.time() - ping_time < timeout:
 					r.hset(vendor_key, 'state', 'online')
 				#endif
 			#endif
