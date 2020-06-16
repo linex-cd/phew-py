@@ -4,9 +4,15 @@ from .init import *
 
 import psutil
 
-import pynvml
-pynvml.nvmlInit()
 
+import pynvml
+gpustate = 0
+try:
+	pynvml.nvmlInit()
+	gpustate = 1
+except:
+	print("can not init nvidia driver")
+#endtry
 
 def index(request):
 	return redirect("/index.html")
@@ -30,10 +36,14 @@ def sysstate(request):
 		disk = int(psutil.disk_usage("/").percent)
 
 		#GPU
-		# 这里的0是GPU id
-		gpuhandle = pynvml.nvmlDeviceGetHandleByIndex(0)
-		gpuinfo = pynvml.nvmlDeviceGetMemoryInfo(gpuhandle)
-		gpu = int(gpuinfo.used / gpuinfo.total * 100)
+		gpu = 90
+		if gpustate == 1:
+			# 这里的0是GPU id
+			gpuhandle = pynvml.nvmlDeviceGetHandleByIndex(0)
+			gpuinfo = pynvml.nvmlDeviceGetMemoryInfo(gpuhandle)
+			gpu = int(gpuinfo.used / gpuinfo.total * 100)
+
+		#endif
 		
 		#network MB
 		before = psutil.net_io_counters().bytes_recv
