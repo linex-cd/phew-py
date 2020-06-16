@@ -82,7 +82,7 @@
                 <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
                     <div class="wb-traffic-inner notika-shadow sm-res-mg-t-30 tb-res-mg-t-30">
                         <div class="website-traffic-ctn">
-                            <h2><span class="jobcounter" id="job_total">0</span></h2>
+                            <h2><span class="jobcounter" id="job_total">-</span></h2>
                             <p>总处理任务数</p>
                         </div>
                         <div class="sparkline-bar-stats1">9,4,8,6,5,6,4,8,3,5,9,5</div>
@@ -91,7 +91,7 @@
                 <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
                     <div class="wb-traffic-inner notika-shadow sm-res-mg-t-30 tb-res-mg-t-30">
                         <div class="website-traffic-ctn">
-                            <h2><span class="jobcounter" id="task_total">0</span></h2>
+                            <h2><span class="jobcounter" id="task_total">-</span></h2>
                             <p>总处理文件数</p>
                         </div>
                         <div class="sparkline-bar-stats2">1,4,8,3,5,6,4,8,3,3,9,5</div>
@@ -100,7 +100,7 @@
                 <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
                     <div class="wb-traffic-inner notika-shadow sm-res-mg-t-30 tb-res-mg-t-30 dk-res-mg-t-30">
                         <div class="website-traffic-ctn">
-                            <h2><span class="jobcounter" id="job_pending">0</span></h2>
+                            <h2><span class="jobcounter" id="job_pending">-</span></h2>
                             <p>队列任务数</p>
                         </div>
                         <div class="sparkline-bar-stats3">4,2,8,2,5,6,3,8,3,5,9,5</div>
@@ -109,7 +109,7 @@
                 <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
                     <div class="wb-traffic-inner notika-shadow sm-res-mg-t-30 tb-res-mg-t-30 dk-res-mg-t-30">
                         <div class="website-traffic-ctn">
-                            <h2><span class="jobcounter" id="work_pending">0</span></h2>
+                            <h2><span class="jobcounter" id="work_pending">-</span></h2>
                             <p>队列文件数</p>
                         </div>
                         <div class="sparkline-bar-stats4">2,4,8,4,5,7,4,7,3,5,7,5</div>
@@ -145,7 +145,7 @@
 						<div class="dash-widget-visits"></div>
                         <div class="past-statistic-an">
                             <div class="past-statistic-ctn">
-                                <h3><span class="successcounter" id="failedtasks">0</span></h3>
+                                <h3><span class="successcounter" id="failedtasks">-</span></h3>
                                 <p>失败任务</p>
                             </div>
                             <div class="past-statistic-graph">
@@ -154,7 +154,7 @@
                         </div>
                         <div class="past-statistic-an">
                             <div class="past-statistic-ctn">
-                                <h3><span class="successcounter" id="successfiles">0</span></h3>
+                                <h3><span class="successcounter" id="successfiles">-</span></h3>
                                 <p>成功文件</p>
                             </div>
                             <div class="past-statistic-graph">
@@ -163,7 +163,7 @@
                         </div>
                         <div class="past-statistic-an">
                             <div class="past-statistic-ctn">
-                                <h3><span class="successcounter" id="failedfiles">0</span></h3>
+                                <h3><span class="successcounter" id="failedfiles">-</span></h3>
                                 <p>失败文件</p>
                             </div>
                             <div class="past-statistic-graph">
@@ -338,12 +338,12 @@
                         </div>
                         <div class="realtime-visitor-ctn">
                             <div class="realtime-vst-sg">
-                                <h4><span class="nodecounter" id="vendor_count">0</span></h4>
+                                <h4><span class="nodecounter" id="vendor_count">-</span></h4>
                                 <p>任务源</p>
                             </div>
                             <div class="realtime-vst-sg">
-                                <h4><span class="nodecounter" id="worker_count">0</span></h4>
-                                <p>工作源</p>
+                                <h4><span class="nodecounter" id="worker_count">-</span></h4>
+                                <p>业务源</p>
                             </div>
                         </div>
                         <div class="realtime-map">
@@ -352,31 +352,15 @@
 						
 						 <div class="realtime-visitor-ctn">
                             <div class="realtime-vst-sg">
-                                <h5>任务最重的区域</h5>
-								<div class="realtime-ctn-bw">
-									<div class="realtime-bw">
-										<span>杭州</span>
-									</div>
-									<div class="realtime-bw">
-										<span>武汉</span>
-									</div>
-									<div class="realtime-bw">
-										<span>重庆</span>
-									</div>
+                                <h5>工作节点城市</h5>
+								<div class="realtime-ctn-bw" id="worker_city">
+
 								</div>
                             </div>
                             <div class="realtime-vst-sg">
-                                <h5>任务最轻的区域</h5>
-								<div class="realtime-ctn-bw">
-									<div class="realtime-bw">
-										<span>兰州</span>
-									</div>
-									<div class="realtime-bw">
-										<span>哈尔滨</span>
-									</div>
-									<div class="realtime-bw">
-										<span>上海</span>
-									</div>
+                                <h5>业务节点城市</h5>
+								<div class="realtime-ctn-bw" id="vendor_city">
+								
 								</div>
                             </div>
                         </div>
@@ -455,7 +439,7 @@
 		============================================ -->
     <script src="js/jvectormap/jquery-jvectormap-2.0.2.min.js"></script>
     <script src="js/jvectormap/jquery-jvectormap-cn-mill.js"></script>
-    <script src="js/jvectormap/jvectormap-active.js"></script>
+    
     <!-- sparkline JS
 		============================================ -->
     <script src="js/sparkline/jquery.sparkline.min.js"></script>
