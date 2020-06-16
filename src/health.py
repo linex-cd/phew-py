@@ -2,7 +2,7 @@
 
 from app.init import *
 
-def deamon_thread(timeout = 300):
+def health_thread(timeout = 300):
 	print("started health thread, timeout = %d" % timeout)
 	
 	while True:
@@ -51,7 +51,7 @@ def deamon_thread(timeout = 300):
 		time.sleep(30)
 	#endwhile
 if __name__ == '__main__':
-	deamon_thread()
+	health_thread()
 #end
 
 
