@@ -85,16 +85,14 @@
 			for(var i = 0; i < len; i++){
 				var item = task_latest[i]
 				
-				var str = '<div class="recent-post-signle">\
-                                    <div class="recent-post-flex rct-pt-mg">\
-                                        <div class="recent-post-img">\
-                                            <img src="img/'+item['port']+'.png" alt="" />\
-                                        </div>\
-                                        <div class="recent-post-it-ctn">\
-                                            <a href="#"><h5>'+item['description']+'</h5></a>\
-                                            <a href="#"><p title="'+item['data']+'" >'+item['data']+'/p></a>\
-                                        </div>\
-                                    </div>\
+				var str = '<div class="recent-post-flex rct-pt-mg">\
+									<div class="recent-post-img" style="width:72px;">\
+										<img src="img/'+item['port']+'.png" alt="" />\
+									</div>\
+									<div class="recent-post-it-ctn">\
+										<a href="#"><h5>'+item['description']+'</h5></a>\
+										<a href="#"><p title="'+item['data']+'" >'+item['data']+'</p></a>\
+									</div>\
                             </div>'
 				latest_task_htmlstr = str + latest_task_htmlstr
 			}

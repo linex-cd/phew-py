@@ -66,10 +66,11 @@ def assign(request):
 		r.hset(job_key, 'description', job_info['description'])
 		r.hset(job_key, 'priority', job_info['priority'])
 		
-		r.hset(job_key, 'length', len(jsondata['length']))
-		
 		
 		tasks = jsondata['tasks']
+				
+		r.hset(job_key, 'length', len(tasks))
+
 		for task_info in tasks:
 			
 			#make task records

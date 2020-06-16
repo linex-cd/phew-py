@@ -101,17 +101,31 @@ def latestwork(request):
 		#task_latest
 		task_latest = []
 		tasks_pending_pattern = 'tasks_pending-*'
-		tasks = r.keys(tasks_pending_pattern)
-		for task in tasks:
-			job_key = 'job-' + task.decode()[5:-33]
-			item = {}
-			item['job_id'] = job_key.split("-")[-1]
-			item['description'] =  r.hget(job_key, 'description').decode()
+		tasks_pending_set_keys = r.keys(tasks_pending_pattern)
+		for tasks_pending_set_key in tasks_pending_set_keys:
+		
+			job_key = 'job-' + tasks_pending_set_key.decode()[14:]
 			
-			item['port'] =  r.hget(task, 'port').decode()
-			item['data'] =  r.hget(job_key, 'data').decode()
-			
-			task_latest.append(item)
+			tasks = r.smembers(tasks_pending_set_key)
+			tasks = list(tasks)
+			for task in tasks:
+		
+				item = {}
+				item['job_id'] = job_key.split("-")[-1]
+				item['description'] = r.hget(job_key, 'description').decode()
+				
+				item['port'] =  r.hget(task, 'port').decode()
+				
+				addressing = r.hget(task, 'addressing').decode()
+				if  addressing == "binary":
+					item['data'] = 'BINARY'
+				else:
+					item['data'] =  r.hget(task, 'data').decode()
+				#endif
+				
+				
+				task_latest.append(item)
+			#endfor
 		#endfor
 		
 		
@@ -159,7 +173,12 @@ def jobcounter(request):
 
 		#task_pending
 		work_pattern = 'work-*'
-		work_pending = len(r.keys(work_pattern))		
+		work_pending_keys = r.keys(work_pattern)
+		
+		work_pending = 0
+		for work_pending_key in work_pending_keys:
+			work_pending = work_pending + r.llen(work_pending_key)
+		#endfor
 		
 		
 

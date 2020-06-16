@@ -6,6 +6,7 @@ def deamon_thread(timeout = 60):
 	print("started deamon thread, timeout = %d" % timeout)
 	
 	while True:
+		time.sleep(30)
 		print("seeking all tasks timeout...")
 		#seek all tasks pending
 		tasks_pending_key_pattern = 'tasks_pending-*'
@@ -60,7 +61,7 @@ def deamon_thread(timeout = 60):
 			#endfor
 
 		#endfor
-		time.sleep(30)
+		
 	#endwhile
 if __name__ == '__main__':
 	deamon_thread()

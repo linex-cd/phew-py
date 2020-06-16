@@ -6,7 +6,7 @@ def health_thread(timeout = 300):
 	print("started health thread, timeout = %d" % timeout)
 	
 	while True:
-		
+		time.sleep(30)
 		vendor_pattern = 'vendor-*'
 		vendor_keys = r.keys(vendor_pattern)
 
@@ -48,7 +48,7 @@ def health_thread(timeout = 300):
 		
 		
 		#endfor
-		time.sleep(30)
+
 	#endwhile
 if __name__ == '__main__':
 	health_thread()
