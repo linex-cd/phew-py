@@ -96,7 +96,8 @@ def latestwork(request):
 		
 		#job_latest sort by create_time
 		job_latest = sorted(job_latest, key=lambda x: (x[0]))
-		job_latest = job_latest[:20]
+		job_latest = job_latest[-20:]
+		print('---')
 	
 		#task_latest
 		task_latest = []

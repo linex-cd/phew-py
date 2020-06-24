@@ -42,80 +42,73 @@
 			
 		});  
 		
-		/////////////////////////////////////////////////
 		
-		$.get("state/jobcounter", function(ret){
-			$("#job_total").text(ret['data']['job_total']);
-			$("#task_total").text(ret['data']['task_total']);
-			$("#job_pending").text(ret['data']['job_pending']);
-			$("#work_pending").text(ret['data']['work_pending']);
-			
-			$('.jobcounter').counterUp({
-				delay: 10,
-				time: 1000
-			});	
-			
-		});  
-		
-		/////////////////////////////////////////////////
-		
-		$.get("state/latestwork", function(ret){
-			
-			var latest_job_htmlstr = ''
-			var job_latest = ret['data']['job_latest']
-			var len = job_latest.length
-			for(var i = 0; i < len; i++){
-				var item = job_latest[i]
-				var time = new Date()
-				time.setTime(parseInt(item[0])*1000)
-				var ts = time.toLocaleString()
-				var str = '<tr>\
-								<td class="f-500 c-cyan">'+item[2]+'</td>\
-								<td >'+item[3]+'&nbsp;&nbsp;&nbsp;<span style="color:gray;font-size:12px">'+ts+'<span></td>\
-								<td class="f-500 c-cyan">'+item[1]+'</td>\
-							</tr>'
-				latest_job_htmlstr = str + latest_job_htmlstr
-			}
-			
-			$('#latest_job').html(latest_job_htmlstr);
-			
-			var latest_task_htmlstr = ''
-			var task_latest = ret['data']['task_latest']
-			var len = task_latest.length
-			for(var i = 0; i < len; i++){
-				var item = task_latest[i]
+		setInterval(function(){
+			/////////////////////////////////////////////////
+			$.get("state/jobcounter", function(ret){
+				$("#job_total").text(ret['data']['job_total']);
+				$("#task_total").text(ret['data']['task_total']);
+				$("#job_pending").text(ret['data']['job_pending']);
+				$("#work_pending").text(ret['data']['work_pending']);
+
 				
-				var str = '<div class="recent-post-flex rct-pt-mg">\
-									<div class="recent-post-img" style="width:72px;">\
-										<img src="img/'+item['port']+'.png" alt="" />\
-									</div>\
-									<div class="recent-post-it-ctn">\
-										<a href="#"><h5>'+item['description']+'</h5></a>\
-										<a href="#"><p title="'+item['data']+'" >'+item['data']+'</p></a>\
-									</div>\
-                            </div>'
-				latest_task_htmlstr = str + latest_task_htmlstr
-			}
-			if (latest_task_htmlstr == ''){
-				latest_task_htmlstr = '<div>没有文件正在处理中<div>'
-			}
+			});  
 			
+			/////////////////////////////////////////////////
 			
-			
-			$('#latest_task').html(latest_task_htmlstr);
-			
-		});  
-		
+			$.get("state/latestwork", function(ret){
+				
+				var latest_job_htmlstr = ''
+				var job_latest = ret['data']['job_latest']
+				var len = job_latest.length
+				for(var i = 0; i < len; i++){
+					var item = job_latest[i]
+					var time = new Date()
+					time.setTime(parseInt(item[0])*1000)
+					var ts = time.toLocaleString()
+					var str = '<tr>\
+									<td class="f-500 c-cyan">'+item[2]+'</td>\
+									<td >'+item[3]+'&nbsp;&nbsp;&nbsp;<span style="color:gray;font-size:12px">'+ts+'<span></td>\
+									<td class="f-500 c-cyan">'+item[1]+'</td>\
+								</tr>'
+					latest_job_htmlstr = str + latest_job_htmlstr
+				}
+				
+				$('#latest_job').html(latest_job_htmlstr);
+				
+				var latest_task_htmlstr = ''
+				var task_latest = ret['data']['task_latest']
+				var len = task_latest.length
+				for(var i = 0; i < len; i++){
+					var item = task_latest[i]
+					
+					var str = '<div class="recent-post-flex rct-pt-mg">\
+										<div class="recent-post-img" style="width:72px;">\
+											<img src="img/'+item['port']+'.png" alt="" />\
+										</div>\
+										<div class="recent-post-it-ctn">\
+											<a href="#"><h5>'+item['description']+'</h5></a>\
+											<a href="#"><p title="'+item['data']+'" >'+item['data']+'</p></a>\
+										</div>\
+								</div>'
+					latest_task_htmlstr = str + latest_task_htmlstr
+				}
+				if (latest_task_htmlstr == ''){
+					latest_task_htmlstr = '<div>没有文件正在处理中<div>'
+				}
+				
+				
+				$('#latest_task').html(latest_task_htmlstr);
+				
+			});  
+		}, 1000);
 		/////////////////////////////////////////////////
 		
 		$.get("state/nodecounter", function(ret){
 			$("#vendor_count").text(ret['data']['vendor_count']);
 			$("#worker_count").text(ret['data']['worker_count']);
 			
-			$('.nodecounter').counterUp({
-				delay: 10,
-				time: 1000
-			})
+
 			
 			//map count
 			var workerslen_jiangsu = 0
@@ -250,7 +243,7 @@
 					{id: "CN-37", name: "山东",},
 					{id: "CN-41", name: "河南",},
 					{id: "CN-43", name: "湖南",},
-					{id: "CN-42", name: "河北",},
+					{id: "CN-42", name: "湖北",},
 					{id: "CN-45", name: "广西",},
 					{id: "CN-44", name: "广东",},
 					{id: "CN-46", name: "海南",},
