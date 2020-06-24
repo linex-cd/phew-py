@@ -3,9 +3,6 @@
 #-----------------------------
 version=$(cat VERSION)
 
-#config
-ENABLE_STATISTIC=yes
-
 #database
 KAFKA_SERVER=192.168.2.31
 DB=postgresql://postgres:postgres@192.168.2.31:5432/cv
@@ -45,6 +42,7 @@ nvidia-docker run \
 --name=${container_name} \
 --network=host \
 -v /data/yn/dzjz/:/juanzong \
+-v /data/yn/kafka-files/:/kafkacache \
 -v /data/dockerdata/ocr:/data \
 -e VENDOR_ID=${VENDOR_ID} \
 -e VENDOR_NAME=${VENDOR_NAME} \

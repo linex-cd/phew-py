@@ -16,6 +16,8 @@ from phewsdk.done import done_job
 from phewsdk.detail import detail_job
 from phewsdk.read import read_job
 
+import files
+
 import config
 
 
@@ -90,9 +92,11 @@ def main():
 					#endif
 					
 					result = json.loads(result)
+					
 					if 'bbox' not in result:
 						result = {"bbox": [], "ocr": [], "hocr": [] }
 					#endif
+					
 					
 					bbox.append([result['bbox']])
 					content.append([result['ocr']])
@@ -138,9 +142,43 @@ def main():
 				logging.info("Kafka Sent message, topic is: {}, bmsah is: {}".format(topic, data['bmsah']))
 				producer = KafkaProducer(bootstrap_servers=kafka_server, max_request_size=1024 * 1024 * 1024, compression_type='gzip')
 			
-				bytes_out = json_string.encode(encoding='utf8')
-				data = zlib.compress(bytes_out)
+				
+				#load from file
+				paths = []
+				bmsahs = data['bmsah'].split('[')
+				bmsah = bmsahs[0]
+				type = ''
+				if bmsah.find('检捕受')>=0:
+					type = '0201'
+				elif bmsah.find('刑捕受')>=0:
+					type = '2031'
+				elif bmsah.find('检起诉受')>=0:
+					type = '0301'
+				elif bmsah.find('刑诉受')>=0:
+					type = '2001'
+				elif bmsah.find('未起诉受')>=0:
+					type = '1722'
+				elif bmsah.find('未捕受')>=0:
+					type = '1701'
 
+				info = bmsahs[1]
+				infos = info.split(']')
+				# 年份
+				year = infos[0]
+				# 单位编码
+				dwbm = infos[1][:6]
+
+				paths.append(dwbm)
+				paths.append(year)
+				paths.append(type)
+				paths.append(data['bmsah'])
+				
+				filename = '/'.join(paths) + '/tmp_ocr-cv.json'
+				files.writefile('/kafkacache/' + filename, json_string)
+				data = filename.encode(encoding='utf8')
+				
+				#bytes_out = json_string.encode(encoding='utf8')
+				#data = zlib.compress(bytes_out)
 				
 				producer.send(topic, data)
 				producer.flush()

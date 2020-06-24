@@ -9,6 +9,7 @@ from kafka.vendor import six
 
 from db import TaskRecord
 
+import files
 
 import config
 
@@ -51,6 +52,10 @@ def main():
 							
 							task = record
 							data = task.value.decode('utf-8')
+							
+							#load from file
+							data = files.readfile('/kafkacache/'+data)
+							
 							TaskRecord.save_task(data)
 
 							logging.info('Saved textise task')
