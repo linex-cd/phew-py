@@ -29,4 +29,4 @@ docker rm textise_worker_node_${i}
 
 done
 
-docker rmi textise_service:${version}
+docker rmi textise_worker:${version}

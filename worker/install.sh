@@ -7,7 +7,7 @@ version=$(cat VERSION)
 #-----------------------------
 
 #image
-docker build -f ./Dockerfile -t textise_service:${version} .
+docker build -f ./Dockerfile -t textise_worker:${version} .
 
 node_count=5
 start_node=0
@@ -61,7 +61,7 @@ nvidia-docker run \
 -e WORKER_NAME=${WORKER_NAME} \
 -e WORKER_LOCATION=${WORKER_LOCATION} \
 --restart=always \
--d textise_service:${version} \
+-d textise_worker:${version} \
 bash startworker.sh
 
 done
