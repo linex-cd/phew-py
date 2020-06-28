@@ -37,5 +37,5 @@ pip install -r requirements.txt -i https://pypi.douban.com/simple/
 src/app/init.py 中 修改79行
 
 启动服务
-python3 jobcenter.py
+./startjobcenter.sh
 

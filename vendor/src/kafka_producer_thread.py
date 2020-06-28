@@ -15,6 +15,7 @@ from db import TaskRecord
 from phewsdk.done import done_job
 from phewsdk.detail import detail_job
 from phewsdk.read import read_job
+from phewsdk.delete import delete_job
 
 import files
 
@@ -196,6 +197,23 @@ def main():
 				
 				except Exception:
 					logging.exception('kafka_producer_thread mark job detail occur.')
+					traceback.print_exc()
+
+				#endtry
+				
+				#删除子任务数据
+				try:
+				
+					job_id = item
+
+					job_info = {}
+					job_info['job_id'] = str(job_id)
+
+					delete_job(session = session, job = job_info)
+
+				
+				except Exception:
+					logging.exception('kafka_producer_thread delete job detail occur.')
 					traceback.print_exc()
 
 				#endtry	
