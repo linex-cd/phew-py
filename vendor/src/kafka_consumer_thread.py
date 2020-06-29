@@ -54,7 +54,9 @@ def main():
 							data = task.value.decode('utf-8')
 							
 							#load from file
-							data = files.readfile('/kafkacache/'+data)
+							if len(data) < 200:
+								data = files.readfile('/kafkacache/'+data)
+							#endif
 							
 							TaskRecord.save_task(data)
 

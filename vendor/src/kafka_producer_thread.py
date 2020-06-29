@@ -174,6 +174,12 @@ def main():
 				paths.append(type)
 				paths.append(data['bmsah'])
 				
+				
+				dirs = '/kafkacache/' + '/'.join(paths)
+				if os.path.isdir(dirs) == False:
+					os.makedirs(dirs);
+				#endif
+				
 				filename = '/'.join(paths) + '/tmp_ocr-cv.json'
 				files.writefile('/kafkacache/' + filename, json_string)
 				data = filename.encode(encoding='utf8')
