@@ -72,7 +72,12 @@ def get(request):
 				break
 			#endif
 			
-			task_info['job_id'] = r.hget(task_key, 'job_id').decode()
+			job_id = r.hget(task_key, 'job_id')
+			if job_id is None:
+				continue
+			#endif
+			
+			task_info['job_id'] = job_id.decode()
 			task_info['priority'] = r.hget(task_key, 'priority').decode()
 			task_info['meta'] = r.hget(task_key, 'meta').decode()
 			task_info['addressing'] = r.hget(task_key, 'addressing').decode()
