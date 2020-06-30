@@ -101,7 +101,7 @@
 				$('#latest_task').html(latest_task_htmlstr);
 				
 			});  
-		}, 1000);
+		}, 5000);
 		/////////////////////////////////////////////////
 		
 		$.get("state/nodecounter", function(ret){
