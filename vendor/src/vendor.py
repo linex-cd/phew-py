@@ -2,6 +2,7 @@
 import logging
 
 import threading
+import time
 import os
 
 import config
@@ -11,6 +12,20 @@ from kafka_producer_thread import main as kafka_producer_thread
 from task_preparer_thread import main as task_preparer_thread
 from ping_thread import main as ping_thread
 
+def daemon_thread(thread_list):
+	
+	total_count = len(thread_list)
+	while True:
+		time.sleep(5)
+		active_count = threading.active_count() - 2 #exclude main thread and daemon thread
+		
+		if active_count < total_count:
+			print('daemon_thread: total %d, active now %d' % (total_count, active_count))
+			print('good bye')
+			os._exit(-1)
+		#endif
+	#endwhile
+#enddef
 
 
 def main():
@@ -34,7 +49,9 @@ def main():
 	thread_list.append(threading.Thread(target=kafka_producer_thread, name='kafka_producer_thread'))
 	thread_list.append(threading.Thread(target=task_preparer_thread, name='task_preparer_thread'))
 	thread_list.append(threading.Thread(target=ping_thread, name='ping_thread'))
-
+	
+	threading.Thread(target=daemon_thread, name='daemon_thread', args=(thread_list, )).start()
+	
 	for thread in thread_list:
 		thread.start()
 	#endfor
