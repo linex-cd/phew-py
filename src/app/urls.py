@@ -1,5 +1,6 @@
 
 from django.urls import path
+from django.conf.urls import url
 from django.conf.urls.static import static
 
 from . import state
@@ -26,5 +27,9 @@ urlpatterns = [
 	path('task/ping', task.ping),
 	path('task/get', task.get),
 	path('task/finish', task.finish),
+
+	url(r'^state/peekjob/$', state.peekjob),
+	url(r'^state/peektask/$', state.peektask),
+	url(r'^state/peekfile/$', state.peekfile),
 	
 ]+ static("/", document_root="./www/")

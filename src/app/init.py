@@ -24,6 +24,7 @@ def response(code, msg, data):
 	return resp
 
 import hashlib   
+import base64   
 
 def md5(src):
 	m2 = hashlib.md5();
@@ -32,6 +33,35 @@ def md5(src):
 	return dest;
 #enddef
 
+def encrypt(message):
+
+	decrypted = b"abcdefghijklmnopqrstuvwxyz1234567890 "
+	encrypted = b"0987654321qwertyuiopasdfghjklzxcvbnm "
+	
+	encrypt_table = bytes.maketrans(decrypted, encrypted)
+	decrypt_table = bytes.maketrans(encrypted, decrypted)
+
+	result = message.translate(encrypt_table)
+	result = base64.b64encode(result.encode()).decode()
+	result = result.translate(encrypt_table)
+	
+	return result
+#enddef
+
+def decrypt(message):
+
+	decrypted = b"abcdefghijklmnopqrstuvwxyz1234567890 "
+	encrypted = b"0987654321qwertyuiopasdfghjklzxcvbnm "
+	
+	encrypt_table = bytes.maketrans(decrypted, encrypted)
+	decrypt_table = bytes.maketrans(encrypted, decrypted)
+	
+	result = message.translate(decrypt_table)
+	result = base64.b64decode(result.encode()).decode()
+	result = result.translate(decrypt_table)
+	return result
+	
+#enddef
 
 from os import W_OK as os_W_OK;
 from os import access as os_access;
@@ -108,6 +138,6 @@ def filedirfromhash(hash):
 r = redis.Redis(host = '127.0.0.1', port = 2019, db = 0);
 #r = redis.Redis(host = '192.168.2.29', port = 2019, db = 0);
 
-__all__ = ['redirect', 'response', 'time', 'json', 'md5', 'readfile', 'writefile', 'existfile', 'filesize', 'makedirforhash', 'filedirfromhash', 'r']
+__all__ = ['redirect', 'response', 'time', 'json', 'md5', 'encrypt', 'decrypt', 'readfile', 'writefile', 'existfile', 'filesize', 'makedirforhash', 'filedirfromhash', 'r']
 
 

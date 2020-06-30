@@ -32,8 +32,11 @@ def sysstate(request):
 		#memory
 		memory =  int(psutil.virtual_memory().percent)
 		
-		#disk
-		disk = int(psutil.disk_usage("/").percent)
+		#systemdisk
+		systemdisk = int(psutil.disk_usage("/").percent)
+		
+		#datadisk
+		datadisk = int(psutil.disk_usage("/jobcenterdata/").percent)
 
 		#GPU
 		gpu = 90
@@ -44,12 +47,6 @@ def sysstate(request):
 			gpu = int(gpuinfo.used / gpuinfo.total * 100)
 
 		#endif
-		
-		#network MB
-		before = psutil.net_io_counters().bytes_recv
-		time.sleep(0.1)
-		now = psutil.net_io_counters().bytes_recv
-		network = int((now-before)*10 /1024/1024)
 		
 		#temp
 		temp = 0
@@ -65,8 +62,8 @@ def sysstate(request):
 					'cpu': cpu,
 					'memory': memory,
 					'gpu': gpu,
-					'disk': disk,
-					'network': network,
+					'systemdisk': systemdisk,
+					'datadisk': datadisk,
 					'temp': temp,
 				}
 		
@@ -89,7 +86,7 @@ def latestwork(request):
 			description = r.hget(job_key, 'description').decode()
 			job_id = job_key.split("-")[-1]
 			create_time = r.hget(job_key, 'create_time').decode()
-			item = (create_time, length, job_id, description)
+			item = (create_time, length, job_id, description, encrypt(job_key))
 			job_latest.append(item)
 			
 		#endfor
@@ -97,7 +94,7 @@ def latestwork(request):
 		#job_latest sort by create_time
 		job_latest = sorted(job_latest, key=lambda x: (x[0]))
 		job_latest = job_latest[-20:]
-		print('---')
+
 	
 		#task_latest
 		task_latest = []
@@ -109,22 +106,25 @@ def latestwork(request):
 			
 			tasks = r.smembers(tasks_pending_set_key)
 			tasks = list(tasks)
-			for task in tasks:
-		
+			for task_key in tasks:
+				task_key = task_key.decode()
+				
 				item = {}
 				item['job_id'] = job_key.split("-")[-1]
 				item['description'] = r.hget(job_key, 'description').decode()
 				
-				item['port'] =  r.hget(task, 'port').decode()
+				item['port'] = r.hget(task_key, 'port').decode()
 				
-				addressing = r.hget(task, 'addressing').decode()
+				
+				addressing = r.hget(task_key, 'addressing').decode()
 				if  addressing == "binary":
 					item['data'] = 'BINARY'
 				else:
-					item['data'] =  r.hget(task, 'data').decode()
+					item['data'] = r.hget(task_key, 'data').decode()
 				#endif
 				
-				
+				item['job_access_key'] = encrypt(job_key)
+				item['task_access_key'] = encrypt(task_key)
 				task_latest.append(item)
 			#endfor
 		#endfor
@@ -227,7 +227,7 @@ def inlist(request):
 			description = r.hget(job_key, 'description').decode()
 			job_id = job_key.split("-")[-1]
 			create_time = r.hget(job_key, 'create_time').decode()
-			item = (create_time, length, job_id, description)
+			item = (create_time, length, job_id, description, encrypt(job_key))
 			jobs_list.append(item)
 			
 		#endfor
@@ -307,6 +307,99 @@ def nodecounter(request):
 		
 
 	return response(200, "ok", data)
+
+
+
+def peekjob(request):
+	
+
+	if request.method == 'GET':
+		
+		job_access_key = request.GET.get('job_access_key', 'nokey')
+		
+		if job_access_key == 'nokey':
+			return response(403, "forbidden", [])
+		#endif
+		
+		job_key = decrypt(job_access_key)
+
+		if r.hget(job_key, 'state') is None:
+			return response(404, "job not found", [])
+		#endif
+		
+		data = {}
+		
+		data['job_id'] = job_key.split("-")[-1]
+		
+		data['state'] = r.hget(job_key, 'state').decode()
+
+		data['create_time'] = r.hget(job_key, 'create_time').decode()
+		data['finish_time'] = r.hget(job_key, 'finish_time').decode()
+		
+		data['vendor_id'] = r.hget(job_key, 'vendor_id').decode()
+		data['worker_group'] = r.hget(job_key, 'worker_group').decode()
+
+		
+		data['meta'] = r.hget(job_key, 'meta').decode()
+		data['description'] = r.hget(job_key, 'description').decode()
+		data['priority'] = r.hget(job_key, 'priority').decode()
+	
+		data['length'] = r.hget(job_key, 'length').decode()
+		
+
+
+	return response(200, "ok", data)
+
+
+def peektask(request):
+	
+
+	if request.method == 'GET':
+		
+		task_access_key = request.GET.get('task_access_key', 'nokey')
+		if task_access_key == 'nokey':
+			return response(403, "forbidden", [])
+		#endif
+		
+		task_key = decrypt(task_access_key)
+
+		if r.hget(task_key, 'state') is None:
+			return response(404, "task not found", [])
+		#endif
+		
+		data = {}
+		
+		data['state'] = r.hget(task_key, 'state').decode()
+		data['note'] = r.hget(task_key, 'note').decode()
+		#data['result'] = r.hget(task_key, 'result').decode()
+
+		data['create_time'] = r.hget(task_key, 'create_time').decode()
+		data['start_time'] = r.hget(task_key, 'start_time').decode()
+		data['finish_time'] = r.hget(task_key, 'finish_time').decode()
+
+		data['job_id'] = r.hget(task_key, 'job_id').decode()
+		data['priority'] = r.hget(task_key, 'priority').decode()
+
+		data['meta'] = r.hget(task_key, 'meta').decode()
+		data['addressing'] = r.hget(task_key, 'addressing').decode()
+		data['port'] = r.hget(task_key, 'port').decode()
+		
+
+	return response(200, "ok", data)
+
+
+
+def peekfile(request):
+	
+
+	if request.method == 'GET':
+		
+		filename = request.GET.get('filename', '/nofile')
+
+		
+
+	return response(200, "ok", [])
+
 
 
 

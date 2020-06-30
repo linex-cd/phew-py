@@ -1,3 +1,87 @@
+function showjob(job_access_key){
+	$.get("state/peekjob/?job_access_key="+job_access_key, function(ret){
+		if (ret['code'] != 200){
+			alert(ret['msg'])
+		}
+		else{
+			var data = ret['data'];
+			
+			var create_time = data['create_time'];
+			if (create_time != '' ){
+				var time = new Date()
+				time.setTime(parseInt(create_time)*1000)
+				create_time = time.toLocaleString()
+			}
+			var finish_time = data['finish_time'];
+			if (finish_time != '' ){
+				var time = new Date()
+				time.setTime(parseInt(finish_time)*1000)
+				finish_time = time.toLocaleString()
+			}
+			
+			var text = 'ID：' + data['job_id'] + '\n';
+			text = text + '状态：' + data['state'] + '\n';
+			text = text + '创建时间：' + create_time + '\n';
+			text = text + '完成时间：' + finish_time + '\n';
+			text = text + '业务源ID：' + data['vendor_id'] + '\n';
+			text = text + '工作组：' + data['worker_group'] + '\n';
+			text = text + '描述：' + data['description'] + '\n';
+			text = text + '优先级：' + data['priority'] + '\n';
+			text = text + '文件数：' + data['length'] + '\n';
+			text = text + '附加信息：' + data['meta'] + '\n';
+			alert(text)
+		}
+		
+	});  
+	
+}
+
+function showtask(task_access_key){
+	$.get("state/peektask/?task_access_key="+task_access_key, function(ret){
+		if (ret['code'] != 200){
+			alert(ret['msg'])
+		}
+		else{
+			var data = ret['data'];
+			
+			var create_time = data['create_time'];
+			if (create_time != '' ){
+				var time = new Date()
+				time.setTime(parseInt(create_time)*1000)
+				create_time = time.toLocaleString()
+			}
+			var start_time = data['start_time'];
+			if (start_time != '' ){
+				var time = new Date()
+				time.setTime(parseInt(start_time)*1000)
+				start_time = time.toLocaleString()
+			}
+			var finish_time = data['finish_time'];
+			if (finish_time != '' ){
+				var time = new Date()
+				time.setTime(parseInt(finish_time)*1000)
+				finish_time = time.toLocaleString()
+			}
+			
+			var text = 'ID：' + data['job_id'] + '\n';
+			text = text + '状态：' + data['state'] + '\n';
+			text = text + '备注：' + data['note'] + '\n';
+			text = text + '创建时间：' + create_time + '\n';
+			text = text + '开始时间：' + start_time + '\n';
+			text = text + '完成时间：' + finish_time + '\n';
+			text = text + 'ID：' + data['job_id'] + '\n';
+			text = text + '优先级：' + data['priority'] + '\n';
+			text = text + '寻址方式：' + data['addressing'] + '\n';
+			text = text + '端口类型：' + data['port'] + '\n';
+			text = text + '附加信息：' + data['meta'] + '\n';
+			alert(text)
+		}
+		
+	});  
+	
+	
+}
+
 (function ($) {
  "use strict";
 		
@@ -7,8 +91,8 @@
 			$("#db").attr('data-rel', ret['data']['db']);
 			$("#cpu").attr('data-rel', ret['data']['cpu']);
 			$("#gpu").attr('data-rel', ret['data']['gpu']);
-			$("#disk").attr('data-rel', ret['data']['disk']);
-			$("#network").attr('data-rel', ret['data']['network']);
+			$("#systemdisk").attr('data-rel', ret['data']['systemdisk']);
+			$("#datadisk").attr('data-rel', ret['data']['datadisk']);
 			$("#temp").attr('data-rel', ret['data']['temp']);
 			
 			//knob
@@ -29,7 +113,7 @@
 					}).animate({
 					  value: knobVal
 					}, {
-					  duration : 2000,
+					  duration : 1000,
 					  easing   : 'swing',
 					  step     : function () {
 						$this.val(Math.ceil(this.value)).trigger('change');
@@ -68,7 +152,7 @@
 					var ts = time.toLocaleString()
 					var str = '<tr>\
 									<td class="f-500 c-cyan">'+item[2]+'</td>\
-									<td >'+item[3]+'&nbsp;&nbsp;&nbsp;<span style="color:gray;font-size:12px">'+ts+'<span></td>\
+									<td ><a href="javascript:void(0);" onclick="showjob(\''+item[4]+'\')">'+item[3]+'</a>&nbsp;&nbsp;&nbsp;<span style="color:gray;font-size:12px">'+ts+'<span></td>\
 									<td class="f-500 c-cyan">'+item[1]+'</td>\
 								</tr>'
 					latest_job_htmlstr = str + latest_job_htmlstr
@@ -88,7 +172,7 @@
 										</div>\
 										<div class="recent-post-it-ctn">\
 											<a href="#"><h5>'+item['description']+'</h5></a>\
-											<a href="#"><p title="'+item['data']+'" >'+item['data']+'</p></a>\
+											<a href="javascript:void(0);" onclick="showtask(\''+item['task_access_key']+'\')"><p title="'+item['data']+'" >'+item['data']+'</p></a>\
 										</div>\
 								</div>'
 					latest_task_htmlstr = str + latest_task_htmlstr

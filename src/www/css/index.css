@@ -666,9 +666,10 @@ ul.notika-menu-wrap li a{
 	text-overflow: ellipsis;
     white-space: nowrap;
 	overflow:hidden;
+	direction: rtl;
 }
 .recent-post-img img{
-	border-radius: 50%;
+	
 }
 .recent-post-flex.rc-ps-vw {
     text-align: center;
