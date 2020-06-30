@@ -26,6 +26,7 @@ docker run \
 --name jobcenter \
 --network=host \
 -v /data/jobcenterdata:/jobcenterdata \
+-v /data/yn/dzjz/:/juanzong \
 --restart=always \
 -d jobcenter:${version} \
 bash startjobcenter.sh

@@ -113,15 +113,15 @@ def latestwork(request):
 				item['job_id'] = job_key.split("-")[-1]
 				item['description'] = r.hget(job_key, 'description').decode()
 				
-				item['port'] = r.hget(task_key, 'port').decode()
-				
-				
 				addressing = r.hget(task_key, 'addressing').decode()
 				if  addressing == "binary":
 					item['data'] = 'BINARY'
 				else:
 					item['data'] = r.hget(task_key, 'data').decode()
 				#endif
+				
+				item['port'] = r.hget(task_key, 'port').decode()
+				item['addressing'] = addressing
 				
 				item['job_access_key'] = encrypt(job_key)
 				item['task_access_key'] = encrypt(task_key)
@@ -241,15 +241,28 @@ def inlist(request):
 		works = r.keys(work_pattern)
 		
 		works_list = []
-		for task in works:
-			job_key = 'job-' + task.decode()[5:-33]
+		for task_key in works:
+			job_key = 'job-' + task_key.decode()[5:-33]
 			item = {}
 			item['job_id'] = job_key.split("-")[-1]
 			item['description'] =  r.hget(job_key, 'description').decode()
 			
-			item['port'] =  r.hget(task, 'port').decode()
+			item['port'] =  r.hget(task_key, 'port').decode()
 			item['data'] =  r.hget(job_key, 'data').decode()
 			
+			addressing = r.hget(task_key, 'addressing').decode()
+			if  addressing == "binary":
+				item['data'] = 'BINARY'
+			else:
+				item['data'] = r.hget(task_key, 'data').decode()
+			#endif
+			
+			item['port'] = r.hget(task_key, 'port').decode()
+			item['addressing'] = addressing
+			
+			item['job_access_key'] = encrypt(job_key)
+			item['task_access_key'] = encrypt(task_key)
+				
 			works_list.append(item)
 		#endfor
 		
@@ -395,11 +408,25 @@ def peekfile(request):
 	if request.method == 'GET':
 		
 		filename = request.GET.get('filename', '/nofile')
-
+		
+		#只访问特定目录
+		if filename.find('/juanzong/') != 0 :
+			return redirect("/index.html")
+		#endif
+		
+		#禁止伪造目录
+		if filename.find('/../') >=0 :
+			return redirect("/index.html")
+		#endif
+		
+		if existfile(filename) == False:
+			return redirect("/index.html")
+		#endif
 		
 
-	return response(200, "ok", [])
-
+		return responsefile(filename)
+	
+	return redirect("/index.html")
 
 
 

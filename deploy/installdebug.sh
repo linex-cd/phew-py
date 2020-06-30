@@ -26,6 +26,7 @@ docker run \
 --name jobcenter_debug \
 --network=host \
 -v /data/jobcenterdata:/jobcenterdata \
+-v /data/yn/dzjz/:/juanzong \
 -it jobcenter:${version} \
 bash
 

@@ -4,7 +4,7 @@ import json
 
 import redis
 
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, FileResponse
 
 
 def redirect(url):
@@ -23,6 +23,16 @@ def response(code, msg, data):
 	
 	return resp
 
+def responsefile(filename):
+	
+	downloadname = filename[filename.rfind('/')+1:]
+	
+	response = FileResponse(open(filename ,'rb'))
+	response['Content-Type']='application/octet-stream'
+	response['Content-Disposition']='attachment;filename="'+downloadname+'"'
+	
+	return response
+	
 import hashlib   
 import base64   
 
@@ -138,6 +148,6 @@ def filedirfromhash(hash):
 r = redis.Redis(host = '127.0.0.1', port = 2019, db = 0);
 #r = redis.Redis(host = '192.168.2.29', port = 2019, db = 0);
 
-__all__ = ['redirect', 'response', 'time', 'json', 'md5', 'encrypt', 'decrypt', 'readfile', 'writefile', 'existfile', 'filesize', 'makedirforhash', 'filedirfromhash', 'r']
+__all__ = ['redirect', 'response', 'responsefile', 'time', 'json', 'md5', 'encrypt', 'decrypt', 'readfile', 'writefile', 'existfile', 'filesize', 'makedirforhash', 'filedirfromhash', 'r']
 
 

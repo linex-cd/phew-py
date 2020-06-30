@@ -69,7 +69,6 @@ function showtask(task_access_key){
 			text = text + '创建时间：' + create_time + '\n';
 			text = text + '开始时间：' + start_time + '\n';
 			text = text + '完成时间：' + finish_time + '\n';
-			text = text + 'ID：' + data['job_id'] + '\n';
 			text = text + '优先级：' + data['priority'] + '\n';
 			text = text + '寻址方式：' + data['addressing'] + '\n';
 			text = text + '端口类型：' + data['port'] + '\n';
@@ -168,10 +167,10 @@ function showtask(task_access_key){
 					
 					var str = '<div class="recent-post-flex rct-pt-mg">\
 										<div class="recent-post-img" style="width:72px;">\
-											<img src="img/'+item['port']+'.png" alt="" />\
+											<a href="state/peekfile/?filename='+item['data']+'" target="_blank"><img src="img/'+item['port']+'.png" alt="点击打开文件" /></a>\
 										</div>\
 										<div class="recent-post-it-ctn">\
-											<a href="#"><h5>'+item['description']+'</h5></a>\
+											<a href="javascript:void(0);" onclick="showjob(\''+item['job_access_key']+'\')"><h5>'+item['description']+'</h5></a>\
 											<a href="javascript:void(0);" onclick="showtask(\''+item['task_access_key']+'\')"><p title="'+item['data']+'" >'+item['data']+'</p></a>\
 										</div>\
 								</div>'
