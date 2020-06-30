@@ -99,7 +99,12 @@ def port_task(task):
 		
 	elif addressing == 'URI':
 		file_name = task['data']
-		
+		if os.path.exists(file_name) and os.path.isfile(file_name) and os.access(file_name, os.W_OK):
+			pass
+		else:
+			note = 'can not access URI'
+			return note, result
+		#endif
 	else:
 		pass
 		
