@@ -5,26 +5,26 @@ import redis
 r = redis.Redis(host = '127.0.0.1', port = 2019, db = 0);
 
 
-job_key_pattern = 'job-Nanjing-testkey12345-textise-*'
+key_pattern = 'task-*'
 
-job_keys = r.keys(job_key_pattern)
+keys = r.keys(key_pattern)
 
-for job_key in job_keys:
+for key in keys:
 	
-	job_key = job_key.decode()
+	key = key.decode()
 	
-	l = r.hget(job_key, 'length')
-	if l == None:
+	data = r.hget(key, 'create_time')
+	if data == None:
 
-		task_key_pattern = job_key.replace('job','task')+ '-*'
-		task_keys = r.keys(task_key_pattern)
+
+		r.hdel(key, 'finish_time')
+		r.hdel(key, 'result')
+		r.hdel(key, 'note')
+		r.hdel(key, 'state')
+
 		
-		length = len(task_keys)
+		print(key)
 		
-		r.hset(job_key, 'length', length)
-		
-		print(job_key)
-		print(length)
 	#endif
 	
 

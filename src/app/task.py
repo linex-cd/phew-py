@@ -163,6 +163,9 @@ def finish(request):
 			if old_task_state == 'deleted':
 				task_info['state'] = old_task_state
 			#endif
+		else:
+			#already deleted
+			return response(code, msg, data)
 		#endif
 		
 		# add finish timestamp
