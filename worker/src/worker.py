@@ -26,7 +26,9 @@ def main():
 	thread_list = list()
 	thread_list.append(threading.Thread(target=task_thread, name='task_thread'))
 	thread_list.append(threading.Thread(target=ping_thread, name='ping_thread'))
-
+	
+	threading.Thread(target=daemon_thread, name='daemon_thread', args=(thread_list, )).start()
+	
 	for thread in thread_list:
 		thread.start()
 
