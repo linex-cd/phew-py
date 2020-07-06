@@ -113,6 +113,12 @@ def latestwork(request):
 				item['job_id'] = job_key.split("-")[-1]
 				item['description'] = r.hget(job_key, 'description').decode()
 				
+				start_time = r.hget(task_key, 'start_time')
+				if start_time == None:
+					#ignore deleted task
+					continue
+				#endif
+				
 				addressing = r.hget(task_key, 'addressing').decode()
 				if  addressing == "binary":
 					item['data'] = 'BINARY'
