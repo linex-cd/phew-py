@@ -108,9 +108,11 @@ def main():
 
 				#endfor
 				
-				#重新按照index排序
-				tmp = sorted(zip(index, bbox, content, hocr))
-				index, bbox, content, hocr = zip(*tmp)
+				if len(index) > 0:
+					#重新按照index排序
+					tmp = sorted(zip(index, bbox, content, hocr))
+					index, bbox, content, hocr = zip(*tmp)
+				#endif
 				
 				#保存任务数据到数据库
 				data = dict()
