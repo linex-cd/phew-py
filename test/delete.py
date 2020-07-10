@@ -5,7 +5,7 @@ import redis
 r = redis.Redis(host = '127.0.0.1', port = 2019, db = 0);
 
 
-job_key_pattern = 'job-Nanjing-testkey12345-textise-*'
+job_key_pattern = 'job-*'
 
 job_keys = r.keys(job_key_pattern)
 
