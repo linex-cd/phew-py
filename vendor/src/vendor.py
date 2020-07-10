@@ -2,6 +2,7 @@
 import logging
 
 import threading
+import multiprocessing 
 import time
 import os
 
@@ -17,11 +18,15 @@ def daemon_thread(thread_list):
 	total_count = len(thread_list)
 	while True:
 		time.sleep(5)
-		active_count = threading.active_count() - 2 #exclude main thread and daemon thread
+		active_count = len(multiprocessing.active_children()) #exclude main thread and daemon thread
 		
 		if active_count < total_count:
 			print('daemon_thread: total %d, active now %d' % (total_count, active_count))
 			print('good bye')
+			
+			for p in multiprocessing.active_children():
+				p.terminate()
+			#endfor
 			os._exit(-1)
 		#endif
 	#endwhile
@@ -45,10 +50,10 @@ def main():
 	
 	#start threads
 	thread_list = list()
-	thread_list.append(threading.Thread(target=kafka_consumer_thread, name='kafka_consumer_thread'))
-	thread_list.append(threading.Thread(target=kafka_producer_thread, name='kafka_producer_thread'))
-	thread_list.append(threading.Thread(target=task_preparer_thread, name='task_preparer_thread'))
-	thread_list.append(threading.Thread(target=ping_thread, name='ping_thread'))
+	thread_list.append(multiprocessing.Process(target=kafka_consumer_thread, name='kafka_consumer_thread'))
+	thread_list.append(multiprocessing.Process(target=kafka_producer_thread, name='kafka_producer_thread'))
+	thread_list.append(multiprocessing.Process(target=task_preparer_thread, name='task_preparer_thread'))
+	thread_list.append(multiprocessing.Process(target=ping_thread, name='ping_thread'))
 	
 	threading.Thread(target=daemon_thread, name='daemon_thread', args=(thread_list, )).start()
 	
