@@ -128,13 +128,16 @@ def latestwork(request):
 				
 				item['port'] = r.hget(task_key, 'port').decode()
 				item['addressing'] = addressing
+				item['create_time'] = int(r.hget(task_key, 'create_time').decode())
 				
 				item['job_access_key'] = encrypt(job_key)
 				item['task_access_key'] = encrypt(task_key)
 				task_latest.append(item)
 			#endfor
 		#endfor
-		
+		#task_latest sort by create_time
+		task_latest = sorted(task_latest, key=lambda x: (x['create_time']))
+		task_latest = task_latest[-20:]
 		
 		
 		data  = {
