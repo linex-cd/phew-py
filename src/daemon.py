@@ -21,42 +21,46 @@ def deamon_thread(timeout = 60):
 			#remove from pending set if timeout and mark timeout
 			for task_key in task_keys:
 			
-				job_id = r.hget(task_key, 'job_id').decode()
-				task_create_time = r.hget(task_key, 'start_time')
-				
-				if int(time.time()) - int(task_create_time) > timeout:
+				try:
+					job_id = r.hget(task_key, 'job_id').decode()
+					task_create_time = r.hget(task_key, 'start_time')
 					
-					print("mark task timeout:%s" % task_key.decode())
-					
-					r.hset(task_key, 'state', 'timeout')
-					r.srem(tasks_pending_key, task_key)
-					
-					tasks_waiting_key = tasks_pending_key.decode().replace('tasks_pending-', 'tasks_waiting-')
-					r.srem(tasks_waiting_key, task_key)
-					
-					#if last one task is timeout, the mark the job as done
-					#check if tasks_waiting and tasks_pending set are empty
-					if r.scard(tasks_waiting_key) == 0 and r.scard(tasks_pending_key) == 0: 
-						#add a job to set as unread
+					if int(time.time()) - int(task_create_time) > timeout:
 						
-						tmp = tasks_waiting_key.split('-')
-						worker_group = tmp[1]
-						worker_key = tmp[2]
-						worker_role = tmp[3]
+						print("mark task timeout:%s" % task_key.decode())
 						
-						job_key = 'job-' + worker_group + '-' + worker_key + '-' + worker_role+ '-' + job_id
-		
-						jobs_done_key = 'jobs_done-' + worker_group + '-' + worker_key + '-' + worker_role
+						r.hset(task_key, 'state', 'timeout')
+						r.srem(tasks_pending_key, task_key)
+						
+						tasks_waiting_key = tasks_pending_key.decode().replace('tasks_pending-', 'tasks_waiting-')
+						r.srem(tasks_waiting_key, task_key)
+						
+						#if last one task is timeout, the mark the job as done
+						#check if tasks_waiting and tasks_pending set are empty
+						if r.scard(tasks_waiting_key) == 0 and r.scard(tasks_pending_key) == 0: 
+							#add a job to set as unread
+							
+							tmp = tasks_waiting_key.split('-')
+							worker_group = tmp[1]
+							worker_key = tmp[2]
+							worker_role = tmp[3]
+							
+							job_key = 'job-' + worker_group + '-' + worker_key + '-' + worker_role+ '-' + job_id
+			
+							jobs_done_key = 'jobs_done-' + worker_group + '-' + worker_key + '-' + worker_role
 
-						r.sadd(jobs_done_key, job_id)
+							r.sadd(jobs_done_key, job_id)
+							
+							#add finish timestamp
+							r.hset(job_key, 'finish_time', int(time.time()))
+							r.hset(job_key, 'state', 'done')
+						#endif
 						
-						#add finish timestamp
-						r.hset(job_key, 'finish_time', int(time.time()))
-						r.hset(job_key, 'state', 'done')
 					#endif
-					
-				#endif
-
+				except:
+					print('some key dismissed, continue')
+					continue
+				#endtry
 				
 			#endfor
 
