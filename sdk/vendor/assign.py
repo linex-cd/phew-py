@@ -35,7 +35,7 @@ def assign_job(session, job, tasks):
 	data['tasks'] = tasks
 	
 	url = 'http://' + config.jobcenter_server + '/job/assign'
-	timeout = 30
+	timeout = 300
 	
 	try:
 		resp = session.post(url = url, data = json.dumps(data), timeout = timeout);

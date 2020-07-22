@@ -132,7 +132,7 @@ def prepare_task(task):
 		if rs == True :
 			TaskRecord.update_task(id = id, result = '', state = 'assigned')
 		else:
-			logging.exception('prepare_task assign_job error: %d: %s' % (rs['code'], rs['msg']))
+			logging.exception('prepare_task assign_job error')
 		#endif
 			
 	except:
