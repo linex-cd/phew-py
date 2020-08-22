@@ -58,9 +58,9 @@ def main():
 								data = files.readfile('/kafkacache/'+data)
 							#endif
 							
-							TaskRecord.save_task(data)
+							dic = TaskRecord.save_task(data)
 
-							logging.info('Saved textise task')
+							logging.info('Saved textise task: %s' % dic['bmsah'])
 							
 						#endfor
 						

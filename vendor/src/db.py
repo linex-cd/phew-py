@@ -74,6 +74,7 @@ class TaskRecord(Base):
 		sess.add(record)
 		sess.commit()
 		sess.close()
+		return data
 
 	@classmethod
 	def task_count(self):
