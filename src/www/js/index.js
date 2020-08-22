@@ -256,6 +256,65 @@ function showtask(task_access_key){
 	
 		});  
 	
+		/////////////////////////////////////////////////
+		$.get("state/portpercentage", function(ret){
+				
+			//////////////
+
+			var ports = ret['data']
+			
+			var portpie = echarts.init(document.getElementById('port-pie'));
+			
+			var keys = Object.keys(ports);
+			
+			var port_data = []
+			
+			for (var i = 0; i < keys.length; i++)
+			{
+				var item = {};
+				item['name'] = keys[i]
+				item['value'] = ports[keys[i]]
+				port_data.push(item);
+			}
+			
+			var option = {
+				title: {
+					text: 'PORT PERCENTAGE',
+					subtext: 'port percentage',
+					left: 'center'
+				},
+				tooltip: {
+					trigger: 'item',
+					formatter: '{a} <br/>{b} : {c} ({d}%)'
+				},
+				legend: {
+					orient: 'vertical',
+					left: 'left',
+					data: keys
+				},
+				series: [
+					{
+						name: 'port',
+						type: 'pie',
+						radius: '60%',
+						center: ['50%', '50%'],
+						data: port_data,
+						emphasis: {
+							itemStyle: {
+								shadowBlur: 10,
+								shadowOffsetX: 0,
+								shadowColor: 'rgba(0, 0, 0, 0.5)'
+							}
+						}
+					}
+				]
+			};
+			
+			portpie.setOption(option);
+
+
+		});  
+	
 		
 		/////////////////////////////////////////////////
 		

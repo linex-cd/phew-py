@@ -453,7 +453,10 @@ def portpercentage(request):
 		data = {}
 		task_pattern = 'task-*'
 		tasks = r.keys(task_pattern)
-
+		
+		data['ocr'] = 33
+		data['pdf'] = 44
+		data['table'] = 5
 		for task in tasks:
 		
 			task_key = task.decode()
@@ -480,29 +483,31 @@ def errorlist(request):
 	if request.method == 'GET':
 		
 		#--------------------
-		error_job_pattern = 'error-job-*'
-		jobs = r.keys(error_job_pattern)
-
-
 		task_total = 0
-		
 		error_jobs = []
-		for job in jobs:
 		
-			job_key = job.decode()
+		error_job_set_pattern = 'error_job-*'
+		error_job_set_keys = r.keys(error_job_set_pattern)
+
+
+		for error_job_set_key in error_job_set_keys:
+			jobs = r.smembers(error_job_set_key)
+			for job in jobs:
 			
+				job_key = job.decode()
+				
+				#task_total
+				length = int(r.hget(job_key, 'length').decode())
+				task_total = task_total + length
+				
+				#latest
+				description = r.hget(job_key, 'description').decode()
+				job_id = job_key.split("-")[-1]
+				create_time = r.hget(job_key, 'create_time').decode()
+				item = (create_time, length, job_id, description, encrypt(job_key))
+				error_jobs.append(item)
 			
-			#task_total
-			length = int(r.hget(job_key, 'length').decode())
-			task_total = task_total + length
-			
-			#latest
-			description = r.hget(job_key, 'description').decode()
-			job_id = job_key.split("-")[-1]
-			create_time = r.hget(job_key, 'create_time').decode()
-			item = (create_time, length, job_id, description, encrypt(job_key))
-			error_jobs.append(item)
-			
+			#endfor
 		#endfor
 		
 		
@@ -511,49 +516,54 @@ def errorlist(request):
 		
 		
 		#-------------------------------
-		error_task_pattern = 'error-task-*'
-		tasks = r.keys(error_task_pattern)
-
-		
 		error_tasks = []
-		for task in tasks:
-			
-			task_key = task.decode()
-			
-			item = {}
-			
-			tmp = task_key.split("-")
-			worker_group = tmp[1]
-			worker_key = tmp[2]
-			worker_role = tmp[3]
-			job_id = tmp[4]
-			job_key = 'job-' +worker_group + worker_key + worker_role + job_id
-			
-			item['job_id'] = job_id
-	
-			item['description'] = r.hget(job_key, 'description').decode()
-			
-			start_time = r.hget(task_key, 'start_time')
-			if start_time == None:
-				#ignore deleted task
-				continue
-			#endif
-			
-			addressing = r.hget(task_key, 'addressing').decode()
-			if  addressing == "binary":
-				item['data'] = 'BINARY'
-			else:
-				item['data'] = r.hget(task_key, 'data').decode()
-			#endif
-			
-			item['port'] = r.hget(task_key, 'port').decode()
-			item['addressing'] = addressing
-			item['create_time'] = int(r.hget(task_key, 'create_time').decode())
-			
-			item['job_access_key'] = encrypt(job_key)
-			item['task_access_key'] = encrypt(task_key)
-			
-			error_tasks.append(item)
+		
+		
+		error_task_set_pattern = 'error_task-*'
+		error_task_set_keys = r.keys(error_task_set_pattern)
+
+		for error_task_set_key in error_task_set_keys:
+			tasks = r.smembers(error_task_set_key)
+		
+			for task in tasks:
+				
+				task_key = task.decode()
+				
+				item = {}
+				
+				tmp = task_key.split("-")
+				worker_group = tmp[1]
+				worker_key = tmp[2]
+				worker_role = tmp[3]
+				job_id = tmp[4]
+				job_key = 'job-' +worker_group + worker_key + worker_role + job_id
+				
+				item['job_id'] = job_id
+		
+				item['description'] = r.hget(job_key, 'description').decode()
+				
+				start_time = r.hget(task_key, 'start_time')
+				if start_time == None:
+					#ignore deleted task
+					continue
+				#endif
+				
+				addressing = r.hget(task_key, 'addressing').decode()
+				if  addressing == "binary":
+					item['data'] = 'BINARY'
+				else:
+					item['data'] = r.hget(task_key, 'data').decode()
+				#endif
+				
+				item['port'] = r.hget(task_key, 'port').decode()
+				item['addressing'] = addressing
+				item['create_time'] = int(r.hget(task_key, 'create_time').decode())
+				
+				item['job_access_key'] = encrypt(job_key)
+				item['task_access_key'] = encrypt(task_key)
+				
+				error_tasks.append(item)
+			#endfor
 		#endfor
 		
 		

@@ -131,66 +131,12 @@
                             <div class="email-rdn-hd">
 								<h2>PORT比例</h2>
 							</div>
-                            <div class="email-statis-wrap">
-                                <div class="email-round-nock">
-                                    <input type="text" class="knob" id="gpu" value="0" data-rel="55" data-linecap="round" data-width="130" data-bgcolor="#E4E4E4" data-fgcolor="#00c292" data-thickness=".10" data-readonly="true">
-                                </div>
-                                <div class="email-ctn-nock">
-                                    <p>GPU</p>
-                                </div>
+                            <div id="port-pie" style="width:300px;height:480px;">
+                                
+								
                             </div>
-                            <div class="email-round-gp">
-                                <div class="email-round-pro">
-                                    <div class="email-signle-gp">
-                                        <input type="text" class="knob" id="cpu" value="0" data-rel="75" data-linecap="round" data-width="90" data-bgcolor="#E4E4E4" data-fgcolor="#00c292" data-thickness=".10" data-readonly="true" disabled>
-                                    </div>
-                                    <div class="email-ctn-nock">
-                                        <p>CPU</p>
-                                    </div>
-                                </div>
-                                <div class="email-round-pro">
-                                    <div class="email-signle-gp">
-                                        <input type="text" class="knob" id="memory" value="0" data-rel="35" data-linecap="round" data-width="90" data-bgcolor="#E4E4E4" data-fgcolor="#00c292" data-thickness=".10" data-readonly="true" disabled>
-                                    </div>
-                                    <div class="email-ctn-nock">
-                                        <p>MEMORY</p>
-                                    </div>
-                                </div>
-                                <div class="email-round-pro sm-res-ds-n lg-res-mg-bl">
-                                    <div class="email-signle-gp">
-                                        <input type="text" class="knob" id="db" value="0" data-rel="45" data-linecap="round" data-width="90" data-bgcolor="#E4E4E4" data-fgcolor="#00c292" data-thickness=".10" data-readonly="true" disabled>
-                                    </div>
-                                    <div class="email-ctn-nock">
-                                        <p>DATABASE</p>
-                                    </div>
-                                </div>
-							</div>
-							 <div class="email-round-gp">
-								 <div class="email-round-pro sm-res-ds-n lg-res-mg-bl">
-                                    <div class="email-signle-gp">
-                                        <input type="text" class="knob" id="systemdisk" value="0" data-rel="65" data-linecap="round" data-width="90" data-bgcolor="#E4E4E4" data-fgcolor="#00c292" data-thickness=".10" data-readonly="true" disabled>
-                                    </div>
-                                    <div class="email-ctn-nock">
-                                        <p>系统盘</p>
-                                    </div>
-                                </div>
-								 <div class="email-round-pro sm-res-ds-n lg-res-mg-bl">
-                                    <div class="email-signle-gp">
-                                        <input type="text" class="knob" id="datadisk" value="0" data-rel="20" data-linecap="round" data-width="90" data-bgcolor="#E4E4E4" data-fgcolor="#00c292" data-thickness=".10" data-readonly="true" disabled>
-                                    </div>
-                                    <div class="email-ctn-nock">
-                                        <p>数据盘</p>
-                                    </div>
-                                </div>
-								 <div class="email-round-pro sm-res-ds-n lg-res-mg-bl">
-                                    <div class="email-signle-gp">
-                                        <input type="text" class="knob" id="temp" value="0" data-rel="45" data-linecap="round" data-width="90" data-bgcolor="#E4E4E4" data-fgcolor="#00c292" data-thickness=".10" data-readonly="true" disabled>
-                                    </div>
-                                    <div class="email-ctn-nock">
-                                        <p>温度</p>
-                                    </div>
-                                </div>
-                            </div>
+
+						
                         </div>
                     </div>
                 </div>
@@ -226,7 +172,7 @@
 									<a href="#">
 										<div class="recent-post-flex rc-ps-vw">
 											<div class="recent-post-line rct-pt-mg">
-												<p>查看所有任务</p>
+												<p>查看所有异常任务</p>
 											</div>
 										</div>
 									</a>
@@ -254,7 +200,7 @@
 									<a href="#">
 										<div class="recent-post-flex rc-ps-vw">
 											<div class="recent-post-line rct-pt-mg">
-												<p>查看等待队列</p>
+												<p>查看所有异常工作</p>
 											</div>
 										</div>
 									</a>
@@ -508,9 +454,10 @@
     <!-- bootstrap JS
 		============================================ -->
     <script src="js/bootstrap.min.js"></script>
-    <!-- wow JS
+ 
+   <!-- echarts JS
 		============================================ -->
-    <script src="js/wow.min.js"></script>
+    <script src="js/echarts/echarts.min.js"></script>
   
  
     <!-- scrollUp JS

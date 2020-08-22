@@ -16,7 +16,8 @@ urlpatterns = [
 	path('state/nodecounter', state.nodecounter),
 	path('state/latestwork', state.latestwork),
 	path('state/inlist', state.inlist),
-	path('state/errortasklist', state.errorlist),
+	path('state/errorlist', state.errorlist),
+	path('state/portpercentage', state.portpercentage),
 	
 	path('job/ping', job.ping),
 	path('job/assign', job.assign),

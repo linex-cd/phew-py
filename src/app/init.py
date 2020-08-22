@@ -145,8 +145,8 @@ def filedirfromhash(hash):
 #enddef
 
 
-#r = redis.Redis(host = '127.0.0.1', port = 2019, db = 0);
-r = redis.Redis(host = '192.168.2.29', port = 2019, db = 0);
+r = redis.Redis(host = '127.0.0.1', port = 2019, db = 0);
+#r = redis.Redis(host = '192.168.2.29', port = 2019, db = 0);
 
 __all__ = ['redirect', 'response', 'responsefile', 'time', 'json', 'md5', 'encrypt', 'decrypt', 'readfile', 'writefile', 'existfile', 'filesize', 'makedirforhash', 'filedirfromhash', 'r']
 
