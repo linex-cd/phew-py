@@ -22,8 +22,8 @@ def sysstate(request):
 
 	if request.method == 'GET':
 		
-		#REDIS DB  4G
-		db = int(filesize('/jobcenterdata/redis.rdb') / (1024*1024*1024*4) * 100)
+		#REDIS DB  1G
+		db = int(filesize('/jobcenterdata/redis.rdb') / (1024*1024*1024*1) * 100)
 
 		
 		#CPU
