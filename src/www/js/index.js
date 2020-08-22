@@ -125,19 +125,34 @@ function showtask(task_access_key){
 			
 		});  
 		
+		/////////////////////////////////////////////////
+		var isloading_jobcounter = false;
 		
 		setInterval(function(){
-			/////////////////////////////////////////////////
+			if(isloading_jobcounter){
+				return ;
+			}
+			isloading_jobcounter = true;
+
 			$.get("state/jobcounter", function(ret){
 				$("#job_total").text(ret['data']['job_total']);
 				$("#task_total").text(ret['data']['task_total']);
 				$("#job_pending").text(ret['data']['job_pending']);
 				$("#work_pending").text(ret['data']['work_pending']);
-
 				
-			});  
+				isloading_jobcounter = false;
+			});
 			
-			/////////////////////////////////////////////////
+		}, 5000);
+		
+		/////////////////////////////////////////////////
+		var isloading_latestwork = false;
+		
+		setInterval(function(){		
+			if(isloading_latestwork){
+				return ;
+			}
+			isloading_latestwork = true;
 			
 			$.get("state/latestwork", function(ret){
 				
@@ -182,6 +197,8 @@ function showtask(task_access_key){
 				
 				
 				$('#latest_task').html(latest_task_htmlstr);
+				
+				isloading_latestwork = false;
 				
 			});  
 		}, 5000);
