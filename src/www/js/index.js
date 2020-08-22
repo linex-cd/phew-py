@@ -156,6 +156,7 @@ function showtask(task_access_key){
 			
 			$.get("state/latestwork", function(ret){
 				
+				//////////////
 				var latest_job_htmlstr = ''
 				var job_latest = ret['data']['job_latest']
 				var len = job_latest.length
@@ -174,6 +175,7 @@ function showtask(task_access_key){
 				
 				$('#latest_job').html(latest_job_htmlstr);
 				
+				//////////////
 				var latest_task_htmlstr = ''
 				var task_latest = ret['data']['task_latest']
 				var len = task_latest.length
@@ -198,10 +200,63 @@ function showtask(task_access_key){
 				
 				$('#latest_task').html(latest_task_htmlstr);
 				
+				//////////////
 				isloading_latestwork = false;
 				
 			});  
 		}, 5000);
+		
+		/////////////////////////////////////////////////
+		$.get("state/errorlist", function(ret){
+				
+			//////////////
+			var error_job_htmlstr = ''
+			var error_jobs = ret['data']['error_jobs']
+			var len = error_jobs.length
+			for(var i = 0; i < len; i++){
+				var item = error_jobs[i]
+				var time = new Date()
+				time.setTime(parseInt(item[0])*1000)
+				var ts = time.toLocaleString()
+				var str = '<tr>\
+								<td class="f-500 c-cyan">'+item[2]+'</td>\
+								<td ><a href="javascript:void(0);" onclick="showjob(\''+item[4]+'\')">'+item[3]+'</a>&nbsp;&nbsp;&nbsp;<span style="color:gray;font-size:12px">'+ts+'<span></td>\
+								<td class="f-500 c-cyan">'+item[1]+'</td>\
+							</tr>'
+				error_job_htmlstr = str + error_job_htmlstr
+			}
+			
+			$('#error_jobs').html(error_job_htmlstr);
+			
+			//////////////
+			var error_task_htmlstr = ''
+			var error_tasks = ret['data']['error_tasks']
+			var len = error_tasks.length
+			for(var i = 0; i < len; i++){
+				var item = error_tasks[i]
+				
+				var str = '<div class="recent-post-flex rct-pt-mg">\
+									<div class="recent-post-img" style="width:72px;">\
+										<a href="state/peekfile/?filename='+item['data']+'" target="_blank"><img src="img/'+item['port']+'.png" alt="点击打开文件" /></a>\
+									</div>\
+									<div class="recent-post-it-ctn">\
+										<a href="javascript:void(0);" onclick="showjob(\''+item['job_access_key']+'\')"><h5>'+item['description']+'</h5></a>\
+										<a href="javascript:void(0);" onclick="showtask(\''+item['task_access_key']+'\')"><p title="'+item['data']+'" >'+item['data']+'</p></a>\
+									</div>\
+							</div>'
+				error_task_htmlstr = str + error_task_htmlstr
+			}
+			if (error_task_htmlstr == ''){
+				error_task_htmlstr = '<div>没有文件正在处理中<div>'
+			}
+			
+			
+			$('#error_tasks').html(error_task_htmlstr);
+			
+	
+		});  
+	
+		
 		/////////////////////////////////////////////////
 		
 		$.get("state/nodecounter", function(ret){

@@ -17,6 +17,7 @@ except:
 def index(request):
 	return redirect("/index.html")
 
+#-------------------------------------------------------------------------------
 def sysstate(request):
 	
 
@@ -36,7 +37,7 @@ def sysstate(request):
 		systemdisk = int(psutil.disk_usage("/").percent)
 		
 		#datadisk
-		datadisk = int(psutil.disk_usage("/jobcenterdata/").percent)
+		datadisk = 100#int(psutil.disk_usage("/jobcenterdata/").percent)
 
 		#GPU
 		gpu = 90
@@ -204,6 +205,8 @@ def jobcounter(request):
 	return response(200, "ok", data)
 
 
+#-------------------------------------------------------------------------------
+
 def inlist(request):
 	
 
@@ -286,6 +289,7 @@ def inlist(request):
 	return response(200, "ok", data)
 
 
+#-------------------------------------------------------------------------------
 
 def nodecounter(request):
 	
@@ -331,6 +335,7 @@ def nodecounter(request):
 	return response(200, "ok", data)
 
 
+#-------------------------------------------------------------------------------
 
 def peekjob(request):
 	
@@ -438,6 +443,132 @@ def peekfile(request):
 	return redirect("/index.html")
 
 
+#-------------------------------------------------------------------------------
+
+def portpercentage(request):
+	
+
+	if request.method == 'GET':
+		
+		data = {}
+		task_pattern = 'task-*'
+		tasks = r.keys(task_pattern)
+
+		for task in tasks:
+		
+			task_key = task.decode()
+			
+			#job_pending
+			port = r.hget(task_key, 'port').decode()
+			
+			if port not in data:
+				data[port] = 0
+			#endif
+			data[port] = data[port] + 1
+			
+
+		#endfor
+
+
+	return response(200, "ok", data)
+
+#-------------------------------------------------------------------------------
+
+def errorlist(request):
+	
+
+	if request.method == 'GET':
+		
+		#--------------------
+		error_job_pattern = 'error-job-*'
+		jobs = r.keys(error_job_pattern)
+
+
+		task_total = 0
+		
+		error_jobs = []
+		for job in jobs:
+		
+			job_key = job.decode()
+			
+			
+			#task_total
+			length = int(r.hget(job_key, 'length').decode())
+			task_total = task_total + length
+			
+			#latest
+			description = r.hget(job_key, 'description').decode()
+			job_id = job_key.split("-")[-1]
+			create_time = r.hget(job_key, 'create_time').decode()
+			item = (create_time, length, job_id, description, encrypt(job_key))
+			error_jobs.append(item)
+			
+		#endfor
+		
+		
+		#job_latest sort by create_time
+		error_jobs = sorted(error_jobs, key=lambda x: (x[0]))
+		
+		
+		#-------------------------------
+		error_task_pattern = 'error-task-*'
+		tasks = r.keys(error_task_pattern)
+
+		
+		error_tasks = []
+		for task in tasks:
+			
+			task_key = task.decode()
+			
+			item = {}
+			
+			tmp = task_key.split("-")
+			worker_group = tmp[1]
+			worker_key = tmp[2]
+			worker_role = tmp[3]
+			job_id = tmp[4]
+			job_key = 'job-' +worker_group + worker_key + worker_role + job_id
+			
+			item['job_id'] = job_id
+	
+			item['description'] = r.hget(job_key, 'description').decode()
+			
+			start_time = r.hget(task_key, 'start_time')
+			if start_time == None:
+				#ignore deleted task
+				continue
+			#endif
+			
+			addressing = r.hget(task_key, 'addressing').decode()
+			if  addressing == "binary":
+				item['data'] = 'BINARY'
+			else:
+				item['data'] = r.hget(task_key, 'data').decode()
+			#endif
+			
+			item['port'] = r.hget(task_key, 'port').decode()
+			item['addressing'] = addressing
+			item['create_time'] = int(r.hget(task_key, 'create_time').decode())
+			
+			item['job_access_key'] = encrypt(job_key)
+			item['task_access_key'] = encrypt(task_key)
+			
+			error_tasks.append(item)
+		#endfor
+		
+		
+		#job_latest sort by create_time
+		error_tasks = sorted(error_tasks, key=lambda x: (x[0]))
+		
+
+		
+		data  = {
+					'error_jobs': error_jobs,
+					'error_tasks': error_tasks,
+				}
+		
+
+	return response(200, "ok", data)
 
 
 
