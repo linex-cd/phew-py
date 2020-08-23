@@ -37,7 +37,7 @@ def sysstate(request):
 		systemdisk = int(psutil.disk_usage("/").percent)
 		
 		#datadisk
-		datadisk = 100#int(psutil.disk_usage("/jobcenterdata/").percent)
+		datadisk = int(psutil.disk_usage("/jobcenterdata/").percent)
 
 		#GPU
 		gpu = 90
@@ -155,34 +155,36 @@ def jobcounter(request):
 	
 
 	if request.method == 'GET':
+	
+		#job_total
+		statistics_job_total_pattern = 'statistics_job_total-*'
+		statistics_job_total_pending_keys = r.keys(statistics_job_total_pattern)
 		
-		job_total_pattern = 'job-*'
-		jobs = r.keys(job_total_pattern)
-		job_total = len(jobs)
+		job_total = 0
+		for statistics_job_total_pending_key in statistics_job_total_pending_keys:
+			job_total = job_total + int(r.get(statistics_job_total_pending_key).decode())
+		#endfor
 		
+		#task_total
+		statistics_task_total_pattern = 'statistics_task_total-*'
+		statistics_task_total_pending_keys = r.keys(statistics_task_total_pattern)
+		
+		task_total = 0
+		for statistics_task_total_pending_key in statistics_task_total_pending_keys:
+			task_total = task_total + int(r.get(statistics_task_total_pending_key).decode())
+		#endfor
+		
+		#job_pending
+		statistics_job_pending_pattern = 'statistics_job_pending-*'
+		statistics_job_pending_pending_keys = r.keys(statistics_job_pending_pattern)
 		
 		job_pending = 0
-		task_total = 0
-
-		for job in jobs:
-		
-			job_key = job.decode()
-			
-			#job_pending
-			state = r.hget(job_key, 'state').decode()
-			if state == 'assigned':
-				job_pending = job_pending + 1
-			#endif
-			
-			#task_total
-			length = int(r.hget(job_key, 'length').decode())
-			task_total = task_total + length
-			
-
+		for statistics_job_pending_pending_key in statistics_job_pending_pending_keys:
+			job_pending = job_pending + int(r.get(statistics_job_pending_pending_key).decode())
 		#endfor
 		
 
-		#task_pending
+		#work_pending
 		work_pattern = 'work-*'
 		work_pending_keys = r.keys(work_pattern)
 		
@@ -191,9 +193,7 @@ def jobcounter(request):
 			work_pending = work_pending + r.llen(work_pending_key)
 		#endfor
 		
-		
 
-		
 		data  = {
 					'job_total': job_total,
 					'task_total': task_total,
@@ -445,32 +445,51 @@ def peekfile(request):
 
 #-------------------------------------------------------------------------------
 
-def portpercentage(request):
+def percentage(request):
 	
 
 	if request.method == 'GET':
 		
-		data = {}
-		task_pattern = 'task-*'
-		tasks = r.keys(task_pattern)
+		addressing_data = {}
 		
-		data['ocr'] = 33
-		data['pdf'] = 44
-		data['table'] = 5
-		for task in tasks:
+		#addressing_count
+		statistics_task_addressing_pattern = 'statistics_task_addressing-*'
+		statistics_task_addressing_keys = r.keys(statistics_task_addressing_pattern)
 		
-			task_key = task.decode()
+		for statistics_task_addressing_key in statistics_task_addressing_keys:
 			
-			#job_pending
-			port = r.hget(task_key, 'port').decode()
+			addressing = statistics_task_addressing_key.split("-")[-1]
+			addressing_count + int(r.get(statistics_task_addressing_key).decode())
 			
-			if port not in data:
-				data[port] = 0
+			if addressing not in addressing_data:
+				addressing_data[addressing] = 0
 			#endif
-			data[port] = data[port] + 1
+			addressing_data[addressing] = addressing_data[addressing] + addressing_count
 			
-
 		#endfor
+		
+		port_data = {}
+		
+		#addressing_count
+		statistics_task_port_pattern = 'statistics_task_port-*'
+		statistics_task_port_keys = r.keys(statistics_task_port_pattern)
+		
+		for statistics_task_port_key in statistics_task_port_keys:
+			
+			port = statistics_task_port_key.split("-")[-1]
+			port_count + int(r.get(statistics_task_port_key).decode())
+			
+			if port not in port_data:
+				port_data[port] = 0
+			#endif
+			port_data[port] = port_data[port] + port_count
+			
+		#endfor
+				
+		data  = {
+					'addressing': addressing_data,
+					'port': port_data,
+				}
 
 
 	return response(200, "ok", data)

@@ -17,7 +17,7 @@ urlpatterns = [
 	path('state/latestwork', state.latestwork),
 	path('state/inlist', state.inlist),
 	path('state/errorlist', state.errorlist),
-	path('state/portpercentage', state.portpercentage),
+	path('state/percentage', state.percentage),
 	
 	path('job/ping', job.ping),
 	path('job/assign', job.assign),

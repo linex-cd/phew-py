@@ -70,7 +70,27 @@ def assign(request):
 		tasks = jsondata['tasks']
 				
 		r.hset(job_key, 'length', len(tasks))
-
+		
+		#job and task count statistics
+		#job total
+		statistics_job_total_key = 'statistics_job_total-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role'] 
+		r.incr(statistics_job_total_key, 1)
+		
+		#job pending
+		statistics_job_pending_key = 'statistics_job_pending-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role'] 
+		r.incr(statistics_job_pending_key, 1)
+		
+		#task total
+		statistics_task_total_key = 'statistics_task_total-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role'] 
+		r.incr(statistics_task_total_key, len(tasks))
+		
+		#type base
+		statistics_task_addressing_key_base = 'statistics_task_addressing-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']
+		
+		statistics_task_port_key_base = 'statistics_task_port-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role'] 
+		
+		#---------------------------------
+		
 		for task_info in tasks:
 			
 			#make task records
@@ -87,6 +107,7 @@ def assign(request):
 			r.hset(task_key, 'create_time', int(time.time()))
 			r.hset(task_key, 'start_time', '')
 			r.hset(task_key, 'finish_time', '')
+			r.hset(task_key, 'try_times', 0)
 			
 			
 			r.hset(task_key, 'job_id', job_info['job_id'])
@@ -108,6 +129,12 @@ def assign(request):
 				r.hset(task_key, 'data', task_info['data'])
 			#endif
 			
+			#task addressing and port count statistics
+			statistics_task_addressing_key = statistics_task_addressing_key_base + '-' + task_info['addressing']
+			r.incr(statistics_task_addressing_key, 1)
+			
+			statistics_task_port_key = statistics_task_port_key_base + '-' + task_info['port']
+			r.incr(statistics_task_port_key, 1)
 			
 			#allocate task to work priority list
 			work_key = 'work-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role'] + '-' + str(job_info['priority'])
@@ -130,6 +157,9 @@ def assign(request):
 		#endif
 		
 		r.hset(vendor_node_key, 'hit', vendor_node_hit)
+		
+		
+
 		
 	#endif
 				

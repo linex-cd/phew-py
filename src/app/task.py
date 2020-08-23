@@ -119,6 +119,10 @@ def get(request):
 		tasks_pending_key = 'tasks_pending-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']+ '-' + str(task_info['job_id'])
 		r.sadd(tasks_pending_key, task_key)
 		
+		#remove from tasks_waiting set 
+		tasks_waiting_key = 'tasks_waiting-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']+ '-' + str(task_info['job_id'])
+		r.srem(tasks_waiting_key, task_key)
+		
 		#update worker node hit counter
 		worker_node_key = 'worker-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role'] + '-' + str(jsondata['worker_id'])
 		
@@ -175,10 +179,6 @@ def finish(request):
 		r.hset(task_key, 'note', task_info['note'])
 		r.hset(task_key, 'result', task_info['result'])
 		
-		#remove from tasks_waiting set 
-		tasks_waiting_key = 'tasks_waiting-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']+ '-' + str(task_info['job_id'])
-		r.srem(tasks_waiting_key, task_key)
-		
 		#remove from tasks_pending set
 		tasks_pending_key = 'tasks_pending-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']+ '-' + str(task_info['job_id'])
 		r.srem(tasks_pending_key, task_key)
@@ -193,6 +193,10 @@ def finish(request):
 			#add finish timestamp
 			r.hset(job_key, 'finish_time', int(time.time()))
 			r.hset(job_key, 'state', 'done')
+			
+			#job pending statistics
+			statistics_job_pending_key = 'statistics_job_pending-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role'] 
+			r.decr(statistics_job_pending_key, 1)
 		#endif
 		
 	else:

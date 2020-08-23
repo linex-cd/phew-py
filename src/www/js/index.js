@@ -257,11 +257,11 @@ function showtask(task_access_key){
 		});  
 	
 		/////////////////////////////////////////////////
-		$.get("state/portpercentage", function(ret){
+		$.get("state/percentage", function(ret){
 				
 			//////////////
 
-			var ports = ret['data']
+			var ports = ret['data']['port']
 			
 			var portpie = echarts.init(document.getElementById('port-pie'));
 			
