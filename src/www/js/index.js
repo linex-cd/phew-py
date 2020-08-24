@@ -127,8 +127,7 @@ function showtask(task_access_key){
 		
 		/////////////////////////////////////////////////
 		var isloading_jobcounter = false;
-		
-		setInterval(function(){
+		function load_jobconter(){
 			if(isloading_jobcounter){
 				return ;
 			}
@@ -142,13 +141,17 @@ function showtask(task_access_key){
 				
 				isloading_jobcounter = false;
 			});
+		}
+		
+		load_jobconter();
+		setInterval(function(){
+			load_jobconter();
 			
 		}, 5000);
 		
 		/////////////////////////////////////////////////
 		var isloading_latestwork = false;
-		
-		setInterval(function(){		
+		function load_latestwork(){
 			if(isloading_latestwork){
 				return ;
 			}
@@ -204,6 +207,11 @@ function showtask(task_access_key){
 				isloading_latestwork = false;
 				
 			});  
+		}
+		
+		load_latestwork();
+		setInterval(function(){		
+			load_latestwork();
 		}, 5000);
 		
 		/////////////////////////////////////////////////
@@ -247,7 +255,7 @@ function showtask(task_access_key){
 				error_task_htmlstr = str + error_task_htmlstr
 			}
 			if (error_task_htmlstr == ''){
-				error_task_htmlstr = '<div>没有文件正在处理中<div>'
+				error_task_htmlstr = '<div>没有异常文件<div>'
 			}
 			
 			
@@ -260,11 +268,11 @@ function showtask(task_access_key){
 		$.get("state/percentage", function(ret){
 				
 			//////////////
-
+			var percentagepie = echarts.init(document.getElementById('percentage-pie'));
+			
+			///
 			var ports = ret['data']['port']
-			
-			var portpie = echarts.init(document.getElementById('port-pie'));
-			
+
 			var keys = Object.keys(ports);
 			
 			var port_data = []
@@ -277,28 +285,49 @@ function showtask(task_access_key){
 				port_data.push(item);
 			}
 			
+			///
+			var addressings = ret['data']['addressing']
+
+			var keys = Object.keys(addressings);
+			
+			var addressing_data = []
+			
+			for (var i = 0; i < keys.length; i++)
+			{
+				var item = {};
+				item['name'] = keys[i]
+				item['value'] = addressings[keys[i]]
+				addressing_data.push(item);
+			}
+			
 			var option = {
-				title: {
-					text: 'PORT PERCENTAGE',
-					subtext: 'port percentage',
-					left: 'center'
-				},
+
 				tooltip: {
 					trigger: 'item',
 					formatter: '{a} <br/>{b} : {c} ({d}%)'
 				},
-				legend: {
-					orient: 'vertical',
-					left: 'left',
-					data: keys
-				},
+
 				series: [
 					{
 						name: 'port',
 						type: 'pie',
-						radius: '60%',
-						center: ['50%', '50%'],
+						radius: '50%',
+						center: ['45%', '30%'],
 						data: port_data,
+						emphasis: {
+							itemStyle: {
+								shadowBlur: 10,
+								shadowOffsetX: 0,
+								shadowColor: 'rgba(0, 0, 0, 0.5)'
+							}
+						}
+					},
+					{
+						name: 'address',
+						type: 'pie',
+						radius: '40%',
+						center: ['60%', '70%'],
+						data: addressing_data,
 						emphasis: {
 							itemStyle: {
 								shadowBlur: 10,
@@ -310,7 +339,7 @@ function showtask(task_access_key){
 				]
 			};
 			
-			portpie.setOption(option);
+			percentagepie.setOption(option);
 
 
 		});  

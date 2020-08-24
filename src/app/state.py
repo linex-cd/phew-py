@@ -457,9 +457,10 @@ def percentage(request):
 		statistics_task_addressing_keys = r.keys(statistics_task_addressing_pattern)
 		
 		for statistics_task_addressing_key in statistics_task_addressing_keys:
+			statistics_task_addressing_key = statistics_task_addressing_key.decode()
 			
 			addressing = statistics_task_addressing_key.split("-")[-1]
-			addressing_count + int(r.get(statistics_task_addressing_key).decode())
+			addressing_count = int(r.get(statistics_task_addressing_key).decode())
 			
 			if addressing not in addressing_data:
 				addressing_data[addressing] = 0
@@ -470,14 +471,15 @@ def percentage(request):
 		
 		port_data = {}
 		
-		#addressing_count
+		#port_count
 		statistics_task_port_pattern = 'statistics_task_port-*'
 		statistics_task_port_keys = r.keys(statistics_task_port_pattern)
 		
 		for statistics_task_port_key in statistics_task_port_keys:
+			statistics_task_port_key = statistics_task_port_key.decode()
 			
 			port = statistics_task_port_key.split("-")[-1]
-			port_count + int(r.get(statistics_task_port_key).decode())
+			port_count = int(r.get(statistics_task_port_key).decode())
 			
 			if port not in port_data:
 				port_data[port] = 0
