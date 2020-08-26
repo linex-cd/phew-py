@@ -95,6 +95,11 @@ def deamon_thread(timeout = 60, try_times_limit = 3):
 								
 								statistics_job_pending_key = 'statistics_job_pending-' + worker_group + '-' + worker_key + '-' + worker_role
 								r.decr(statistics_job_pending_key, 1)
+								
+								if int(r.get(statistics_job_pending_key).decode()) < 0:
+									r.set(statistics_job_pending_key, 0)
+								#endif
+								
 							#endif
 						#endif
 						

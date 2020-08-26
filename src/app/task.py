@@ -199,6 +199,11 @@ def finish(request):
 			#job pending statistics
 			statistics_job_pending_key = 'statistics_job_pending-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role'] 
 			r.decr(statistics_job_pending_key, 1)
+			
+			if int(r.get(statistics_job_pending_key).decode()) < 0:
+				r.set(statistics_job_pending_key, 0)
+			#endif
+			
 		#endif
 		
 	else:
