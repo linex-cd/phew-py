@@ -557,7 +557,7 @@ def errorlist(request):
 				worker_key = tmp[2]
 				worker_role = tmp[3]
 				job_id = tmp[4]
-				job_key = 'job-' +worker_group + worker_key + worker_role + job_id
+				job_key = 'job-' +worker_group + '-' + worker_key + '-' + worker_role + '-' + job_id
 				
 				item['job_id'] = job_id
 		
