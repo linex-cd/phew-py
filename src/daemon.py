@@ -34,7 +34,7 @@ def deamon_thread(timeout = 60, try_times_limit = 3):
 					worker_role = tmp[3]
 					job_id = tmp[4]
 					
-					job_key = 'job-' +worker_group + worker_key + worker_role + job_id
+					job_key = 'job-' +worker_group + '-'+ worker_key + '-'+ worker_role + '-'+ job_id
 					
 					
 					
