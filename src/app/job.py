@@ -191,6 +191,11 @@ def delete(request):
 			
 			#delete task
 			r.delete(task_key)
+			
+			#delete from error list
+			error_task_set_key = 'error_task-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']
+			r.srem(error_task_set_key, task_key)
+			
 		#endfor
 	#endif	
 
