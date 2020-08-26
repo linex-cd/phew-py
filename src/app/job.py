@@ -189,12 +189,12 @@ def delete(request):
 			#only mark delete state
 			#r.hset(task_key, 'state', 'deleted')
 			
-			#delete task
-			r.delete(task_key)
-			
-			#delete from error list
+			#delete task excluding from error list
 			error_task_set_key = 'error_task-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']
-			r.srem(error_task_set_key, task_key)
+			
+			if not r.sismember(error_task_set_key, task_key):
+				r.delete(task_key)
+			#endif
 			
 		#endfor
 	#endif	
