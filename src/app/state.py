@@ -18,13 +18,17 @@ def index(request):
 	return redirect("/index.html")
 
 #-------------------------------------------------------------------------------
+from app.config import data_dir 
+from app.config import system_disk_dir 
+from app.config import system_data_dir
+
 def sysstate(request):
 	
 
 	if request.method == 'GET':
 		
 		#REDIS DB  1G
-		db = int(filesize('/jobcenterdata/redis.rdb') / (1024*1024*1024*1) * 100)
+		db = int(filesize(data_dir + 'redis.rdb') / (1024*1024*1024*1) * 100)
 
 		
 		#CPU
@@ -34,10 +38,10 @@ def sysstate(request):
 		memory =  int(psutil.virtual_memory().percent)
 		
 		#systemdisk
-		systemdisk = int(psutil.disk_usage("/").percent)
+		systemdisk = int(psutil.disk_usage(system_disk_dir).percent)
 		
 		#datadisk
-		datadisk = int(psutil.disk_usage("/jobcenterdata/").percent)
+		datadisk = int(psutil.disk_usage(system_data_dir).percent)
 
 		#GPU
 		gpu = 90
@@ -415,6 +419,7 @@ def peektask(request):
 	return response(200, "ok", data)
 
 
+from app.config import URI_dir 
 
 def peekfile(request):
 	
@@ -424,7 +429,7 @@ def peekfile(request):
 		filename = request.GET.get('filename', '/nofile')
 		
 		#只访问特定目录
-		if filename.find('/juanzong/') != 0 :
+		if filename.find(URI_dir) != 0 :
 			return redirect("/index.html")
 		#endif
 		
