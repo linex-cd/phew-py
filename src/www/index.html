@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>Phew - Job Scheduling System</title>
+    <title>Phew - Scheduling System</title>
 	
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -83,7 +83,7 @@
                     <div class="wb-traffic-inner notika-shadow sm-res-mg-t-30 tb-res-mg-t-30">
                         <div class="website-traffic-ctn">
                             <h2><span class="jobcounter" id="job_total">-</span></h2>
-                            <p>总处理任务数</p>
+                            <p>Total Jobs</p>
                         </div>
                         <div class="sparkline-bar-stats1">9,4,8,6,5,6,4,8,3,5,9,5</div>
                     </div>
@@ -92,7 +92,7 @@
                     <div class="wb-traffic-inner notika-shadow sm-res-mg-t-30 tb-res-mg-t-30">
                         <div class="website-traffic-ctn">
                             <h2><span class="jobcounter" id="task_total">-</span></h2>
-                            <p>总处理文件数</p>
+                            <p>Total Tasks</p>
                         </div>
                         <div class="sparkline-bar-stats2">1,4,8,3,5,6,4,8,3,3,9,5</div>
                     </div>
@@ -101,7 +101,7 @@
                     <div class="wb-traffic-inner notika-shadow sm-res-mg-t-30 tb-res-mg-t-30 dk-res-mg-t-30">
                         <div class="website-traffic-ctn">
                             <h2><span class="jobcounter" id="job_pending">-</span></h2>
-                            <p>队列任务数</p>
+                            <p>Jobs in Queue</p>
                         </div>
                         <div class="sparkline-bar-stats3">4,2,8,2,5,6,3,8,3,5,9,5</div>
                     </div>
@@ -110,7 +110,7 @@
                     <div class="wb-traffic-inner notika-shadow sm-res-mg-t-30 tb-res-mg-t-30 dk-res-mg-t-30">
                         <div class="website-traffic-ctn">
                             <h2><span class="jobcounter" id="work_pending">-</span></h2>
-                            <p>队列文件数</p>
+                            <p>Tasks in Queue</p>
                         </div>
                         <div class="sparkline-bar-stats4">2,4,8,4,5,7,4,7,3,5,7,5</div>
                     </div>
@@ -129,7 +129,7 @@
                     <div class="email-statis-inner notika-shadow">
                         <div class="email-ctn-round">
                             <div class="email-rdn-hd">
-								<h2>类型比例</h2>
+								<h2>Percentage</h2>
 							</div>
                             <div id="percentage-pie" style="width:300px;height:480px;">
                                 
@@ -147,7 +147,7 @@
                         <div class="rc-it-ltd">
                             <div class="recent-items-ctn">
                                 <div class="recent-items-title">
-                                    <h2>近期任务</h2>
+                                    <h2>Latest Jobs</h2>
                                 </div>
                             </div>
                             <div class="recent-items-inn">
@@ -156,8 +156,8 @@
                                     <thead>
                                         <tr>
                                             <th>ID</th>
-                                            <th>描述</th>
-                                            <th style="width: 60px">文件数</th>
+                                            <th>Description</th>
+                                            <th style="width: 60px">Length</th>
                                         </tr>
                                     </thead>
 									
@@ -173,7 +173,7 @@
 									<a href="#">
 										<div class="recent-post-flex rc-ps-vw">
 											<div class="recent-post-line rct-pt-mg">
-												<p>查看所有任务</p>
+												<p>All Jobs</p>
 											</div>
 										</div>
 									</a>
@@ -188,7 +188,7 @@
                     <div class="recent-post-wrapper notika-shadow sm-res-mg-t-30 tb-res-ds-n dk-res-ds">
                         <div class="recent-post-ctn">
                             <div class="recent-post-title">
-                                <h2>实时文件</h2>
+                                <h2>Realtime on Working</h2>
                             </div>
                         </div>
 						
@@ -201,7 +201,7 @@
 									<a href="#">
 										<div class="recent-post-flex rc-ps-vw">
 											<div class="recent-post-line rct-pt-mg">
-												<p>查看等待队列</p>
+												<p>All Tasks in Queue</p>
 											</div>
 										</div>
 									</a>
@@ -226,7 +226,7 @@
                     <div class="email-statis-inner notika-shadow">
                         <div class="email-ctn-round">
                             <div class="email-rdn-hd">
-								<h2>服务器资源统计</h2>
+								<h2>System State</h2>
 							</div>
                             <div class="email-statis-wrap">
                                 <div class="email-round-nock">
@@ -268,7 +268,7 @@
                                         <input type="text" class="knob" id="systemdisk" value="0" data-rel="65" data-linecap="round" data-width="90" data-bgcolor="#E4E4E4" data-fgcolor="#00c292" data-thickness=".10" data-readonly="true" disabled>
                                     </div>
                                     <div class="email-ctn-nock">
-                                        <p>系统盘</p>
+                                        <p>System Disk</p>
                                     </div>
                                 </div>
 								 <div class="email-round-pro sm-res-ds-n lg-res-mg-bl">
@@ -276,7 +276,7 @@
                                         <input type="text" class="knob" id="datadisk" value="0" data-rel="20" data-linecap="round" data-width="90" data-bgcolor="#E4E4E4" data-fgcolor="#00c292" data-thickness=".10" data-readonly="true" disabled>
                                     </div>
                                     <div class="email-ctn-nock">
-                                        <p>数据盘</p>
+                                        <p>Data Disk</p>
                                     </div>
                                 </div>
 								 <div class="email-round-pro sm-res-ds-n lg-res-mg-bl">
@@ -284,7 +284,7 @@
                                         <input type="text" class="knob" id="temp" value="0" data-rel="45" data-linecap="round" data-width="90" data-bgcolor="#E4E4E4" data-fgcolor="#00c292" data-thickness=".10" data-readonly="true" disabled>
                                     </div>
                                     <div class="email-ctn-nock">
-                                        <p>温度</p>
+                                        <p>Temperature</p>
                                     </div>
                                 </div>
                             </div>
@@ -298,7 +298,7 @@
                         <div class="rc-it-ltd">
                             <div class="recent-items-ctn">
                                 <div class="recent-items-title">
-                                    <h2>异常任务</h2>
+                                    <h2>Error Jobs</h2>
                                 </div>
                             </div>
                             <div class="recent-items-inn">
@@ -307,8 +307,8 @@
                                     <thead>
                                         <tr>
                                             <th>ID</th>
-                                            <th>描述</th>
-                                            <th style="width: 60px">文件数</th>
+                                            <th>Description</th>
+                                            <th style="width: 60px">Length</th>
                                         </tr>
                                     </thead>
 									
@@ -324,7 +324,7 @@
 									<a href="#">
 										<div class="recent-post-flex rc-ps-vw">
 											<div class="recent-post-line rct-pt-mg">
-												<p>查看所有异常任务</p>
+												<p>All Error Jobs</p>
 											</div>
 										</div>
 									</a>
@@ -339,7 +339,7 @@
                     <div class="recent-post-wrapper notika-shadow sm-res-mg-t-30 tb-res-ds-n dk-res-ds">
                         <div class="recent-post-ctn">
                             <div class="recent-post-title">
-                                <h2>异常工作</h2>
+                                <h2>Error Tasks</h2>
                             </div>
                         </div>
 						
@@ -352,7 +352,7 @@
 									<a href="#">
 										<div class="recent-post-flex rc-ps-vw">
 											<div class="recent-post-line rct-pt-mg">
-												<p>查看所有异常工作</p>
+												<p>All Error Tasks</p>
 											</div>
 										</div>
 									</a>
@@ -374,17 +374,17 @@
                     <div class="realtime-wrap notika-shadow mg-t-30">
                         <div class="realtime-ctn">
                             <div class="realtime-title">
-                                <h2>任务地理分布 &nbsp;&nbsp;<span fontsize='-2' style='color:gray'>地图不含港澳台<span></h2>
+                                <h2>Jobs Map &nbsp;&nbsp;<span fontsize='-2' style='color:gray'>地图不含港澳台<span></h2>
                             </div>
                         </div>
                         <div class="realtime-visitor-ctn">
                             <div class="realtime-vst-sg">
                                 <h4><span class="nodecounter" id="vendor_count">-</span></h4>
-                                <p>业务节点</p>
+                                <p>Vendors</p>
                             </div>
                             <div class="realtime-vst-sg">
                                 <h4><span class="nodecounter" id="worker_count">-</span></h4>
-                                <p>工作节点</p>
+                                <p>Workers</p>
                             </div>
                         </div>
                         <div class="realtime-map">
@@ -393,13 +393,13 @@
 						
 						 <div class="realtime-visitor-ctn">
                             <div class="realtime-vst-sg">
-                                <h5>工作节点城市</h5>
+                                <h5>Workers City</h5>
 								<div class="realtime-ctn-bw" id="worker_city">
 
 								</div>
                             </div>
                             <div class="realtime-vst-sg">
-                                <h5>业务节点城市</h5>
+                                <h5>Vendors City</h5>
 								<div class="realtime-ctn-bw" id="vendor_city">
 								
 								</div>
@@ -413,7 +413,7 @@
                     <div class="add-todo-list notika-shadow mg-t-30">
                         <div class="realtime-ctn">
                             <div class="realtime-title">
-                               <h2>健康状态</h2>
+                               <h2>Health</h2>
 							
                             </div>
                         </div>
@@ -442,7 +442,7 @@
             <div class="row">
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                     <div class="footer-copy-right">
-                        <p>Copyright © 2020 Phew - Job Scheduling System</p>
+                        <p>Copyright © 2020 Phew - Scheduling System</p>
                     </div>
                 </div>
             </div>
