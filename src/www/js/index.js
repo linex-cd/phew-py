@@ -20,15 +20,15 @@ function showjob(job_access_key){
 			}
 			
 			var text = 'ID：' + data['job_id'] + '\n';
-			text = text + '状态：' + data['state'] + '\n';
-			text = text + '创建时间：' + create_time + '\n';
-			text = text + '完成时间：' + finish_time + '\n';
-			text = text + '业务源ID：' + data['vendor_id'] + '\n';
-			text = text + '工作组：' + data['worker_group'] + '\n';
-			text = text + '描述：' + data['description'] + '\n';
-			text = text + '优先级：' + data['priority'] + '\n';
-			text = text + '文件数：' + data['length'] + '\n';
-			text = text + '附加信息：' + data['meta'] + '\n';
+			text = text + 'State: ' + data['state'] + '\n';
+			text = text + 'Create Time: ' + create_time + '\n';
+			text = text + 'Finish Time: ' + finish_time + '\n';
+			text = text + 'Vendor ID: ' + data['vendor_id'] + '\n';
+			text = text + 'Worker Group: ' + data['worker_group'] + '\n';
+			text = text + 'Description: ' + data['description'] + '\n';
+			text = text + 'Priority: ' + data['priority'] + '\n';
+			text = text + 'Length: ' + data['length'] + '\n';
+			text = text + 'Meta: ' + data['meta'] + '\n';
 			alert(text)
 		}
 		
@@ -64,15 +64,15 @@ function showtask(task_access_key){
 			}
 			
 			var text = 'ID：' + data['job_id'] + '\n';
-			text = text + '状态：' + data['state'] + '\n';
-			text = text + '备注：' + data['note'] + '\n';
-			text = text + '创建时间：' + create_time + '\n';
-			text = text + '开始时间：' + start_time + '\n';
-			text = text + '完成时间：' + finish_time + '\n';
-			text = text + '优先级：' + data['priority'] + '\n';
-			text = text + '寻址方式：' + data['addressing'] + '\n';
-			text = text + '端口类型：' + data['port'] + '\n';
-			text = text + '附加信息：' + data['meta'] + '\n';
+			text = text + 'State: ' + data['state'] + '\n';
+			text = text + 'Note: ' + data['note'] + '\n';
+			text = text + 'Create Time: ' + create_time + '\n';
+			text = text + 'Start Time: ' + start_time + '\n';
+			text = text + 'Finish Time: ' + finish_time + '\n';
+			text = text + 'Priority: ' + data['priority'] + '\n';
+			text = text + 'Addressing: ' + data['addressing'] + '\n';
+			text = text + 'Port: ' + data['port'] + '\n';
+			text = text + 'Meta: ' + data['meta'] + '\n';
 			alert(text)
 		}
 		
@@ -197,7 +197,7 @@ function showtask(task_access_key){
 					latest_task_htmlstr = str + latest_task_htmlstr
 				}
 				if (latest_task_htmlstr == ''){
-					latest_task_htmlstr = '<div>没有文件正在处理中<div>'
+					latest_task_htmlstr = '<div>No Task on Working<div>'
 				}
 				
 				
@@ -245,7 +245,7 @@ function showtask(task_access_key){
 				
 				var str = '<div class="recent-post-flex rct-pt-mg">\
 									<div class="recent-post-img" style="width:72px;">\
-										<a href="state/peekfile/?filename='+item['data']+'" target="_blank"><img src="img/'+item['port']+'.png" alt="点击打开文件" /></a>\
+										<a href="state/peekfile/?filename='+item['data']+'" target="_blank"><img src="img/'+item['port']+'.png" alt="Open the File" /></a>\
 									</div>\
 									<div class="recent-post-it-ctn">\
 										<a href="javascript:void(0);" onclick="showjob(\''+item['job_access_key']+'\')"><h5>'+item['description']+'</h5></a>\
@@ -255,7 +255,7 @@ function showtask(task_access_key){
 				error_task_htmlstr = str + error_task_htmlstr
 			}
 			if (error_task_htmlstr == ''){
-				error_task_htmlstr = '<div>没有异常文件<div>'
+				error_task_htmlstr = '<div>No Error Task<div>'
 			}
 			
 			
@@ -399,7 +399,7 @@ function showtask(task_access_key){
 				}
 			}
 			if (workers_htmlstr == ''){
-				workers_htmlstr = '<div class="recent-post-signle">没有工作节点</div>'
+				workers_htmlstr = '<div class="recent-post-signle">No Worker Node</div>'
 			}
 			
 			//city tag
@@ -446,7 +446,7 @@ function showtask(task_access_key){
 				}
 			}
 			if (vendors_htmlstr == ''){
-				vendors_htmlstr = '<div class="recent-post-signle">没有业务节点</div>'
+				vendors_htmlstr = '<div class="recent-post-signle">No Vendor Node</div>'
 			}
 			
 			$('#node-list').html(vendors_htmlstr+workers_htmlstr);
