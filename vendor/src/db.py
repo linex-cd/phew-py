@@ -44,8 +44,8 @@ class TaskRecord(Base):
 	def update_task(self, id, result, state):
 		sess = sessionmaker(bind=engine)()
 		
-		record = sess.query(TaskRecord).filter_by(id=id).one()
-		if record is not None:
+		records = sess.query(TaskRecord).filter_by(id=id).all()
+		for record in records:
 
 			record.result = result
 			record.state = state
