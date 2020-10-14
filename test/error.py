@@ -7,22 +7,20 @@ r = redis.Redis(host = '127.0.0.1', port = 2019, db = 0);
 
 ####################################################################
 
-#出错的task
-error_task_keys_pattern = 'error_task-*'
+#出错的job
+error_job_keys_pattern = 'error_job-*'
 
-error_task_keys = r.keys(error_task_keys_pattern)
+error_job_keys = r.keys(error_job_keys_pattern)
 
-for error_task_key in error_task_keys:
+for error_job_key in error_job_keys:
 	
-	error_task_key = error_task_key.decode()
+	error_job_key = error_job_key.decode()
 	
-	error_tasks = list(r.smembers(error_task_key));
-	print("error_tasks len:"+str(len(error_tasks)))
-	for task_key in error_tasks:
+	error_jobs = list(r.smembers(error_job_key));
+	print("error_jobs len:"+str(len(error_jobs)))
+	for job_key in error_jobs:
 	
-		task_key = task_key.decode()
-		
-		job_key = 
+		job_key = job_key.decode()
 		state = r.hget(job_key, 'state').decode()
 		
 		print(job_key+":"+state)
