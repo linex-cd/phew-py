@@ -517,7 +517,7 @@ def errorlist(request):
 
 
 		for error_job_set_key in error_job_set_keys:
-			jobs = r.smembers(error_job_set_key)
+			jobs = list(r.smembers(error_job_set_key))
 			for job in jobs:
 			
 				job_key = job.decode()
@@ -538,6 +538,7 @@ def errorlist(request):
 		
 		
 		#job_latest sort by create_time
+
 		error_jobs = sorted(error_jobs, key=lambda x: (x[0]))
 		
 		
@@ -549,7 +550,7 @@ def errorlist(request):
 		error_task_set_keys = r.keys(error_task_set_pattern)
 
 		for error_task_set_key in error_task_set_keys:
-			tasks = r.smembers(error_task_set_key)
+			tasks = list(r.smembers(error_task_set_key))
 		
 			for task in tasks:
 				
@@ -594,7 +595,7 @@ def errorlist(request):
 		
 		
 		#job_latest sort by create_time
-		error_tasks = sorted(error_tasks, key=lambda x: (x[0]))
+		error_tasks = sorted(error_tasks, key=lambda x: (x["create_time"]))
 		
 
 		
