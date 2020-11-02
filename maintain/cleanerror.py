@@ -26,7 +26,7 @@ for error_job_key in error_job_keys:
 		print(job_key+":"+state)
 		if state == 'deleted':
 			
-			print("cleaning job_key:"+job_key)
+			print("cleaning error job_key:"+job_key)
 			
 			#seek all task in job and delete
 			task_key_pattern = job_key.replace("job-", "task-") + "-*"

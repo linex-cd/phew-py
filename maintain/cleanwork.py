@@ -77,8 +77,16 @@ for jobs_done_key in jobs_done_keys:
 #endfor
 
 
+#处理中的任务计数,直接归零
+#job_pending
+statistics_job_pending_pattern = 'statistics_job_pending-*'
+statistics_job_pending_pending_keys = r.keys(statistics_job_pending_pattern)
 
-
+for statistics_job_pending_pending_key in statistics_job_pending_pending_keys:
+	statistics_job_pending_pending_key = statistics_job_pending_pending_key.decode()
+	r.set(statistics_job_pending_pending_key, 0)
+	
+#endfor
 
 
 
