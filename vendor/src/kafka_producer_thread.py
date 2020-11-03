@@ -131,6 +131,7 @@ def main():
 				result['hocr'] = hocr
 				result['index'] = index
 				result['table_type'] = job_meta['is_tables']
+				result['ignore'] = job_meta['ignore']
 				result['candidates'] = []
 				
 				data = dict()

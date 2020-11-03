@@ -22,9 +22,10 @@ def prepare_task(task):
 	from_instant_id = task['from_instant_id']
 	id = task['id']
 	task_id = task['task_id']
-	images = json.loads(task['images'])
 	bmsah = task['bmsah']
+	images =  json.loads(task['images'])
 	is_tables = json.loads(task['is_tables'])
+	ignore = json.loads(task['ignore'])
 	is_head = is_tables[0] if len(is_tables) > 0 else ''
 	saved_path = task['saved_path']
 	priority = task['priority']
@@ -53,6 +54,7 @@ def prepare_task(task):
 	meta['task_id'] = task_id
 	meta['bmsah'] = bmsah
 	meta['is_tables'] = is_tables
+	meta['ignore'] = ignore
 	meta['is_head'] = is_head
 	meta['topic'] = topic
 	meta['saved_path'] = topic
@@ -101,6 +103,10 @@ def prepare_task(task):
 
 			if is_tables[index] != '':
 				port = 'tableocr'
+			#endif
+			
+			if ignore[index] == '1':
+				port = 'ignore'
 			#endif
 		#endif
 

@@ -30,6 +30,7 @@ class TaskRecord(Base):
 	bmsah = Column(Text())
 	images = Column(Text(), nullable=False)
 	is_tables = Column(Text(), nullable=False)
+	ignore = Column(Text(), nullable=False)
 	bbox_cache = Column(Text())
 	result = Column(Text())
 	saved_path = Column(Text())
@@ -65,6 +66,7 @@ class TaskRecord(Base):
 		record.bmsah = data['bmsah']
 		record.images = json.dumps(data['images'], ensure_ascii=False)
 		record.is_tables = json.dumps(data['is_tables'], ensure_ascii=False)
+		record.ignore = json.dumps(data['ignore'], ensure_ascii=False)
 		record.saved_path = data['savedPath'] if 'savedPath' in data else ''
 		record.from_instant_id = data['instant_id']
 		record.instant_id = config.instant_id
@@ -101,6 +103,7 @@ class TaskRecord(Base):
 			task['bmsah'] = record.bmsah
 			task['images'] = record.images
 			task['is_tables'] = record.is_tables
+			task['ignore'] = record.ignore
 			task['saved_path'] = record.saved_path
 			task['from_instant_id'] = record.from_instant_id
 			task['priority'] = record.priority
