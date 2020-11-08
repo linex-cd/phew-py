@@ -29,7 +29,7 @@ def parse(pdf_file):
 			
 			count = len(text)
 			char_width = int((box[2] - box[0]) / count)
-			padding = 8
+			padding = 0
 			for i in range(count):
 				hocr.append( [char_width * i + padding + box[0], box[1], char_width - padding, box[3] - box[1]] )
 			#endfor

@@ -62,12 +62,10 @@ def run(filename):
 	pdf_file = filename
 
 	text, bbox, hocr = pdf_engine.run_pdf(pdf_file)
-	ocr = [text]
-	bbox = list(bbox)
-	hocr = list(hocr)
+
 	
 	result = {}
-	result['ocr'] = ocr
+	result['ocr'] = text
 	result['bbox'] = bbox
 	result['hocr'] = hocr
 	
