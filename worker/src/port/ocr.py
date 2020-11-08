@@ -145,9 +145,9 @@ def run(filename):
 	hocr = list(hocr)
 	
 	result = {}
-	result['ocr'] = ocr
-	result['bbox'] = bbox
-	result['hocr'] = hocr
+	result['ocr'] = [ocr]
+	result['bbox'] = [bbox]
+	result['hocr'] = [hocr]
 	
 	return result
 #enddef

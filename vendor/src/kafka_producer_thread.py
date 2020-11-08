@@ -99,9 +99,9 @@ def main():
 					#endif
 					
 					
-					bbox.append([result['bbox']])
-					content.append([result['ocr']])
-					hocr.append([result['hocr']])
+					bbox.append(result['bbox'])
+					content.append(result['ocr'])
+					hocr.append(result['hocr'])
 					
 					task_meta = json.loads(task['meta'])
 					index.append(task_meta['index'])
