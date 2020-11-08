@@ -7,7 +7,7 @@ import logging
 import traceback
 
 
-from pdfcore.pdf2text import parse
+from pdfcore.pdf2lines import parse
 
 
 class Pdf:
@@ -22,21 +22,35 @@ class Pdf:
 		pass
 	#enddef
 
-	def run_pdf(self, pdf):
-		text = parse(pdf)
+	def run_pdf(self, pdf_file):
+	
+		result = {'text':[],'box':[],'hocr':[]}
+
+		result['text'], result['box'], result['hocr'] = parse(pdf_file)
 		
-		ocr = text
-		bbox = []
-		hocr = []
-		
-		return ocr, bbox, hocr
+		return result['text'], result['box'], result['hocr']
+
 	#enddef
 	
-	def runtime_pdf(self, pdf):
+	def runtime_pdf(self, pdf_file):
 		
-		text = parse(pdf)
+		res = {"results": []}
+		
+		start_time = time.time()
+		ocr_result, rois, hocr = self.run_pdf(pdf_file)
 
-		return text
+		print("CRNN time: %.03fs" % (time.time() - start_time))
+
+
+		for i in range(len(rois)):
+			res["results"].append({
+				'position': rois[i],
+				'text': ocr_result[i],
+				'hocr': hocr[i]
+			})
+		#endfor
+		
+		return res
 	#enddef
 #endclass
 
