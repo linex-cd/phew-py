@@ -1,0 +1,5 @@
+nvidia-docker run \
+--name textiseweb_debug \
+--network=host \
+-it textise_web:3.0.0 \
+bash
