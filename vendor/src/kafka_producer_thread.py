@@ -89,13 +89,13 @@ def main():
 				for task in tasks:
 					result = task['result']
 					if result == '':
-						result = '{"bbox": [], "ocr": [], "hocr": [] }'
+						result = '{"bbox": [[]], "ocr": [[]], "hocr": [[]] }'
 					#endif
 					
 					result = json.loads(result)
 					
 					if 'bbox' not in result:
-						result = {"bbox": [], "ocr": [], "hocr": [] }
+						result = {"bbox": [[]], "ocr": [[]], "hocr": [[]] }
 					#endif
 					
 					
