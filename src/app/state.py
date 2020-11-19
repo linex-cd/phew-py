@@ -113,9 +113,12 @@ def latestwork(request):
 			tasks = list(tasks)
 			for task_key in tasks:
 				task_key = task_key.decode()
-				
+				if  r.hget(job_key, 'description') == None:
+					r.srem(tasks_pending_set_key, task_key)
+					continue
 				item = {}
 				item['job_id'] = job_key.split("-")[-1]
+
 				item['description'] = r.hget(job_key, 'description').decode()
 				
 				start_time = r.hget(task_key, 'start_time')
