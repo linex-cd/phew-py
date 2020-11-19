@@ -88,10 +88,11 @@ def latestwork(request):
 			
 			#latest
 			length = int(r.hget(job_key, 'length').decode())
+			priority = int(r.hget(job_key, 'priority').decode())
 			description = r.hget(job_key, 'description').decode()
 			job_id = job_key.split("-")[-1]
 			create_time = r.hget(job_key, 'create_time').decode()
-			item = (create_time, length, job_id, description, encrypt(job_key))
+			item = (create_time, length, job_id, priority, description, encrypt(job_key))
 			job_latest.append(item)
 			
 		#endfor
@@ -527,13 +528,14 @@ def errorlist(request):
 				
 				#task_total
 				length = int(r.hget(job_key, 'length').decode())
+				priority = int(r.hget(job_key, 'priority').decode())
 				task_total = task_total + length
 				
 				#latest
 				description = r.hget(job_key, 'description').decode()
 				job_id = job_key.split("-")[-1]
 				create_time = r.hget(job_key, 'create_time').decode()
-				item = (create_time, length, job_id, description, encrypt(job_key))
+				item = (create_time, length, job_id, priority, description, encrypt(job_key))
 				error_jobs.append(item)
 			
 			#endfor
