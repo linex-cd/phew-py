@@ -90,7 +90,7 @@ def get(request):
 			#read data from disk if done
 			if task_info['addressing'] == 'binary':
 				taskdata_filename = filedirfromhash(task_info['hash']) + task_info['hash'] + '.taskdata'
-				if existfile(taskdata) == True:
+				if existfile(taskdata_filename) == True:
 					taskdata = readfile(taskdata_filename)
 					task_info['data'] = r.hget(task_key, 'data').decode()
 					r.hset(task_key, 'state', 'waiting')
@@ -184,6 +184,14 @@ def finish(request):
 		r.srem(tasks_pending_key, task_key)
 		
 		tasks_waiting_key = 'tasks_waiting-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']+ '-' + str(task_info['job_id'])
+		
+		#delete binary tmp file
+		if task_info['addressing'] == 'binary':
+			taskdata_filename = filedirfromhash(task_info['hash']) + task_info['hash'] + '.taskdata'
+			if existfile(taskdata_filename) == True:
+				removefile(taskdata_filename)
+			#endif
+		#endif
 		
 		#check if tasks_waiting and tasks_pending set are empty
 		if r.scard(tasks_waiting_key) == 0 and r.scard(tasks_pending_key) == 0: 

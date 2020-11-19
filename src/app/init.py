@@ -129,6 +129,12 @@ def filesize(filename):
 	return 0;
 #enddef
 
+def removefile(filename):
+	if os_path_exists(filename) and os_path_isfile(filename) and os_access(filename, os_W_OK):
+		return os_remove(filename);
+	#endif
+	return 0;
+#enddef
 
 
 from app.config import data_dir 
@@ -151,6 +157,6 @@ from app.config import redis_host
 
 r = redis.Redis(host = redis_host, port = 2019, db = 0);
 
-__all__ = ['redirect', 'response', 'responsefile', 'time', 'json', 'md5', 'encrypt', 'decrypt', 'readfile', 'writefile', 'existfile', 'filesize', 'makedirforhash', 'filedirfromhash', 'r']
+__all__ = ['redirect', 'response', 'responsefile', 'time', 'json', 'md5', 'encrypt', 'decrypt', 'readfile', 'writefile', 'existfile', 'filesize', 'removefile', 'makedirforhash', 'filedirfromhash', 'r']
 
 
