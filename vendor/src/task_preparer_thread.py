@@ -158,10 +158,11 @@ def main():
 	
 	MAX_TRY_TIMES = 100
 	CUR_TRY_TIMES = 0
+	COUNT_TO_ASSIGN = 5
 	while True:
 		try:
 
-			tasks = TaskRecord.find_init_tasks()
+			tasks = TaskRecord.find_init_tasks(COUNT_TO_ASSIGN)
 			
 			for task in tasks:
 				prepare_task(task)

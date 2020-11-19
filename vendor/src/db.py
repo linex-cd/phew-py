@@ -63,7 +63,7 @@ class TaskRecord(Base):
 		data = json.loads(message)
 		record = TaskRecord()
 		record.task_id = data['task_id']
-		record.priority = data['priority']  if 'priority' in data else 8
+		record.priority = data['priority']  if 'priority' in data else 5
 		record.bmsah = data['bmsah']
 		record.images = json.dumps(data['images'], ensure_ascii=False)
 		record.is_tables = json.dumps(data['is_tables'], ensure_ascii=False)
@@ -91,10 +91,10 @@ class TaskRecord(Base):
 		return record_count;
 	
 	@classmethod
-	def find_init_tasks(self):
+	def find_init_tasks(self, count):
 		#每次为当前任务单独创建会话，防止处理超时
 		sess = sessionmaker(bind=engine)()
-		records = sess.query(TaskRecord).filter_by(state="init", instant_id = config.instant_id).all()
+		records = sess.query(TaskRecord).filter_by(state="init", instant_id = config.instant_id).order_by(desc(priority)).limit(count).all()
 		sess.close()
 		
 		tasks = []
