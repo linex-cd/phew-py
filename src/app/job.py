@@ -120,6 +120,24 @@ def assign(request):
 			r.hset(task_key, 'port', task_info['port'])
 			
 			
+			#task addressing and port count statistics
+			statistics_task_addressing_key = statistics_task_addressing_key_base + '-' + task_info['addressing']
+			r.incr(statistics_task_addressing_key, 1)
+			
+			statistics_task_port_key = statistics_task_port_key_base + '-' + task_info['port']
+			r.incr(statistics_task_port_key, 1)
+			
+			#skip ignore task
+			if task_info['port'] == 'ignore': 
+				r.hset(task_key, 'state', 'done')
+				r.hset(task_key, 'note', 'ignore file')
+				r.hset(task_key, 'finish_time', int(time.time()))
+				r.hset(task_key, 'result', '')
+				continue
+			#endif
+			
+			
+			#save binary to disk for tmp use
 			if task_info['addressing'] == 'binary':
 				taskdata_filename = filedirfromhash(task_info['hash']) + task_info['hash'] + '.taskdata'
 				makedirforhash(task_info['hash'])
@@ -129,12 +147,7 @@ def assign(request):
 				r.hset(task_key, 'data', task_info['data'])
 			#endif
 			
-			#task addressing and port count statistics
-			statistics_task_addressing_key = statistics_task_addressing_key_base + '-' + task_info['addressing']
-			r.incr(statistics_task_addressing_key, 1)
 			
-			statistics_task_port_key = statistics_task_port_key_base + '-' + task_info['port']
-			r.incr(statistics_task_port_key, 1)
 			
 			#allocate task to work priority list
 			work_key = 'work-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role'] + '-' + str(job_info['priority'])
