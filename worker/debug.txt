@@ -1,8 +1,0 @@
-docker build -f ./Dockerfile -t worker_service:3.0.0 .
-
-nvidia-docker run \
---name textisedebug \
---network=host \
--v /data/yn/dzjz/:/juanzong \
--it worker_service:3.0.0 \
-bash
