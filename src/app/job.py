@@ -68,8 +68,9 @@ def assign(request):
 		
 		
 		tasks = jsondata['tasks']
-				
-		r.hset(job_key, 'length', len(tasks))
+		
+		length = len(tasks)
+		r.hset(job_key, 'length', length)
 		
 		#job and task count statistics
 		#job total
@@ -90,7 +91,8 @@ def assign(request):
 		statistics_task_port_key_base = 'statistics_task_port-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role'] 
 		
 		#---------------------------------
-		
+		ignore_count = 0
+
 		for task_info in tasks:
 			
 			#make task records
@@ -129,10 +131,29 @@ def assign(request):
 			
 			#skip ignore task
 			if task_info['port'] == 'ignore': 
+				ignore_count = ignore_count + 1
 				r.hset(task_key, 'state', 'done')
 				r.hset(task_key, 'note', 'ignore file')
 				r.hset(task_key, 'finish_time', int(time.time()))
 				r.hset(task_key, 'result', '')
+				if ignore_count == length:
+					#add a job to set as unread
+					jobs_done_key = 'jobs_done-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']
+
+					r.sadd(jobs_done_key, task_info['job_id'])
+					
+					#add finish timestamp
+					r.hset(job_key, 'finish_time', int(time.time()))
+					r.hset(job_key, 'state', 'done')
+					
+					#job pending statistics
+
+					r.decr(statistics_job_pending_key, 1)
+					
+					if int(r.get(statistics_job_pending_key).decode()) < 0:
+						r.set(statistics_job_pending_key, 0)
+					#endif
+				#endif
 				continue
 			#endif
 			
