@@ -53,26 +53,22 @@ def main():
 			continue
 		#endif
 		
+		logging.info('%d textise task(s) done' % finished_tasks_count)
 		for item in finished_tasks_list:
-			logging.info('%d textise task(s) done' % finished_tasks_count)
-			
+
 			data = None
-			try:
-				
-				job_id = item
 
-				job_info = {}
-				job_info['job_id'] = str(job_id)
-
-				data = detail_job(session = session, job = job_info)
-
-			except Exception:
-				logging.exception('kafka_producer_thread get job detail occur.')
-				traceback.print_exc()
-
-			#endtry	
+			job_id = item
 			
+			logging.info('done task job_id: %s' % job_id)
+
+			job_info = {}
+			job_info['job_id'] = str(job_id)
+
+			data = detail_job(session = session, job = job_info)
+
 			if data is None:
+				logging.exception('kafka_producer_thread get job detail occur.')
 				continue
 			#endif
 			
@@ -143,7 +139,7 @@ def main():
 				
 				topic = job_meta['topic']
 				
-				logging.info("Kafka Sent message, topic is: {}, bmsah is: {}".format(topic, data['bmsah']))
+				logging.info("Kafka Sent message, job id is: {} topic is: {}, bmsah is: {}".format(job_id, topic, data['bmsah']))
 				producer = KafkaProducer(bootstrap_servers=kafka_server, max_request_size=1024 * 1024 * 1024, compression_type='gzip')
 			
 				

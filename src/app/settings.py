@@ -113,8 +113,8 @@ USE_L10N = True
 
 USE_TZ = True
 
-FILE_UPLOAD_MAX_MEMORY_SIZE = 20000000 #20M
-DATA_UPLOAD_MAX_MEMORY_SIZE = 20000000
+FILE_UPLOAD_MAX_MEMORY_SIZE = 1000000000 #1000M
+DATA_UPLOAD_MAX_MEMORY_SIZE = 1000000000
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
