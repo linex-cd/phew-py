@@ -92,7 +92,7 @@ def get(request):
 				taskdata_filename = filedirfromhash(task_info['hash']) + task_info['hash'] + '.taskdata'
 				if existfile(taskdata_filename) == True:
 					taskdata = readfile(taskdata_filename)
-					task_info['data'] = r.hget(task_key, 'data').decode()
+					task_info['data'] = taskdata
 					r.hset(task_key, 'state', 'waiting')
 					break
 				else:

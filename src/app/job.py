@@ -227,7 +227,7 @@ def delete(request):
 			error_task_set_key = 'error_task-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']
 			
 			if not r.sismember(error_task_set_key, task_key):
-				r.delete(task_key)
+				r.hdel(task_key)
 			#endif
 			
 		#endfor
@@ -384,8 +384,13 @@ def retry(request):
 				
 			#endif
 			
-			#remove from pending set
+			#remove from tasks_pending set
+			tasks_pending_key = 'tasks_pending-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']+ '-' + str(task_info['job_id'])
 			r.srem(tasks_pending_key, task_key)
+			
+			#added to from tasks_waiting set 
+			tasks_waiting_key = 'tasks_waiting-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']+ '-' + str(task_info['job_id'])
+			r.sadd(tasks_waiting_key, task_key)
 			
 		#endfor
 			
