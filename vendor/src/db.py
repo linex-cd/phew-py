@@ -94,7 +94,7 @@ class TaskRecord(Base):
 	def find_init_tasks(self, count):
 		#每次为当前任务单独创建会话，防止处理超时
 		sess = sessionmaker(bind=engine)()
-		records = sess.query(TaskRecord).filter_by(state="init", instant_id = config.instant_id).order_by(desc(priority)).limit(count).all()
+		records = sess.query(TaskRecord).filter_by(state="init", instant_id = config.instant_id).order_by(desc('priority')).limit(count).all()
 		sess.close()
 		
 		tasks = []
