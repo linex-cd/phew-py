@@ -106,14 +106,13 @@ def prepare_task(task):
 			#endif			
 		#endif
 		
-		if ignore[index] == '1':
-			port = 'ignore'
-		#endif
-
 		if local_file.lower().find(".pdf") >= 0:
 			port = 'pdf'
 		#endif
 		
+		if ignore[index] == '1':
+			port = 'ignore'
+		#endif
 		
 		
 		task = {}
