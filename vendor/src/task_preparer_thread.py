@@ -158,7 +158,7 @@ def main():
 	
 	MAX_TRY_TIMES = 100
 	CUR_TRY_TIMES = 0
-	COUNT_TO_ASSIGN = 5
+	COUNT_TO_ASSIGN = 1
 	while True:
 		try:
 
@@ -185,7 +185,7 @@ def main():
 			logging.exception('find_new_tasks will retry in 30 seconds.')
 			time.sleep(30)
 		#endtry
-		time.sleep(10)
+		time.sleep(1)
 	#endwhile
 
 	

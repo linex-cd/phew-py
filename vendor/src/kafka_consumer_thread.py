@@ -73,7 +73,7 @@ def main():
 				#endif
 				
 				#阻塞等待
-				time.sleep(5);
+				time.sleep(1);
 			#endwhile
 			
 		except Exception:
