@@ -103,11 +103,11 @@ def prepare_task(task):
 
 			if is_tables[index] != '':
 				port = 'tableocr'
-			#endif
-			
-			if ignore[index] == '1':
-				port = 'ignore'
-			#endif
+			#endif			
+		#endif
+		
+		if ignore[index] == '1':
+			port = 'ignore'
 		#endif
 
 		if local_file.lower().find(".pdf") >= 0:
