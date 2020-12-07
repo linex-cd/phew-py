@@ -60,6 +60,10 @@ def main():
 
 			job_id = item
 			
+			#忽略非本实例下的任务
+			if TaskRecord.is_assigned_task(job_id) == false:
+				continue
+			#endif
 			logging.info('done task job_id: %s' % job_id)
 
 			job_info = {}

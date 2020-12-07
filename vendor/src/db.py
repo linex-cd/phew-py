@@ -114,4 +114,16 @@ class TaskRecord(Base):
 			tasks.append(task)
 		return tasks
 		
+	@classmethod
+	def is_assigned_task(self, record_id):
+
+		sess = sessionmaker(bind=engine)()
+		records = sess.query(TaskRecord).filter_by(state="assigned", instant_id = config.instant_id, id = record_id).all()
+		sess.close()
+		
+		if len(records) > 0 :
+			return true
+		
+		return false
+		
 	
