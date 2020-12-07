@@ -122,8 +122,8 @@ class TaskRecord(Base):
 		sess.close()
 		
 		if len(records) > 0 :
-			return true
+			return True
 		
-		return false
+		return False
 		
 	

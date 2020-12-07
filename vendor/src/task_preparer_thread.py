@@ -71,8 +71,8 @@ def prepare_task(task):
 		local_file = '/juanzong/'+filename
 		
 		if files.existfile(local_file):
-			logging.info("using local file:"+filename)
-			
+			#logging.info("using local file:"+filename)
+			pass
 		else:
 			#mkdirs for download
 			files.makedirsforfile(local_file)
@@ -80,7 +80,7 @@ def prepare_task(task):
 			#download from aliyun oss
 			filename = 'dzws/'+filename
 		
-			logging.info("downloading file:"+filename)
+			#logging.info("downloading file:"+filename)
 			try:
 				
 				bucket = oss2.Bucket(oss2.Auth(config.access_key_id, config.access_key_secret), config.endpoint, config.bucket_name)
