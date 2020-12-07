@@ -5,14 +5,14 @@ version=$(cat VERSION)
 
 
 #database
-KAFKA_SERVER=127.0.0.1
-DB=postgresql://postgres:1234@127.0.0.1:5432/cv
+KAFKA_SERVER=192.168.2.31
+DB=postgresql://postgres:postgres@192.168.2.31:5432/cv
 
 #aliyun oss
-OSS_ACCESS_KEY_ID=xxxx
-OSS_ACCESS_KEY_SECRET=xxxx
+OSS_ACCESS_KEY_ID=LTAI4Fpv3g2wjPFnKwAp4a4S
+OSS_ACCESS_KEY_SECRET=EpO8bWdrq2DjAeLX90y5aTX6Gp5js3
 OSS_BUCKET=znfz
-OSS_ENDPOINT=xxxx
+OSS_ENDPOINT=http://oss-cn-hangzhou.aliyuncs.com
 
 #-----------------------------
 #image

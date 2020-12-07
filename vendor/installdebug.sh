@@ -8,10 +8,10 @@ KAFKA_SERVER=192.168.2.31
 DB=postgresql://postgres:postgres@192.168.2.31:5432/cv
 
 #aliyun oss
-OSS_ACCESS_KEY_ID=xxxx
-OSS_ACCESS_KEY_SECRET=xxxx
-OSS_BUCKET=xxxx
-OSS_ENDPOINT=xxxx
+OSS_ACCESS_KEY_ID=LTAI4Fpv3g2wjPFnKwAp4a4S
+OSS_ACCESS_KEY_SECRET=EpO8bWdrq2DjAeLX90y5aTX6Gp5js3
+OSS_BUCKET=znfz
+OSS_ENDPOINT=http://oss-cn-hangzhou.aliyuncs.com
 
 #-----------------------------
 #image
@@ -24,8 +24,16 @@ WORKER_KEY=testkey12345
 WORKER_ROLE=textise
 
 
-INSTANT_ID=textise_vendor_node_debug
-container_name=textise_vendor_debug
+node_id=1
+
+if [ -n "$1" ]; then
+    node_id=$1
+else
+    echo "第一个参数是节点ID，默认1"
+fi
+
+INSTANT_ID=textise_vendor_node_${node_id}
+container_name=textise_vendor_${node_id}
 
 VENDOR_ID=${node_id}
 VENDOR_NAME=Nanjing-Dev-vendor-node-${node_id}
