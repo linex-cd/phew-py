@@ -20,7 +20,13 @@ kafka_server = config.kafka_server.split(',')
 def main():
 	logging.info("kafka_consumer_thread started")
 	
-	#等待历史任务完成
+	consumer = KafkaConsumer(config.consumer_topic, 
+								bootstrap_servers = kafka_server, 
+								enable_auto_commit = False, 
+								session_timeout_ms = 100*1000, 
+								request_timeout_ms = 110*1000, 
+								max_poll_records = 1,
+								group_id='ocr')
 	
 	while True:
 		'''
@@ -32,13 +38,7 @@ def main():
 		try:
 			#手动拉取任务消息
 			message = None
-			consumer = KafkaConsumer(config.consumer_topic, 
-								bootstrap_servers = kafka_server, 
-								enable_auto_commit = False, 
-								session_timeout_ms = 100*1000, 
-								request_timeout_ms = 110*1000, 
-								max_poll_records = 1,
-								group_id='ocr')
+			
 			
 			while True:
 				
@@ -66,7 +66,7 @@ def main():
 						
 					#endfor
 					consumer.commit()
-					consumer.close()
+					
 					
 					#等待任务完成后重连拉取任务
 					break
@@ -93,6 +93,7 @@ def main():
 		
 		time.sleep(10)
 	#endwhile
+	consumer.close()
 	
 #enddef
 
