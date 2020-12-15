@@ -3,6 +3,7 @@ import traceback
 
 import os
 import time
+import json
 
 from kafka import KafkaConsumer
 from kafka.vendor import six
@@ -58,14 +59,39 @@ def main():
 								data = files.readfile('/kafkacache/'+data)
 							#endif
 							
-							dic = TaskRecord.save_task(data)
-
-							logging.info('Saved textise task: %s' % dic['bmsah'])
+							taskinfo = json.loads(data)
 							
+							logging.info('Peek textise task: %s, priority: %d' % (taskinfo['bmsah'], taskinfo['priority']))
+							
+							if int(config.only_for_priority) != 0 and int(taskinfo["priority"]) != int(config.only_for_priority) :
+								logging.info('Skip textise %s [config: %d, priority: %d]' % (taskinfo['bmsah'], int(config.only_for_priority), int(taskinfo['priority'])))
+								
+								consumer.close()
+								
+								#重新来一个新的消费者
+								consumer = KafkaConsumer(config.consumer_topic, 
+								bootstrap_servers = kafka_server, 
+								enable_auto_commit = False, 
+								session_timeout_ms = 100*1000, 
+								request_timeout_ms = 110*1000, 
+								max_poll_records = 1,
+								group_id='ocr')
+								
+								
+								break
+							#endif
+							
+							
+							TaskRecord.save_task(data)
+
+							logging.info('Saved textise task: %s, priority: %d' % (taskinfo['bmsah'], taskinfo['priority']))
+							consumer.commit()
+							
+							break
 						#endfor
-						
+						break
 					#endfor
-					consumer.commit()
+					
 					
 					
 					#等待任务完成后重连拉取任务

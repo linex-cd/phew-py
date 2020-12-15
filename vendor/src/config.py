@@ -4,6 +4,7 @@ import os
 vendor_id = os.getenv('VENDOR_ID', '1')
 vendor_name = os.getenv('VENDOR_NAME', 'Nanjing-Dev-vendor-node-1')
 vendor_location = os.getenv('VENDOR_LOCATION', '南京')
+only_for_priority = os.getenv('ONLY_FOR_PRIORITY', '0')
 
 jobcenter_server = os.getenv('JOBCENTER_SERVER', '127.0.0.1:2020')
 

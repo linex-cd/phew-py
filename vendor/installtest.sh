@@ -24,11 +24,18 @@ WORKER_KEY=testkey12345
 WORKER_ROLE=textise
 
 node_id=1
+ONLY_FOR_PRIORITY=0
 
 if [ -n "$1" ]; then
     node_id=$1
 else
     echo "第一个参数是节点ID，默认1"
+fi
+
+if [ -n "$2" ]; then
+    ONLY_FOR_PRIORITY=$2
+else
+    echo "第二个参数是指定优先级专用，默认0，表示无指定优先级"
 fi
 
 INSTANT_ID=textise_vendor_node_${node_id}
@@ -47,6 +54,7 @@ nvidia-docker run \
 -e VENDOR_ID=${VENDOR_ID} \
 -e VENDOR_NAME=${VENDOR_NAME} \
 -e VENDOR_LOCATION=${VENDOR_LOCATION} \
+-e ONLY_FOR_PRIORITY=${ONLY_FOR_PRIORITY} \
 -e WORKER_GROUP=${WORKER_GROUP} \
 -e WORKER_KEY=${WORKER_KEY} \
 -e WORKER_ROLE=${WORKER_ROLE} \
