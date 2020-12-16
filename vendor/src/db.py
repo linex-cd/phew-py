@@ -3,7 +3,7 @@ from datetime import datetime
 import json
 import config
 
-import config
+import time
 
 
 from sqlalchemy import create_engine
@@ -18,7 +18,7 @@ engine = create_engine(config.db, pool_recycle=3600, encoding="utf-8")
 
 Base.metadata.create_all(engine)
 
-sess = sessionmaker(bind=engine)()
+#sess = sessionmaker(bind=engine)()
 
 class TaskRecord(Base):
 	__tablename__ = 'ocr_task_record'
@@ -45,7 +45,7 @@ class TaskRecord(Base):
 	@classmethod
 	def update_task(self, id, result, state):
 		
-		#sess = sessionmaker(bind=engine)()
+		sess = sessionmaker(bind=engine)()
 		
 		records = sess.query(TaskRecord).filter_by(id=id).all()
 		for record in records:
@@ -56,13 +56,14 @@ class TaskRecord(Base):
 			sess.commit()
 			
 		#endfor
-		#sess.close()
+		
+		sess.close()
 		
 
 	@classmethod
 	def save_task(self, message):
 		
-		#sess = sessionmaker(bind=engine)()
+		sess = sessionmaker(bind=engine)()
 		
 		data = json.loads(message)
 		record = TaskRecord()
@@ -81,25 +82,36 @@ class TaskRecord(Base):
 		
 		sess.add(record)
 		sess.commit()
-		#sess.close()
+		sess.close()
 		
 		return data
 
 	@classmethod
 	def task_count(self):
-		#sess = sessionmaker(bind=engine)()
+		sess = sessionmaker(bind=engine)()
 		record_count = sess.query(func.count(TaskRecord.id))\
 						.filter(and_( or_(TaskRecord.state == 'init', TaskRecord.state == 'assigned'), TaskRecord.instant_id == config.instant_id))\
 						.scalar()
-		#sess.close()
+		sess.close()
 		
 		return record_count;
 	
 	@classmethod
 	def find_init_tasks(self, limitcount):
 		
-		#sess = sessionmaker(bind=engine)()
-		records = sess.query(TaskRecord).filter(and_(TaskRecord.state=="init", TaskRecord.instant_id == config.instant_id)).order_by(desc('priority')).limit(limitcount).all()
+		sess = sessionmaker(bind=engine)()
+		
+		time.sleep(10);
+		limitcount = 5
+		
+		query = sess.query(TaskRecord).filter(and_(TaskRecord.state=="init", TaskRecord.priority == config.only_for_priority )).limit(limitcount)
+		
+		if int(config.only_for_priority) == 0:
+			query = sess.query(TaskRecord).filter(and_(TaskRecord.state=="init", TaskRecord.instant_id == config.instant_id)).order_by(desc('priority')).limit(limitcount)
+			
+		#endif
+		time.sleep(10);
+		records = query.all()
 		#sess.close()
 		
 		tasks = []
@@ -122,9 +134,9 @@ class TaskRecord(Base):
 	@classmethod
 	def is_belong_instance_task(self, record_id):
 
-		#sess = sessionmaker(bind=engine)()
+		sess = sessionmaker(bind=engine)()
 		records = sess.query(TaskRecord).filter(and_(TaskRecord.instant_id == config.instant_id, TaskRecord.id == record_id)).all()
-		#sess.close()
+		sess.close()
 		
 		if len(records) > 0 :
 			return True

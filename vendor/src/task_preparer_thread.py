@@ -96,7 +96,7 @@ def prepare_task(task):
 
 		#assign task
 		
-		port = 'test'
+		port = 'unknown'
 		if local_file.lower().find(".png") >= 0 or local_file.lower().find(".jpg") >= 0:
 			
 			port = 'ocr'
