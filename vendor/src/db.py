@@ -112,7 +112,7 @@ class TaskRecord(Base):
 		#endif
 		time.sleep(10);
 		records = query.all()
-		#sess.close()
+		sess.close()
 		
 		tasks = []
 		for record in records:
