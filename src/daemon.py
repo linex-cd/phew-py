@@ -73,12 +73,12 @@ def deamon_thread(timeout = 60, try_times_limit = 3):
 							r.srem(tasks_pending_key, task_key)
 
 							
-							#send to error list
+							#send to error set
 							error_job_set_key = 'error_job-' + worker_group + '-' + worker_key + '-' + worker_role
-							r.sadd(error_job_set_key, job_key)
+							r.zadd(error_job_set_key, int(time.time()), job_key)
 							
 							error_task_set_key = 'error_task-' + worker_group + '-' + worker_key + '-' + worker_role
-							r.sadd(error_task_set_key, task_key)
+							r.zadd(error_task_set_key, int(time.time()), task_key)
 							
 							
 							#if last one task is timeout, the mark the job as done

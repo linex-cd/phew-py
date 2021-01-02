@@ -215,6 +215,9 @@ def delete(request):
 		job_key = 'job-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role'] + '-' + str(job_info['job_id'])
 		r.hset(job_key, 'state', 'deleted')
 		
+		#set deleted job ttl
+		r.expire(job_key, config.error_ttl)
+		
 		#seek all task in job and delete
 		task_key_pattern = 'task-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role'] + '-' + str(job_info['job_id']) + "-*"
 		task_keys = r.keys(task_key_pattern)
@@ -226,7 +229,7 @@ def delete(request):
 			#delete task excluding from error list
 			error_task_set_key = 'error_task-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']
 			
-			if not r.sismember(error_task_set_key, task_key):
+			if r.zrank(error_task_set_key, task_key) is None:
 				r.hdel(task_key)
 			#endif
 			

@@ -521,7 +521,11 @@ def errorlist(request):
 
 
 		for error_job_set_key in error_job_set_keys:
-			jobs = list(r.smembers(error_job_set_key))
+			
+			time_now = int(time.time())
+			time_ttl = time_now - config.error_ttl
+			jobs = list(r.zrangebyscore(error_job_set_key, time_ttl, time_now))
+			
 			for job in jobs:
 			
 				job_key = job.decode()
@@ -555,8 +559,11 @@ def errorlist(request):
 		error_task_set_keys = r.keys(error_task_set_pattern)
 
 		for error_task_set_key in error_task_set_keys:
-			tasks = list(r.smembers(error_task_set_key))
-		
+			
+			time_now = int(time.time())
+			time_ttl = time_now - config.error_ttl
+			tasks = list(r.zrangebyscore(error_task_set_key, time_ttl, time_now))
+			
 			for task in tasks:
 				
 				task_key = task.decode()
@@ -572,11 +579,16 @@ def errorlist(request):
 				
 				item['job_id'] = job_id
 		
+				if r.hget(job_key, 'description') == None {
+					r.ZRem(error_task_set_key, task_key)
+					continue
+				}
 				item['description'] = r.hget(job_key, 'description').decode()
 				
 				start_time = r.hget(task_key, 'start_time')
 				if start_time == None:
 					#ignore deleted task
+					
 					continue
 				#endif
 				
