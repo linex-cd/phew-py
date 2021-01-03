@@ -26,6 +26,11 @@ def ping(request):
 		r.hset(vendor_node_key, 'location', jsondata['vendor_location'])
 		r.hset(vendor_node_key, 'state', 'online')
 		
+		
+		#add to vendor set
+		vendor_set = 'vendor_set-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']
+		r.sadd(vendor_set, vendor_node_key)
+		
 		data = 'pong'
 		
 	else:
@@ -90,6 +95,11 @@ def assign(request):
 		
 		statistics_task_port_key_base = 'statistics_task_port-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role'] 
 		
+		#statistics set
+		statistics_task_addressing_key_set = 'statistics_task_addressing_set-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']
+		
+		statistics_task_port_key_set = 'statistics_task_port_set-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role'] 
+		
 		#---------------------------------
 		#job set of the worker role
 		job_set = 'job_set-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']
@@ -145,6 +155,10 @@ def assign(request):
 			statistics_task_port_key = statistics_task_port_key_base + '-' + task_info['port']
 			r.incr(statistics_task_port_key, 1)
 			
+			#add to statistics set 
+			r.sadd(statistics_task_addressing_key_set, statistics_task_addressing_key)
+			r.sadd(statistics_task_port_key_set, statistics_task_port_key)
+			
 			#skip ignore task
 			if task_info['port'] == 'ignore': 
 				ignore_count = ignore_count + 1
@@ -191,7 +205,7 @@ def assign(request):
 			r.lpush(work_key, task_key)
 			
 			#add task to tasks_waiting to wait for job state check
-			tasks_waiting_key = 'tasks_waiting-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']+ '-' + str(job_info['job_id'])
+			tasks_waiting_key = 'tasks_waiting-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role'] + '-' + str(job_info['job_id'])
 			r.sadd(tasks_waiting_key, task_key)
 
 		#endfor

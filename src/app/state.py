@@ -253,8 +253,8 @@ def nodecounter(request):
 			role = ""
 		#endif
 		
-		vendor_pattern = 'vendor-' + group + '-' + key + '-' + role + '-*'
-		vendor_keys = r.keys(vendor_pattern)
+		vendor_set = 'vendor-' + group + '-' + key + '-' + role
+		vendor_keys = list(r.smembers(vendor_set))
 		vendor_count = len(vendor_keys)
 		vendors = []
 		for vendor_key in vendor_keys:
@@ -267,8 +267,8 @@ def nodecounter(request):
 		#endfor
 		
 		
-		worker_pattern = 'worker-' + group + '-' + key + '-' + role + '-*'
-		worker_keys = r.keys(worker_pattern)
+		worker_set = 'worker-' + group + '-' + key + '-' + role
+		worker_keys = list(r.smembers(worker_set))
 		worker_count = len(worker_keys)
 		workers = []
 		for worker_key in worker_keys:
@@ -425,8 +425,8 @@ def percentage(request):
 		addressing_data = {}
 		
 		#addressing_count
-		statistics_task_addressing_pattern = 'statistics_task_addressing-' + group + '-' + key + '-' + role + '-*'
-		statistics_task_addressing_keys = r.keys(statistics_task_addressing_pattern)
+		statistics_task_addressing_set = 'statistics_task_addressing_set-' + group + '-' + key + '-' + role
+		statistics_task_addressing_keys = list(r.smembers(statistics_task_addressing_set))
 		
 		for statistics_task_addressing_key in statistics_task_addressing_keys:
 			statistics_task_addressing_key = statistics_task_addressing_key.decode()
@@ -444,8 +444,8 @@ def percentage(request):
 		port_data = {}
 		
 		#port_count
-		statistics_task_port_pattern = 'statistics_task_port-' + group + '-' + key + '-' + role + '-*'
-		statistics_task_port_keys = r.keys(statistics_task_port_pattern)
+		statistics_task_port_set = 'statistics_task_port_set-' + group + '-' + key + '-' + role
+		statistics_task_port_keys = list(r.smembers(statistics_task_port_set))
 		
 		for statistics_task_port_key in statistics_task_port_keys:
 			statistics_task_port_key = statistics_task_port_key.decode()

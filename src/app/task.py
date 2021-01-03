@@ -26,6 +26,10 @@ def ping(request):
 		r.hset(worker_node_key, 'location', jsondata['worker_location'])
 		r.hset(worker_node_key, 'state', 'online')
 		
+		#add to worker set
+		worker_set = 'worker_set-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']
+		r.sadd(worker_set, worker_node_key)
+		
 		data = 'pong'
 		
 	else:
@@ -116,7 +120,7 @@ def get(request):
 		data = task_info
 		
 		#added to tasks_pending set
-		tasks_pending_key = 'tasks_pending-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']+ '-' + str(task_info['job_id'])
+		tasks_pending_key = 'tasks_pending-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role'] + '-' + str(task_info['job_id'])
 		r.sadd(tasks_pending_key, task_key)
 		
 		#remove from tasks_waiting set 
