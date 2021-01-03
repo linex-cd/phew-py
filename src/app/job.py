@@ -91,10 +91,23 @@ def assign(request):
 		statistics_task_port_key_base = 'statistics_task_port-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role'] 
 		
 		#---------------------------------
+		#job set of the worker role
+		job_set = 'job_set-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']
+		
+		#add to the role's job set
+		r.zadd(job_set, int(time.time(), job_key)
+			
+			
+		#task set of the job
+		task_set = 'task_set-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role'] + '-' + str(job_info['job_id'])
+		
+		task_index = 0
+		
 		ignore_count = 0
-
+		
 		for task_info in tasks:
 			
+
 			#make task records
 			if task_info['addressing'] != 'binary':
 				task_info['data'] = task_info['data'].encode()
@@ -121,6 +134,9 @@ def assign(request):
 			r.hset(task_key, 'addressing', task_info['addressing'])
 			r.hset(task_key, 'port', task_info['port'])
 			
+			#add to the job's task set
+			task_index = task_index + 1
+			r.zadd(task_set, task_index, task_key)
 			
 			#task addressing and port count statistics
 			statistics_task_addressing_key = statistics_task_addressing_key_base + '-' + task_info['addressing']
@@ -219,8 +235,11 @@ def delete(request):
 		r.expire(job_key, config.error_ttl)
 		
 		#seek all task in job and delete
-		task_key_pattern = 'task-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role'] + '-' + str(job_info['job_id']) + "-*"
-		task_keys = r.keys(task_key_pattern)
+
+		#task set of the job
+		task_set = 'task_set-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role'] + '-' + str(job_info['job_id'])
+		
+		task_keys = r.zrange(task_set, 0, -1)
 		
 		for task_key in task_keys:
 			#only mark delete state
@@ -295,9 +314,11 @@ def detail(request):
 		#read result from task
 		tasklist = []
 		
-		task_key_pattern = 'task-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role'] + '-' + str(job_info['job_id']) + "-*"
-		task_keys = r.keys(task_key_pattern)
+		#task set of the job
+		task_set = 'task_set-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role'] + '-' + str(job_info['job_id'])
 		
+		task_keys = r.zrange(task_set, 0, -1)
+
 		for task_key in task_keys:
 			task_info = {}
 			task_info['meta'] = r.hget(task_key, 'meta').decode()
@@ -367,10 +388,10 @@ def retry(request):
 		#read result from task
 		tasklist = []
 		
-		task_key_pattern = 'task-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role'] + '-' + str(job_info['job_id']) + "-*"
-		task_keys = r.keys(task_key_pattern)
-	
-		task_keys = list(task_keys)
+		#task set of the job
+		task_set = 'task_set-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role'] + '-' + str(job_info['job_id'])
+		
+		task_keys = r.zrange(task_set, 0, -1)
 		
 		
 		#repush to the right of list if timeout

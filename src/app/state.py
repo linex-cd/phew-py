@@ -78,21 +78,41 @@ def sysstate(request):
 def latestwork(request):
 	if request.method == 'GET':
 		
-		job_total_pattern = 'job-*'
-		jobs = r.keys(job_total_pattern)
-
+		group = request.COOKIES('group')
+		if group is None:
+			group = ""
+		#endif
+		key = request.COOKIES('key')
+		if key is None:
+			key = ""
+		#endif
+		role = request.COOKIES('role')
+		if role is None:
+			role = ""
+		#endif
+		
 		job_latest = []
+		
+		#job set of the worker role
+		job_set = 'job_set-' + group + '-' + key + '-' + role
+		#jobs = r.zrange(job_set, 0, -1)
+		jobs = r.zrevrange(job_set, 0, -1)
+		
 		for job in jobs:
 		
 			job_key = job.decode()
 			
+			item = {}
+			
 			#latest
-			length = int(r.hget(job_key, 'length').decode())
-			priority = int(r.hget(job_key, 'priority').decode())
-			description = r.hget(job_key, 'description').decode()
-			job_id = job_key.split("-")[-1]
-			create_time = r.hget(job_key, 'create_time').decode()
-			item = (create_time, length, job_id, priority, description, encrypt(job_key))
+			item['length'] = int(r.hget(job_key, 'length').decode())
+			item['priority'] = int(r.hget(job_key, 'priority').decode())
+			item['description'] = r.hget(job_key, 'description').decode()
+			item['job_id'] = job_key.split("-")[-1]
+			item['create_time'] = r.hget(job_key, 'create_time').decode()
+			item['create_time_i'] = r.hget(job_key, 'create_time').decode()
+			item['encrypt_job_key'] = encrypt(job_key)
+		
 			job_latest.append(item)
 			
 		#endfor
@@ -104,8 +124,12 @@ def latestwork(request):
 	
 		#task_latest
 		task_latest = []
-		tasks_pending_pattern = 'tasks_pending-*'
+		
+		
+		tasks_pending_pattern = 'tasks_pending-' + + group + '-' + key + '-' + role + "-*"
 		tasks_pending_set_keys = r.keys(tasks_pending_pattern)
+		
+		
 		for tasks_pending_set_key in tasks_pending_set_keys:
 		
 			job_key = 'job-' + tasks_pending_set_key.decode()[14:]
@@ -164,42 +188,38 @@ def jobcounter(request):
 
 	if request.method == 'GET':
 	
-		#job_total
-		statistics_job_total_pattern = 'statistics_job_total-*'
-		statistics_job_total_pending_keys = r.keys(statistics_job_total_pattern)
+		group = request.COOKIES('group')
+		if group is None:
+			group = ""
+		#endif
+		key = request.COOKIES('key')
+		if key is None:
+			key = ""
+		#endif
+		role = request.COOKIES('role')
+		if role is None:
+			role = ""
+		#endif
 		
-		job_total = 0
-		for statistics_job_total_pending_key in statistics_job_total_pending_keys:
-			job_total = job_total + int(r.get(statistics_job_total_pending_key).decode())
-		#endfor
+		#job_total
+		statistics_job_total_key = 'statistics_job_total-' + group + '-' + key + '-' + role
+		job_total = int(r.get(statistics_job_total_key).decode())
+
 		
 		#task_total
-		statistics_task_total_pattern = 'statistics_task_total-*'
-		statistics_task_total_pending_keys = r.keys(statistics_task_total_pattern)
-		
-		task_total = 0
-		for statistics_task_total_pending_key in statistics_task_total_pending_keys:
-			task_total = task_total + int(r.get(statistics_task_total_pending_key).decode())
-		#endfor
+		statistics_task_total_key = 'statistics_task_total-' + group + '-' + key + '-' + role
+		task_total = int(r.get(statistics_task_total_key).decode())
+
 		
 		#job_pending
-		statistics_job_pending_pattern = 'statistics_job_pending-*'
-		statistics_job_pending_pending_keys = r.keys(statistics_job_pending_pattern)
-		
-		job_pending = 0
-		for statistics_job_pending_pending_key in statistics_job_pending_pending_keys:
-			job_pending = job_pending + int(r.get(statistics_job_pending_pending_key).decode())
-		#endfor
-		
+		statistics_job_pending_key = 'statistics_job_pending-' + group + '-' + key + '-' + role
+		job_pending = int(r.get(statistics_job_pending_key).decode())
+
 
 		#work_pending
-		work_pattern = 'work-*'
-		work_pending_keys = r.keys(work_pattern)
-		
-		work_pending = 0
-		for work_pending_key in work_pending_keys:
-			work_pending = work_pending + r.llen(work_pending_key)
-		#endfor
+		work_key = 'work-' + group + '-' + key + '-' + role
+		work_pending = r.llen(work_key)
+
 		
 
 		data  = {
@@ -215,96 +235,25 @@ def jobcounter(request):
 
 #-------------------------------------------------------------------------------
 
-def inlist(request):
-	
-
-	if request.method == 'GET':
-		
-		job_total_pattern = 'job-*'
-		jobs = r.keys(job_total_pattern)
-		job_total = len(jobs)
-		
-		
-		job_pending = 0
-		task_total = 0
-		
-		jobs_list = []
-		for job in jobs:
-		
-			job_key = job.decode()
-			
-			#job_pending
-			state = r.hget(job_key, 'state').decode()
-			if state == 'assigned':
-				job_pending = job_pending + 1
-			#endif
-			
-			#task_total
-			length = int(r.hget(job_key, 'length').decode())
-			task_total = task_total + length
-			
-			#latest
-			description = r.hget(job_key, 'description').decode()
-			job_id = job_key.split("-")[-1]
-			create_time = r.hget(job_key, 'create_time').decode()
-			item = (create_time, length, job_id, description, encrypt(job_key))
-			jobs_list.append(item)
-			
-		#endfor
-		
-		
-		#job_latest sort by create_time
-		jobs_list = sorted(jobs_list, key=lambda x: (x[0]))
-		
-		#work in list
-		work_pattern = 'work-*'
-		works = r.keys(work_pattern)
-		
-		works_list = []
-		for task_key in works:
-			job_key = 'job-' + task_key.decode()[5:-33]
-			item = {}
-			item['job_id'] = job_key.split("-")[-1]
-			item['description'] =  r.hget(job_key, 'description').decode()
-			
-			item['port'] =  r.hget(task_key, 'port').decode()
-			item['data'] =  r.hget(job_key, 'data').decode()
-			
-			addressing = r.hget(task_key, 'addressing').decode()
-			if  addressing == "binary":
-				item['data'] = 'BINARY'
-			else:
-				item['data'] = r.hget(task_key, 'data').decode()
-			#endif
-			
-			item['port'] = r.hget(task_key, 'port').decode()
-			item['addressing'] = addressing
-			
-			item['job_access_key'] = encrypt(job_key)
-			item['task_access_key'] = encrypt(task_key)
-				
-			works_list.append(item)
-		#endfor
-		
-		
-		
-		data  = {
-					'jobs_list': jobs_list,
-					'works_list': works_list,
-				}
-		
-
-	return response(200, "ok", data)
-
-
-#-------------------------------------------------------------------------------
-
 def nodecounter(request):
 	
 
 	if request.method == 'GET':
 		
-		vendor_pattern = 'vendor-*'
+		group = request.COOKIES('group')
+		if group is None:
+			group = ""
+		#endif
+		key = request.COOKIES('key')
+		if key is None:
+			key = ""
+		#endif
+		role = request.COOKIES('role')
+		if role is None:
+			role = ""
+		#endif
+		
+		vendor_pattern = 'vendor-' + group + '-' + key + '-' + role + '-*'
 		vendor_keys = r.keys(vendor_pattern)
 		vendor_count = len(vendor_keys)
 		vendors = []
@@ -318,7 +267,7 @@ def nodecounter(request):
 		#endfor
 		
 		
-		worker_pattern = 'worker-*'
+		worker_pattern = 'worker-' + group + '-' + key + '-' + role + '-*'
 		worker_keys = r.keys(worker_pattern)
 		worker_count = len(worker_keys)
 		workers = []
@@ -459,10 +408,24 @@ def percentage(request):
 
 	if request.method == 'GET':
 		
+		group = request.COOKIES('group')
+		if group is None:
+			group = ""
+		#endif
+		key = request.COOKIES('key')
+		if key is None:
+			key = ""
+		#endif
+		role = request.COOKIES('role')
+		if role is None:
+			role = ""
+		#endif
+		
+
 		addressing_data = {}
 		
 		#addressing_count
-		statistics_task_addressing_pattern = 'statistics_task_addressing-*'
+		statistics_task_addressing_pattern = 'statistics_task_addressing-' + group + '-' + key + '-' + role + '-*'
 		statistics_task_addressing_keys = r.keys(statistics_task_addressing_pattern)
 		
 		for statistics_task_addressing_key in statistics_task_addressing_keys:
@@ -481,7 +444,7 @@ def percentage(request):
 		port_data = {}
 		
 		#port_count
-		statistics_task_port_pattern = 'statistics_task_port-*'
+		statistics_task_port_pattern = 'statistics_task_port-' + group + '-' + key + '-' + role + '-*'
 		statistics_task_port_keys = r.keys(statistics_task_port_pattern)
 		
 		for statistics_task_port_key in statistics_task_port_keys:
@@ -512,38 +475,51 @@ def errorlist(request):
 
 	if request.method == 'GET':
 		
+		group = request.COOKIES('group')
+		if group is None:
+			group = ""
+		#endif
+		key = request.COOKIES('key')
+		if key is None:
+			key = ""
+		#endif
+		role = request.COOKIES('role')
+		if role is None:
+			role = ""
+		#endif
+		
 		#--------------------
 		task_total = 0
 		error_jobs = []
 		
-		error_job_set_pattern = 'error_job-*'
-		error_job_set_keys = r.keys(error_job_set_pattern)
 
-
-		for error_job_set_key in error_job_set_keys:
+		error_job_set_key = 'error_job-' + group + '-' + key + '-' + role
+	
+		time_now = int(time.time())
+		time_ttl = time_now - config.error_ttl
+		jobs = list(r.zrangebyscore(error_job_set_key, time_ttl, time_now))
+		
+		#remove expired keys
+		r.zremrangebyscore(error_job_set_key, 0, time_ttl-1)
+		
+		for job in jobs:
+		
+			job_key = job.decode()
 			
-			time_now = int(time.time())
-			time_ttl = time_now - config.error_ttl
-			jobs = list(r.zrangebyscore(error_job_set_key, time_ttl, time_now))
+			#task_total
+			length = int(r.hget(job_key, 'length').decode())
+			priority = int(r.hget(job_key, 'priority').decode())
+			task_total = task_total + length
 			
-			for job in jobs:
-			
-				job_key = job.decode()
-				
-				#task_total
-				length = int(r.hget(job_key, 'length').decode())
-				priority = int(r.hget(job_key, 'priority').decode())
-				task_total = task_total + length
-				
-				#latest
-				description = r.hget(job_key, 'description').decode()
-				job_id = job_key.split("-")[-1]
-				create_time = r.hget(job_key, 'create_time').decode()
-				item = (create_time, length, job_id, priority, description, encrypt(job_key))
-				error_jobs.append(item)
-			
-			#endfor
+			#latest
+			description = r.hget(job_key, 'description').decode()
+			job_id = job_key.split("-")[-1]
+			create_time = r.hget(job_key, 'create_time').decode()
+			item = (create_time, length, job_id, priority, description, encrypt(job_key))
+			error_jobs.append(item)
+		
 		#endfor
+	
 		
 		
 		#job_latest sort by create_time
@@ -555,60 +531,61 @@ def errorlist(request):
 		error_tasks = []
 		
 		
-		error_task_set_pattern = 'error_task-*'
-		error_task_set_keys = r.keys(error_task_set_pattern)
-
-		for error_task_set_key in error_task_set_keys:
-			
-			time_now = int(time.time())
-			time_ttl = time_now - config.error_ttl
-			tasks = list(r.zrangebyscore(error_task_set_key, time_ttl, time_now))
-			
-			for task in tasks:
-				
-				task_key = task.decode()
-				
-				item = {}
-				
-				tmp = task_key.split("-")
-				worker_group = tmp[1]
-				worker_key = tmp[2]
-				worker_role = tmp[3]
-				job_id = tmp[4]
-				job_key = 'job-' +worker_group + '-' + worker_key + '-' + worker_role + '-' + job_id
-				
-				item['job_id'] = job_id
+		error_task_set_key = 'error_task-' + group + '-' + key + '-' + role
 		
-				if r.hget(job_key, 'description') == None {
-					r.ZRem(error_task_set_key, task_key)
-					continue
-				}
-				item['description'] = r.hget(job_key, 'description').decode()
+		
+		time_now = int(time.time())
+		time_ttl = time_now - config.error_ttl
+		tasks = list(r.zrangebyscore(error_task_set_key, time_ttl, time_now))
+		
+		#remove expired keys
+		r.zremrangebyscore(error_task_set_key, 0, time_ttl-1)
+		
+		for task in tasks:
+			
+			task_key = task.decode()
+			
+			item = {}
+			
+			tmp = task_key.split("-")
+			worker_group = tmp[1]
+			worker_key = tmp[2]
+			worker_role = tmp[3]
+			job_id = tmp[4]
+			job_key = 'job-' +worker_group + '-' + worker_key + '-' + worker_role + '-' + job_id
+			
+			item['job_id'] = job_id
+	
+			if r.hget(job_key, 'description') == None {
+				r.ZRem(error_task_set_key, task_key)
+				continue
+			}
+			item['description'] = r.hget(job_key, 'description').decode()
+			
+			start_time = r.hget(task_key, 'start_time')
+			if start_time == None:
+				#ignore deleted task
 				
-				start_time = r.hget(task_key, 'start_time')
-				if start_time == None:
-					#ignore deleted task
-					
-					continue
-				#endif
-				
-				addressing = r.hget(task_key, 'addressing').decode()
-				if  addressing == "binary":
-					item['data'] = 'BINARY'
-				else:
-					item['data'] = r.hget(task_key, 'data').decode()
-				#endif
-				
-				item['port'] = r.hget(task_key, 'port').decode()
-				item['addressing'] = addressing
-				item['create_time'] = int(r.hget(task_key, 'create_time').decode())
-				
-				item['job_access_key'] = encrypt(job_key)
-				item['task_access_key'] = encrypt(task_key)
-				
-				error_tasks.append(item)
-			#endfor
+				continue
+			#endif
+			
+			addressing = r.hget(task_key, 'addressing').decode()
+			if  addressing == "binary":
+				item['data'] = 'BINARY'
+			else:
+				item['data'] = r.hget(task_key, 'data').decode()
+			#endif
+			
+			item['port'] = r.hget(task_key, 'port').decode()
+			item['addressing'] = addressing
+			item['create_time'] = int(r.hget(task_key, 'create_time').decode())
+			
+			item['job_access_key'] = encrypt(job_key)
+			item['task_access_key'] = encrypt(task_key)
+			
+			error_tasks.append(item)
 		#endfor
+	
 		
 		
 		#job_latest sort by create_time
