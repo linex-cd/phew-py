@@ -81,9 +81,68 @@ function showtask(task_access_key){
 	
 }
 
+function login(){
+	
+
+	var group = prompt("输入工作组",$.cookie('group'));
+	if (group == null){
+		return 
+	
+	}
+	var key = prompt("输入工作密码",$.cookie('key'));
+	if (key == null){
+		return 
+	
+	}
+	var role = prompt("输入工作角色",$.cookie('role'));
+	if (role == null){
+		return 
+	
+	}
+	
+	$.cookie('group', group, { path: '/' })
+	$.cookie('key', key, { path: '/' })
+	$.cookie('role', role, { path: '/' })
+	
+	$(".credential").html('<h4 onclick="login()" style="color:#ff9800; line-height:60px; cursor :pointer;">清除凭证</h4>')
+}
+
+function logout(){
+	
+	$.removeCookie('group', { path: '/' });
+	$.removeCookie('key', { path: '/' })
+	$.removeCookie('role', { path: '/' })
+	
+	$(".credential").html('<h4 onclick="login()" style="color:#f6ffba; line-height:60px; cursor :pointer;">设置凭证</h4>')
+	
+}
+
+
+function checkcredential(){
+	
+	var group = $.cookie('group')
+	var key = $.cookie('key')
+	var role = $.cookie('role')
+	
+	if (group == undefined || key == undefined || role == undefined )
+	{
+		$(".credential").html('<h4 onclick="login()" style="color:#f6ffba; line-height:60px; cursor :pointer;">设置凭证</h4>')
+		
+	}
+	else{
+		
+		$(".credential").html('<h4 onclick="logout()" style="color:#ff9800; line-height:60px; cursor :pointer;">清除凭证</h4>')
+	}
+	
+	
+}
+
+
+
+
 (function ($) {
  "use strict";
-		
+		checkcredential()
 		/////////////////////////////////////////////////
 		
 		$.get("state/sysstate", function(ret){
