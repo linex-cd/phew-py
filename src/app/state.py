@@ -126,47 +126,44 @@ def latestwork(request):
 		task_latest = []
 		
 		
-		tasks_pending_pattern = 'tasks_pending-' + + group + '-' + key + '-' + role + "-*"
-		tasks_pending_set_keys = r.keys(tasks_pending_pattern)
+		tasks_pending_set = 'tasks_pending_set-'  + group + '-' + key + '-' + role
+		task_keys = list(r.smembers(tasks_pending_set))
 		
 		
-		for tasks_pending_set_key in tasks_pending_set_keys:
-		
-			job_key = 'job-' + tasks_pending_set_key.decode()[14:]
+		for task_key in tasks_keys:
 			
-			tasks = r.smembers(tasks_pending_set_key)
-			tasks = list(tasks)
-			for task_key in tasks:
-				task_key = task_key.decode()
-				if  r.hget(job_key, 'description') == None:
-					r.srem(tasks_pending_set_key, task_key)
-					continue
-				item = {}
-				item['job_id'] = job_key.split("-")[-1]
+			job_key = task_key.decode().replace('task-', 'job-')
+			
+			task_key = task_key.decode()
+			if  r.hget(job_key, 'description') == None:
+				r.srem(tasks_pending_set, task_key)
+				continue
+			item = {}
+			item['job_id'] = job_key.split("-")[-1]
 
-				item['description'] = r.hget(job_key, 'description').decode()
-				
-				start_time = r.hget(task_key, 'start_time')
-				if start_time == None:
-					#ignore deleted task
-					continue
-				#endif
-				
-				addressing = r.hget(task_key, 'addressing').decode()
-				if  addressing == "binary":
-					item['data'] = 'BINARY'
-				else:
-					item['data'] = r.hget(task_key, 'data').decode()
-				#endif
-				
-				item['port'] = r.hget(task_key, 'port').decode()
-				item['addressing'] = addressing
-				item['create_time'] = int(r.hget(task_key, 'create_time').decode())
-				
-				item['job_access_key'] = encrypt(job_key)
-				item['task_access_key'] = encrypt(task_key)
-				task_latest.append(item)
-			#endfor
+			item['description'] = r.hget(job_key, 'description').decode()
+			
+			start_time = r.hget(task_key, 'start_time')
+			if start_time == None:
+				#ignore deleted task
+				continue
+			#endif
+			
+			addressing = r.hget(task_key, 'addressing').decode()
+			if  addressing == "binary":
+				item['data'] = 'BINARY'
+			else:
+				item['data'] = r.hget(task_key, 'data').decode()
+			#endif
+			
+			item['port'] = r.hget(task_key, 'port').decode()
+			item['addressing'] = addressing
+			item['create_time'] = int(r.hget(task_key, 'create_time').decode())
+			
+			item['job_access_key'] = encrypt(job_key)
+			item['task_access_key'] = encrypt(task_key)
+			task_latest.append(item)
+			
 		#endfor
 		#task_latest sort by create_time
 		task_latest = sorted(task_latest, key=lambda x: (x['create_time']))

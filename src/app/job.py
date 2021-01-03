@@ -71,6 +71,9 @@ def assign(request):
 		r.hset(job_key, 'description', job_info['description'])
 		r.hset(job_key, 'priority', job_info['priority'])
 		
+		#add to priority set
+		priority_set = 'priority_set-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']
+		r.zadd(priority_set, int(job_info['priority']), job_info['priority'])
 		
 		tasks = jsondata['tasks']
 		
@@ -422,9 +425,13 @@ def retry(request):
 				
 			#endif
 			
-			#remove from tasks_pending set
+			#remove from tasks_pending
 			tasks_pending_key = 'tasks_pending-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']+ '-' + str(task_info['job_id'])
 			r.srem(tasks_pending_key, task_key)
+			
+			#remove from tasks_pending total set
+			tasks_pending_set = 'tasks_pending_set-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']
+			r.srem(tasks_pending_set, task_key)
 			
 			#added to from tasks_waiting set 
 			tasks_waiting_key = 'tasks_waiting-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']+ '-' + str(task_info['job_id'])

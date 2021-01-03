@@ -52,25 +52,31 @@ def get(request):
 		
 		
 		#############################
-		#get all work list keys
-		work_key_pattern = 'work-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role'] + '-*'
-		work_keys = r.keys(work_key_pattern)
+		#get priority list
+		priority_set = 'priority_set-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']
+		prioritys = r.zrevrange(priority_set, 0, -1)
 		
-		if len(work_keys) == 0:
+		if len(prioritys) == 0:
+		
 			code = 404
 			msg = 'no task'
 			return response(code, msg, data)
 		#endif
 		
-		#sort and get the highest priority key
-		work_keys = sorted(work_keys, reverse=True)
-		work_key = work_keys[0]
+		#get the highest priority key
+		priority =  prioritys[0]
+		work_key = 'work-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role'] + '-' + str(priority)
 		
 		#popup a valid task_key and get the task info
 		task_info = {}
 		while True:
 			task_key = r.rpop(work_key)
 			if task_key == None:
+			
+				#remove priority from priority set
+				r.ZRem(priority_set, priority)
+			
+
 				code = 404
 				msg = 'no task'
 				break
@@ -119,9 +125,13 @@ def get(request):
 		
 		data = task_info
 		
-		#added to tasks_pending set
+		#added to tasks_pending
 		tasks_pending_key = 'tasks_pending-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role'] + '-' + str(task_info['job_id'])
 		r.sadd(tasks_pending_key, task_key)
+		
+		#added to tasks_pending total set
+		tasks_pending_set = 'tasks_pending_set-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']
+		r.sadd(tasks_pending_set, task_key)
 		
 		#remove from tasks_waiting set 
 		tasks_waiting_key = 'tasks_waiting-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']+ '-' + str(task_info['job_id'])
@@ -183,9 +193,13 @@ def finish(request):
 		r.hset(task_key, 'note', task_info['note'])
 		r.hset(task_key, 'result', task_info['result'])
 		
-		#remove from tasks_pending set
+		#remove from tasks_pending
 		tasks_pending_key = 'tasks_pending-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']+ '-' + str(task_info['job_id'])
 		r.srem(tasks_pending_key, task_key)
+		
+		#remove from tasks_pending total set
+		tasks_pending_set = 'tasks_pending_set-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']
+		r.srem(tasks_pending_set, task_key)
 		
 		tasks_waiting_key = 'tasks_waiting-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']+ '-' + str(task_info['job_id'])
 		
