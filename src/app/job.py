@@ -118,6 +118,9 @@ def assign(request):
 		
 		ignore_count = 0
 		
+		#use redis pipeline
+		p = r.pipeline()
+		
 		for task_info in tasks:
 			
 
@@ -127,57 +130,57 @@ def assign(request):
 			task_info['hash'] = md5(task_info['data'])
 			
 			task_key = 'task-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role'] + '-' + str(job_info['job_id']) + '-' + task_info['hash']
-			r.hset(task_key, 'state', 'assigned')
-			r.hset(task_key, 'note', '')
-			r.hset(task_key, 'result', '')
+			p.hset(task_key, 'state', 'assigned')
+			p.hset(task_key, 'note', '')
+			p.hset(task_key, 'result', '')
 			
 			# add create timestamp
-			r.hset(task_key, 'create_time', int(time.time()))
-			r.hset(task_key, 'start_time', '')
-			r.hset(task_key, 'finish_time', '')
-			r.hset(task_key, 'try_times', 0)
+			p.hset(task_key, 'create_time', int(time.time()))
+			p.hset(task_key, 'start_time', '')
+			p.hset(task_key, 'finish_time', '')
+			p.hset(task_key, 'try_times', 0)
 			
 			
-			r.hset(task_key, 'job_id', job_info['job_id'])
-			r.hset(task_key, 'priority', job_info['priority'])
+			p.hset(task_key, 'job_id', job_info['job_id'])
+			p.hset(task_key, 'priority', job_info['priority'])
 			
-			r.hset(task_key, 'hash', task_info['hash'])
+			p.hset(task_key, 'hash', task_info['hash'])
 			
-			r.hset(task_key, 'meta', task_info['meta'])
-			r.hset(task_key, 'addressing', task_info['addressing'])
-			r.hset(task_key, 'port', task_info['port'])
+			p.hset(task_key, 'meta', task_info['meta'])
+			p.hset(task_key, 'addressing', task_info['addressing'])
+			p.hset(task_key, 'port', task_info['port'])
 			
 			#add to the job's task set
 			task_index = task_index + 1
-			r.zadd(task_set, task_index, task_key)
+			p.zadd(task_set, task_index, task_key)
 			
 			#task addressing and port count statistics
 			statistics_task_addressing_key = statistics_task_addressing_key_base + '-' + task_info['addressing']
-			r.incr(statistics_task_addressing_key, 1)
+			p.incr(statistics_task_addressing_key, 1)
 			
 			statistics_task_port_key = statistics_task_port_key_base + '-' + task_info['port']
-			r.incr(statistics_task_port_key, 1)
+			p.incr(statistics_task_port_key, 1)
 			
 			#add to statistics set 
-			r.sadd(statistics_task_addressing_key_set, statistics_task_addressing_key)
-			r.sadd(statistics_task_port_key_set, statistics_task_port_key)
+			p.sadd(statistics_task_addressing_key_set, statistics_task_addressing_key)
+			p.sadd(statistics_task_port_key_set, statistics_task_port_key)
 			
 			#skip ignore task
 			if task_info['port'] == 'ignore': 
 				ignore_count = ignore_count + 1
-				r.hset(task_key, 'state', 'done')
-				r.hset(task_key, 'note', 'ignore file')
-				r.hset(task_key, 'finish_time', int(time.time()))
-				r.hset(task_key, 'result', '')
+				p.hset(task_key, 'state', 'done')
+				p.hset(task_key, 'note', 'ignore file')
+				p.hset(task_key, 'finish_time', int(time.time()))
+				p.hset(task_key, 'result', '')
 				if ignore_count == length:
 					#add a job to set as unread
 					jobs_done_key = 'jobs_done-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']
 
-					r.sadd(jobs_done_key, task_info['job_id'])
+					p.sadd(jobs_done_key, task_info['job_id'])
 					
 					#add finish timestamp
-					r.hset(job_key, 'finish_time', int(time.time()))
-					r.hset(job_key, 'state', 'done')
+					p.hset(job_key, 'finish_time', int(time.time()))
+					p.hset(job_key, 'state', 'done')
 					
 					#job pending statistics
 
@@ -198,20 +201,23 @@ def assign(request):
 				writefile(taskdata_filename, task_info['data'])
 				task_info['data'] = ''
 			else:
-				r.hset(task_key, 'data', task_info['data'])
+				p.hset(task_key, 'data', task_info['data'])
 			#endif
 			
 			
 			
 			#allocate task to work priority list
 			work_key = 'work-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role'] + '-' + str(job_info['priority'])
-			r.lpush(work_key, task_key)
+			p.lpush(work_key, task_key)
 			
 			#add task to tasks_waiting to wait for job state check
 			tasks_waiting_key = 'tasks_waiting-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role'] + '-' + str(job_info['job_id'])
-			r.sadd(tasks_waiting_key, task_key)
+			p.sadd(tasks_waiting_key, task_key)
 
 		#endfor
+		
+		#commit redis pipeline
+		p.execute()
 		
 		#update vendor node hit counter
 		vendor_node_key = 'vendor-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role'] + '-' + str(jsondata['vendor_id'])
@@ -227,7 +233,6 @@ def assign(request):
 		
 		
 
-		
 	#endif
 				
 	return response(code, msg, data)
@@ -242,7 +247,9 @@ def delete(request):
 	if request.method == 'POST':
 		jsondata = json.loads(request.body.decode())
 		
+		
 		job_info = jsondata['job']
+		
 		
 		#set state to deleted
 		job_key = 'job-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role'] + '-' + str(job_info['job_id'])
@@ -258,6 +265,9 @@ def delete(request):
 		
 		task_keys = r.zrange(task_set, 0, -1)
 		
+		#use redis pipeline
+		p = r.pipeline()
+		
 		for task_key in task_keys:
 			#only mark delete state
 			#r.hset(task_key, 'state', 'deleted')
@@ -266,11 +276,16 @@ def delete(request):
 			error_task_set_key = 'error_task-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']
 			
 			if r.zrank(error_task_set_key, task_key) is None:
-				r.hdel(task_key)
+				p.hdel(task_key)
 			#endif
 			
 		#endfor
+		
+		#commit redis pipeline
+		p.execute()
+		
 	#endif	
+	
 
 	return response(code, msg, data)
 
@@ -309,6 +324,7 @@ def detail(request):
 	if request.method == 'POST':
 		jsondata = json.loads(request.body.decode())
 		
+
 		job_info = jsondata['job']
 		
 		job_key = 'job-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role'] + '-' + str(job_info['job_id'])
@@ -336,6 +352,7 @@ def detail(request):
 		
 		task_keys = r.zrange(task_set, 0, -1)
 
+		
 		for task_key in task_keys:
 			task_info = {}
 			task_info['meta'] = r.hget(task_key, 'meta').decode()
@@ -363,6 +380,9 @@ def detail(request):
 
 			tasklist.append(task_info)
 		#endfor
+		
+
+		
 		data['tasks'] = tasklist
 		
 	#endif
@@ -410,6 +430,8 @@ def retry(request):
 		
 		task_keys = r.zrange(task_set, 0, -1)
 		
+		#use redis pipeline
+		p = r.pipeline()
 		
 		#repush to the right of list if timeout
 		for task_key in task_keys:
@@ -421,24 +443,26 @@ def retry(request):
 				priority = r.hget(task_key, 'priority')
 				work_key = 'work-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role'] + '-' + str(priority)
 			
-				r.rpush(work_key, task_key)
+				p.rpush(work_key, task_key)
 				
 			#endif
 			
 			#remove from tasks_pending
 			tasks_pending_key = 'tasks_pending-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']+ '-' + str(task_info['job_id'])
-			r.srem(tasks_pending_key, task_key)
+			p.srem(tasks_pending_key, task_key)
 			
 			#remove from tasks_pending total set
 			tasks_pending_set = 'tasks_pending_set-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']
-			r.srem(tasks_pending_set, task_key)
+			p.srem(tasks_pending_set, task_key)
 			
 			#added to from tasks_waiting set 
 			tasks_waiting_key = 'tasks_waiting-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']+ '-' + str(task_info['job_id'])
-			r.sadd(tasks_waiting_key, task_key)
+			p.sadd(tasks_waiting_key, task_key)
 			
 		#endfor
-			
+		
+		#commit redis pipeline
+		p.execute()
 	
 	#endif
 	

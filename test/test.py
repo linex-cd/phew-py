@@ -5,11 +5,17 @@ import redis
 r = redis.Redis(host = '127.0.0.1', port = 2019, db = 0);
 
 
-a = r.zrank("hello", "2")
+p = r.pipeline()
 
-b	= r.zrange("hello",0,-1)
+k = "kkk"
+p.incr(k,1)
+p.incr(k,1)
 
-print(b)
+print(int(r.get(k).decode()))
+
+p.execute()
+
+print(int(r.get(k).decode()))
 
 
 if __name__ == '__main__':
