@@ -31,6 +31,10 @@ def ping(request):
 		vendor_set = 'vendor_set-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']
 		r.sadd(vendor_set, vendor_node_key)
 		
+		#add to worker all set
+		vendor_set_all = 'vendor_set_all'
+		r.sadd(vendor_set_all, vendor_node_key)
+		
 		data = 'pong'
 		
 	else:
@@ -454,6 +458,10 @@ def retry(request):
 			#remove from tasks_pending total set
 			tasks_pending_set = 'tasks_pending_set-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']
 			p.srem(tasks_pending_set, task_key)
+			
+			#remove from tasks_pending all set
+			tasks_pending_all = 'tasks_pending_all'
+			p.srem(tasks_pending_all, task_key)
 			
 			#added to from tasks_waiting set 
 			tasks_waiting_key = 'tasks_waiting-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']+ '-' + str(task_info['job_id'])

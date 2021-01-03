@@ -9,9 +9,9 @@ def deamon_thread(timeout = 60, try_times_limit = 3):
 		time.sleep(30)
 		print("seeking all tasks timeout...")
 		#seek all tasks pending
-		tasks_pending_key_pattern = 'tasks_pending-*'
+		tasks_pending_all = 'tasks_pending_all'
 		
-		tasks_pending_keys = r.keys(tasks_pending_key_pattern)
+		tasks_pending_keys = list(r.smembers(tasks_pending_all))
 		
 		for tasks_pending_key in tasks_pending_keys:
 			
@@ -55,6 +55,9 @@ def deamon_thread(timeout = 60, try_times_limit = 3):
 							#remove from pending set
 							r.srem(tasks_pending_key, task_key)
 							
+							#remove from all pending set
+							r.srem(tasks_pending_all, task_key)
+							
 							#add to waiting set
 							r.sadd(tasks_waiting_key, task_key)
 							
@@ -71,7 +74,9 @@ def deamon_thread(timeout = 60, try_times_limit = 3):
 							
 							#remove from  pending set
 							r.srem(tasks_pending_key, task_key)
-
+							
+							#remove from all pending set
+							r.srem(tasks_pending_all, task_key)
 							
 							#send to error set
 							error_job_set_key = 'error_job-' + worker_group + '-' + worker_key + '-' + worker_role

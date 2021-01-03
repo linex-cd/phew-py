@@ -30,6 +30,10 @@ def ping(request):
 		worker_set = 'worker_set-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']
 		r.sadd(worker_set, worker_node_key)
 		
+		#add to worker all set
+		worker_set_all = 'worker_set_all'
+		r.sadd(worker_set_all, worker_node_key)
+		
 		data = 'pong'
 		
 	else:
@@ -125,13 +129,17 @@ def get(request):
 		
 		data = task_info
 		
-		#added to tasks_pending
+		#add to tasks_pending
 		tasks_pending_key = 'tasks_pending-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role'] + '-' + str(task_info['job_id'])
 		r.sadd(tasks_pending_key, task_key)
 		
-		#added to tasks_pending total set
+		#add to tasks_pending total set
 		tasks_pending_set = 'tasks_pending_set-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']
 		r.sadd(tasks_pending_set, task_key)
+		
+		#add to tasks_pending all set
+		tasks_pending_all = 'tasks_pending_all'
+		r.sadd(tasks_pending_all, task_key)
 		
 		#remove from tasks_waiting set 
 		tasks_waiting_key = 'tasks_waiting-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']+ '-' + str(task_info['job_id'])
@@ -200,6 +208,10 @@ def finish(request):
 		#remove from tasks_pending total set
 		tasks_pending_set = 'tasks_pending_set-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']
 		r.srem(tasks_pending_set, task_key)
+		
+		#remove from tasks_pending all set
+		tasks_pending_all = 'tasks_pending_all'
+		p.srem(tasks_pending_all, task_key)
 		
 		tasks_waiting_key = 'tasks_waiting-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']+ '-' + str(task_info['job_id'])
 		
