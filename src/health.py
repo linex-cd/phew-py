@@ -8,7 +8,7 @@ def health_thread(timeout = 300):
 	while True:
 		time.sleep(30)
 		vendor_set_all = 'vendor_set_all'
-		vendor_keys = list(r.smembsers(vendor_set_all))
+		vendor_keys = list(r.smembers(vendor_set_all))
 
 		vendors = []
 		for vendor_key in vendor_keys:
@@ -28,7 +28,7 @@ def health_thread(timeout = 300):
 		
 		
 		worker_set_all = 'worker_set_all'
-		worker_keys = list(r.smembsers(worker_set_all))
+		worker_keys = list(r.smembers(worker_set_all))
 
 		workers = []
 		for worker_key in worker_keys:

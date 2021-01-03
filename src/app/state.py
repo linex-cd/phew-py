@@ -21,6 +21,7 @@ def index(request):
 from app.config import data_dir 
 from app.config import system_disk_dir 
 from app.config import system_data_dir
+from app.config import error_ttl
 
 def sysstate(request):
 	
@@ -78,15 +79,15 @@ def sysstate(request):
 def latestwork(request):
 	if request.method == 'GET':
 		
-		group = request.COOKIES('group')
+		group = request.COOKIES['group']
 		if group is None:
 			group = ""
 		#endif
-		key = request.COOKIES('key')
+		key = request.COOKIES['key']
 		if key is None:
 			key = ""
 		#endif
-		role = request.COOKIES('role')
+		role = request.COOKIES['role']
 		if role is None:
 			role = ""
 		#endif
@@ -118,7 +119,7 @@ def latestwork(request):
 		#endfor
 		
 		#job_latest sort by create_time
-		job_latest = sorted(job_latest, key=lambda x: (x[0]))
+		job_latest = sorted(job_latest, key=lambda x: (x['create_time']))
 		job_latest = job_latest[-20:]
 
 	
@@ -129,17 +130,19 @@ def latestwork(request):
 		tasks_pending_set = 'tasks_pending_set-'  + group + '-' + key + '-' + role
 		task_keys = list(r.smembers(tasks_pending_set))
 		
-		
-		for task_key in tasks_keys:
+		for task_key in task_keys:
 			
-			job_key = task_key.decode().replace('task-', 'job-')
+			tmp = task_key.decode().split("-")
+			
+			job_key = 'job-' + tmp[1] + '-' + tmp[2] + '-' + tmp[3] + '-' + tmp[4]
+			job_id =  tmp[4]
 			
 			task_key = task_key.decode()
 			if  r.hget(job_key, 'description') == None:
 				r.srem(tasks_pending_set, task_key)
 				continue
 			item = {}
-			item['job_id'] = job_key.split("-")[-1]
+			item['job_id'] = job_id
 
 			item['description'] = r.hget(job_key, 'description').decode()
 			
@@ -185,33 +188,45 @@ def jobcounter(request):
 
 	if request.method == 'GET':
 	
-		group = request.COOKIES('group')
+		group = request.COOKIES['group']
 		if group is None:
 			group = ""
 		#endif
-		key = request.COOKIES('key')
+		key = request.COOKIES['key']
 		if key is None:
 			key = ""
 		#endif
-		role = request.COOKIES('role')
+		role = request.COOKIES['role']
 		if role is None:
 			role = ""
 		#endif
 		
 		#job_total
+		job_total = 0
 		statistics_job_total_key = 'statistics_job_total-' + group + '-' + key + '-' + role
-		job_total = int(r.get(statistics_job_total_key).decode())
-
+		job_total_0 = r.get(statistics_job_total_key)
+		if job_total_0 is not None:
+			job_total = int(job_total_0.decode())
+		#endif
 		
 		#task_total
+		task_total = 0
 		statistics_task_total_key = 'statistics_task_total-' + group + '-' + key + '-' + role
-		task_total = int(r.get(statistics_task_total_key).decode())
+		task_total_0 = r.get(statistics_task_total_key)
+		if task_total_0 is not None:
+			task_total = int(task_total_0.decode())
+		#endif
+		
 
 		
 		#job_pending
+		job_pending = 0
 		statistics_job_pending_key = 'statistics_job_pending-' + group + '-' + key + '-' + role
-		job_pending = int(r.get(statistics_job_pending_key).decode())
-
+		
+		job_pending_0 = r.get(statistics_job_pending_key)
+		if job_pending_0 is not None:
+			job_pending = int(job_pending_0.decode())
+		#endif
 
 		#work_pending
 		work_key = 'work-' + group + '-' + key + '-' + role
@@ -237,20 +252,20 @@ def nodecounter(request):
 
 	if request.method == 'GET':
 		
-		group = request.COOKIES('group')
+		group = request.COOKIES['group']
 		if group is None:
 			group = ""
 		#endif
-		key = request.COOKIES('key')
+		key = request.COOKIES['key']
 		if key is None:
 			key = ""
 		#endif
-		role = request.COOKIES('role')
+		role = request.COOKIES['role']
 		if role is None:
 			role = ""
 		#endif
 		
-		vendor_set = 'vendor-' + group + '-' + key + '-' + role
+		vendor_set = 'vendor_set-' + group + '-' + key + '-' + role
 		vendor_keys = list(r.smembers(vendor_set))
 		vendor_count = len(vendor_keys)
 		vendors = []
@@ -264,7 +279,7 @@ def nodecounter(request):
 		#endfor
 		
 		
-		worker_set = 'worker-' + group + '-' + key + '-' + role
+		worker_set = 'worker_set-' + group + '-' + key + '-' + role
 		worker_keys = list(r.smembers(worker_set))
 		worker_count = len(worker_keys)
 		workers = []
@@ -405,15 +420,15 @@ def percentage(request):
 
 	if request.method == 'GET':
 		
-		group = request.COOKIES('group')
+		group = request.COOKIES['group']
 		if group is None:
 			group = ""
 		#endif
-		key = request.COOKIES('key')
+		key = request.COOKIES['key']
 		if key is None:
 			key = ""
 		#endif
-		role = request.COOKIES('role')
+		role = request.COOKIES['role']
 		if role is None:
 			role = ""
 		#endif
@@ -472,15 +487,15 @@ def errorlist(request):
 
 	if request.method == 'GET':
 		
-		group = request.COOKIES('group')
+		group = request.COOKIES['group']
 		if group is None:
 			group = ""
 		#endif
-		key = request.COOKIES('key')
+		key = request.COOKIES['key']
 		if key is None:
 			key = ""
 		#endif
-		role = request.COOKIES('role')
+		role = request.COOKIES['role']
 		if role is None:
 			role = ""
 		#endif
@@ -493,7 +508,7 @@ def errorlist(request):
 		error_job_set_key = 'error_job-' + group + '-' + key + '-' + role
 	
 		time_now = int(time.time())
-		time_ttl = time_now - config.error_ttl
+		time_ttl = time_now - int(error_ttl)
 		jobs = list(r.zrangebyscore(error_job_set_key, time_ttl, time_now))
 		
 		#remove expired keys
@@ -532,7 +547,7 @@ def errorlist(request):
 		
 		
 		time_now = int(time.time())
-		time_ttl = time_now - config.error_ttl
+		time_ttl = time_now - int(error_ttl)
 		tasks = list(r.zrangebyscore(error_task_set_key, time_ttl, time_now))
 		
 		#remove expired keys
@@ -553,10 +568,10 @@ def errorlist(request):
 			
 			item['job_id'] = job_id
 	
-			if r.hget(job_key, 'description') == None {
-				r.ZRem(error_task_set_key, task_key)
+			if r.hget(job_key, 'description') is None:
+				r.zrem(error_task_set_key, task_key)
 				continue
-			}
+			#endif
 			item['description'] = r.hget(job_key, 'description').decode()
 			
 			start_time = r.hget(task_key, 'start_time')

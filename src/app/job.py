@@ -1,6 +1,7 @@
 # api for vendor
 
 from .init import *
+from app.config import error_ttl
 
 def ping(request):
 	code = 200
@@ -77,8 +78,8 @@ def assign(request):
 		
 		#add to priority set
 		priority_set = 'priority_set-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']
-		r.zadd(priority_set, int(job_info['priority']), job_info['priority'])
-		
+		r.zadd(priority_set, {job_info['priority'] : int(job_info['priority']) })
+
 		tasks = jsondata['tasks']
 		
 		length = len(tasks)
@@ -112,7 +113,7 @@ def assign(request):
 		job_set = 'job_set-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']
 		
 		#add to the role's job set
-		r.zadd(job_set, int(time.time(), job_key)
+		r.zadd(job_set, {job_key: int(time.time())})
 			
 			
 		#task set of the job
@@ -156,7 +157,7 @@ def assign(request):
 			
 			#add to the job's task set
 			task_index = task_index + 1
-			p.zadd(task_set, task_index, task_key)
+			p.zadd(task_set, {task_key:task_index} )
 			
 			#task addressing and port count statistics
 			statistics_task_addressing_key = statistics_task_addressing_key_base + '-' + task_info['addressing']

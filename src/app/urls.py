@@ -15,7 +15,6 @@ urlpatterns = [
 	path('state/jobcounter', state.jobcounter),
 	path('state/nodecounter', state.nodecounter),
 	path('state/latestwork', state.latestwork),
-	path('state/inlist', state.inlist),
 	path('state/errorlist', state.errorlist),
 	path('state/percentage', state.percentage),
 	

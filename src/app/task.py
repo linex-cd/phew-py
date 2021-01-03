@@ -68,28 +68,30 @@ def get(request):
 		#endif
 		
 		#get the highest priority key
-		priority =  prioritys[0]
+		priority =  prioritys[0].decode()
 		work_key = 'work-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role'] + '-' + str(priority)
 		
 		#popup a valid task_key and get the task info
-		task_info = {}
+		task_info = None
 		while True:
 			task_key = r.rpop(work_key)
 			if task_key == None:
 			
 				#remove priority from priority set
-				r.ZRem(priority_set, priority)
+				r.zrem(priority_set, priority)
 			
 
 				code = 404
 				msg = 'no task'
-				break
+				return response(code, msg, data)
 			#endif
 			
 			job_id = r.hget(task_key, 'job_id')
 			if job_id is None:
 				continue
 			#endif
+			
+			task_info = {}
 			
 			task_info['job_id'] = job_id.decode()
 			task_info['priority'] = r.hget(task_key, 'priority').decode()
@@ -211,7 +213,7 @@ def finish(request):
 		
 		#remove from tasks_pending all set
 		tasks_pending_all = 'tasks_pending_all'
-		p.srem(tasks_pending_all, task_key)
+		r.srem(tasks_pending_all, task_key)
 		
 		tasks_waiting_key = 'tasks_waiting-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']+ '-' + str(task_info['job_id'])
 		
