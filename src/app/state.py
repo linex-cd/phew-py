@@ -525,16 +525,18 @@ def errorlist(request):
 		
 			job_key = job.decode()
 			
-			#task_total
-			length = int(r.hget(job_key, 'length').decode())
-			priority = int(r.hget(job_key, 'priority').decode())
-			task_total = task_total + length
+			item = {}
 			
 			#latest
-			description = r.hget(job_key, 'description').decode()
-			job_id = job_key.split("-")[-1]
-			create_time = r.hget(job_key, 'create_time').decode()
-			item = (create_time, length, job_id, priority, description, encrypt(job_key))
+			item['length'] = int(r.hget(job_key, 'length').decode())
+			item['priority'] = int(r.hget(job_key, 'priority').decode())
+			item['description'] = r.hget(job_key, 'description').decode()
+			item['job_id'] = job_key.split("-")[-1]
+			item['create_time'] = r.hget(job_key, 'create_time').decode()
+			item['create_time_i'] = r.hget(job_key, 'create_time').decode()
+			item['encrypt_job_key'] = encrypt(job_key)
+			
+			
 			error_jobs.append(item)
 		
 		#endfor
