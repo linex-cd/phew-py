@@ -229,9 +229,16 @@ def jobcounter(request):
 		#endif
 
 		#work_pending
-		work_key = 'work-' + group + '-' + key + '-' + role
-		work_pending = r.llen(work_key)
-
+		work_pending = 0
+		
+		#get priority list
+		priority_set = 'priority_set-' + group + '-' + key + '-' + role
+		prioritys = r.zrevrange(priority_set, 0, -1)
+		
+		for priority in prioritys:
+			work_key = 'work-' + group + '-' + key + '-' + role + '-' + priority.decode()
+			work_pending = work_pending + r.llen(work_key)
+		#enfor
 		
 
 		data  = {
