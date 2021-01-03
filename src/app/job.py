@@ -263,6 +263,10 @@ def delete(request):
 		#set deleted job ttl
 		r.expire(job_key, config.error_ttl)
 		
+		#del the role's job set
+		#job_set = 'job_set-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']
+		#r.zrem(job_set, job_key)
+		
 		#seek all task in job and delete
 
 		#task set of the job
@@ -277,6 +281,9 @@ def delete(request):
 			#only mark delete state
 			#r.hset(task_key, 'state', 'deleted')
 			
+			#delete from task_set
+			p.zrem(task_set, task_key)
+		
 			#delete task excluding from error list
 			error_task_set_key = 'error_task-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']
 			

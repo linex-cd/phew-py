@@ -99,6 +99,11 @@ def latestwork(request):
 		#jobs = r.zrange(job_set, 0, -1)
 		jobs = r.zrevrange(job_set, 0, -1)
 		
+		#remove expired keys
+		time_now = int(time.time())
+		time_ttl = time_now - int(error_ttl)
+		r.zremrangebyscore(job_set, 0, time_ttl-1)
+		
 		for job in jobs:
 		
 			job_key = job.decode()
