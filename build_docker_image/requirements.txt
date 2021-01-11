@@ -1,4 +1,4 @@
 Django==2.0.5
 redis==3.5.2
 psutil==5.7.0
-nvidia-ml-py3==7.352.0
+
