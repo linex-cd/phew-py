@@ -34,7 +34,7 @@ def assign_job(session, job, tasks):
 	data['job'] = job
 	data['tasks'] = tasks
 	
-	url = 'http://' + config.jobcenter_server + '/job/assign'
+	url = 'http://' + config.phew_server + '/job/assign'
 	timeout = 300
 	
 	try:

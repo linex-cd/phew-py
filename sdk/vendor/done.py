@@ -32,7 +32,7 @@ def done_job(session):
 	data['vendor_id'] = config.vendor_id
 	
 
-	url = 'http://' + config.jobcenter_server + '/job/done'
+	url = 'http://' + config.phew_server + '/job/done'
 	timeout = 30
 	
 	try:

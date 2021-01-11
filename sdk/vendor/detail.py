@@ -34,7 +34,7 @@ def detail_job(session, job):
 
 	data['job'] = job
 
-	url = 'http://' + config.jobcenter_server + '/job/detail'
+	url = 'http://' + config.phew_server + '/job/detail'
 	timeout = 300
 	
 	try:

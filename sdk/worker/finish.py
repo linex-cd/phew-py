@@ -34,7 +34,7 @@ def finish_task(session, task):
 	data['task'] = task
 	
 	
-	url = 'http://' + config.jobcenter_server + '/task/finish'
+	url = 'http://' + config.phew_server + '/task/finish'
 	timeout = 30
 	
 	try:

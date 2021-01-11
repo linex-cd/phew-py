@@ -32,7 +32,7 @@ def get_task(session):
 	
 	data['worker_id'] = config.worker_id
 	
-	url = 'http://' + config.jobcenter_server + '/task/get'
+	url = 'http://' + config.phew_server + '/task/get'
 	timeout = 30
 	
 	try:

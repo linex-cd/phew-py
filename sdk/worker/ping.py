@@ -35,7 +35,7 @@ def ping(session):
 		
 	data['worker_location'] = config.worker_location
 
-	url = 'http://' + config.jobcenter_server + '/task/ping'
+	url = 'http://' + config.phew_server + '/task/ping'
 	timeout = 30
 	
 	try:

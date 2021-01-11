@@ -32,7 +32,7 @@ def delete_job(session, job):
 
 	data['job'] = job
 
-	url = 'http://' + config.jobcenter_server + '/job/delete'
+	url = 'http://' + config.phew_server + '/job/delete'
 	timeout = 30
 	
 	try:

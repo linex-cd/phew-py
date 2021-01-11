@@ -33,7 +33,7 @@ def ping(session):
 		
 	data['vendor_location'] = config.vendor_location
 
-	url = 'http://' + config.jobcenter_server + '/job/ping'
+	url = 'http://' + config.phew_server + '/job/ping'
 	timeout = 30
 	
 	try:
