@@ -2,12 +2,12 @@
 
 #-----------------------------
 version=$(cat VERSION)
-echo 'Installing Job Center ('${version}')...'
+echo 'Installing Phew ('${version}')...'
 
 echo 'Building docker image...'
 cd ..
 cp ./deploy/Dockerfile ./
-docker build --build-arg VER=${version} -f ./Dockerfile -t jobcenter:${version} .
+docker build --build-arg VER=${version} -f ./Dockerfile -t phew:${version} .
 rm Dockerfile
 cd ./deploy
 
@@ -15,20 +15,20 @@ cd ./deploy
 if [ ! -d "/data" ]; then
 	mkdir /data
 fi
-if [ ! -d "/data/jobcenterdata" ]; then
-	echo 'Making path (/data/jobcenterdata) for cache...'
-	mkdir /data/jobcenterdata
+if [ ! -d "/data/phewdata" ]; then
+	echo 'Making path (/data/phewdata) for cache...'
+	mkdir /data/phewdata
 fi
 
-echo 'starting Job Center service...'
+echo 'starting Phew service...'
 #start container
 docker run \
---name jobcenter \
+--name phew \
 --network=host \
--v /data/jobcenterdata:/jobcenterdata \
+-v /data/phewdata:/phewdata \
 -v /data/yn/dzjz/:/juanzong \
 --restart=always \
--d jobcenter:${version} \
-bash startjobcenter.sh
+-d phew:${version} \
+bash startphew.sh
 
-echo 'Job Center service started'
+echo 'Phew service started'

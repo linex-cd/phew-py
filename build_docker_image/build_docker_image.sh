@@ -7,5 +7,5 @@ docker pull python:3.6
 version=$(cat ../deploy/VERSION)
 
 #build image
-docker build -f ./BuildImageDockerfile -t jobcenter_image:${version} .
+docker build -f ./BuildImageDockerfile -t phew_image:${version} .
 

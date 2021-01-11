@@ -1,10 +1,10 @@
 
 ARG VER
 
-FROM jobcenter_image:${VER}
+FROM phew_image:${VER}
 
-ADD ./src /jobcenter
-WORKDIR /jobcenter
+ADD ./src /phew
+WORKDIR /phew
 
-RUN chmod +x /jobcenter/startjobcenter.sh
+RUN chmod +x /phew/startphew.sh
 

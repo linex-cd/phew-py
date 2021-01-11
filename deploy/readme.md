@@ -21,8 +21,9 @@
 
 安装
 ./installdebug.sh
+
 进入容器后，执行启动脚本即可运行
-./startkjobcenter.sh
+./startphew.sh
 
 卸载
 ./removedebug.sh
