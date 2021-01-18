@@ -99,6 +99,7 @@ def get(request):
 			task_info['addressing'] = r.hget(task_key, 'addressing').decode()
 			task_info['port'] = r.hget(task_key, 'port').decode()
 			task_info['hash'] = r.hget(task_key, 'hash').decode()
+			task_info['index'] = r.hget(task_key, 'index').decode()
 			
 			# add start timestamp
 			r.hset(task_key, 'start_time', int(time.time()))
@@ -181,7 +182,7 @@ def finish(request):
 		
 		job_key = 'job-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role'] + '-' + str(task_info['job_id'])
 		
-		task_key = 'task-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role'] + '-' + str(task_info['job_id']) + '-' + task_info['hash']
+		task_key = 'task-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role'] + '-' + str(task_info['job_id']) + '-' + task_info['index']
 		
 		old_task_state = r.hget(task_key, 'state')
 		if old_task_state != None:

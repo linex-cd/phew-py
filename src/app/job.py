@@ -133,8 +133,9 @@ def assign(request):
 			if task_info['addressing'] != 'binary':
 				task_info['data'] = task_info['data'].encode()
 			task_info['hash'] = md5(task_info['data'])
+			task_info['index'] = str(task_index)
 			
-			task_key = 'task-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role'] + '-' + str(job_info['job_id']) + '-' + str(task_index)
+			task_key = 'task-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role'] + '-' + str(job_info['job_id']) + '-' + task_info['index']
 			p.hset(task_key, 'state', 'assigned')
 			p.hset(task_key, 'note', '')
 			p.hset(task_key, 'result', '')
@@ -150,6 +151,7 @@ def assign(request):
 			p.hset(task_key, 'priority', job_info['priority'])
 			
 			p.hset(task_key, 'hash', task_info['hash'])
+			p.hset(task_key, 'index', task_info['index'])
 			
 			p.hset(task_key, 'meta', task_info['meta'])
 			p.hset(task_key, 'addressing', task_info['addressing'])
@@ -288,7 +290,7 @@ def delete(request):
 			error_task_set_key = 'error_task-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']
 			
 			if r.zrank(error_task_set_key, task_key) is None:
-				p.hdel(task_key)
+				p.del(task_key)
 			#endif
 			
 		#endfor
