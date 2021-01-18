@@ -134,7 +134,7 @@ def assign(request):
 				task_info['data'] = task_info['data'].encode()
 			task_info['hash'] = md5(task_info['data'])
 			
-			task_key = 'task-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role'] + '-' + str(job_info['job_id']) + '-' + task_info['hash']
+			task_key = 'task-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role'] + '-' + str(job_info['job_id']) + '-' + str(task_index)
 			p.hset(task_key, 'state', 'assigned')
 			p.hset(task_key, 'note', '')
 			p.hset(task_key, 'result', '')
@@ -261,7 +261,7 @@ def delete(request):
 		r.hset(job_key, 'state', 'deleted')
 		
 		#set deleted job ttl
-		r.expire(job_key, config.error_ttl)
+		r.expire(job_key, error_ttl)
 		
 		#del the role's job set
 		#job_set = 'job_set-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']
