@@ -76,9 +76,7 @@ def assign(request):
 		r.hset(job_key, 'description', job_info['description'])
 		r.hset(job_key, 'priority', job_info['priority'])
 		
-		#add to priority set
-		priority_set = 'priority_set-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']
-		r.zadd(priority_set, {job_info['priority'] : int(job_info['priority']) })
+		
 
 		tasks = jsondata['tasks']
 		
@@ -225,6 +223,10 @@ def assign(request):
 		
 		#commit redis pipeline
 		p.execute()
+		
+		#add to priority set
+		priority_set = 'priority_set-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']
+		r.zadd(priority_set, {job_info['priority'] : int(job_info['priority']) })
 		
 		#update vendor node hit counter
 		vendor_node_key = 'vendor-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role'] + '-' + str(jsondata['vendor_id'])
