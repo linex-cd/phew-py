@@ -290,7 +290,7 @@ def delete(request):
 			error_task_set_key = 'error_task-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role']
 			
 			if r.zrank(error_task_set_key, task_key) is None:
-				p.del(task_key)
+				p.delete(task_key)
 			#endif
 			
 		#endfor
