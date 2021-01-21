@@ -68,19 +68,34 @@ def get(request):
 		#endif
 		
 		#get the highest priority key
-		priority =  prioritys[0].decode()
-		work_key = 'work-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role'] + '-' + str(priority)
+		priority =  int(prioritys[0].decode())
+		
+		
 		
 		#popup a valid task_key and get the task info
 		task_info = None
 		while True:
+			
+			work_key = 'work-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role'] + '-' + str(priority)
 			task_key = r.rpop(work_key)
 			if task_key == None:
-			
+				
+				'''
+				priority = priority - 1
+				
+				if priority == 0:
+					
+					code = 404
+					msg = 'no task'
+					return response(code, msg, data)
+					
+				else:
+					continue
+				#endif
+				'''
+				
 				#remove priority from priority set
 				r.zrem(priority_set, priority)
-			
-
 				code = 404
 				msg = 'no task'
 				return response(code, msg, data)
@@ -110,7 +125,7 @@ def get(request):
 				if existfile(taskdata_filename) == True:
 					taskdata = readfile(taskdata_filename)
 					task_info['data'] = taskdata
-					r.hset(task_key, 'state', 'waiting')
+					r.hset(task_key, 'state', 'pending')
 					break
 				else:
 					#mark task as error and then repop a new task
@@ -123,7 +138,7 @@ def get(request):
 				#endif
 			else:
 				task_info['data'] = r.hget(task_key, 'data').decode()
-				r.hset(task_key, 'state', 'waiting')
+				r.hset(task_key, 'state', 'pending')
 				
 				break
 			#endif

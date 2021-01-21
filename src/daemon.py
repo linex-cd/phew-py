@@ -17,10 +17,7 @@ def deamon_thread(timeout = 60, try_times_limit = 3):
 			
 			tasks_pending_key = tasks_pending_key.decode()
 			tasks_waiting_key = tasks_pending_key.replace('tasks_pending-', 'tasks_waiting-')
-			
-			task_keys = r.smembers(tasks_pending_key)
-			task_keys = list(task_keys)
-			
+						
 			#remove from pending set if timeout and mark timeout
 		
 			task_key = tasks_pending_key
@@ -50,7 +47,7 @@ def deamon_thread(timeout = 60, try_times_limit = 3):
 						r.hset(task_key, 'try_times', try_times+1)
 						
 						#reset state
-						r.hset(task_key, 'state','assigned')
+						r.hset(task_key, 'state','waiting')
 						
 						#remove from pending set
 						r.srem(tasks_pending_key, task_key)
@@ -65,6 +62,12 @@ def deamon_thread(timeout = 60, try_times_limit = 3):
 						priority = r.hget(task_key, 'priority').decode()
 						work_key = 'work-' + worker_group + '-' + worker_key + '-' + worker_role + '-' + str(priority)
 						r.rpush(work_key, task_key)
+						
+						#add to priority set
+						priority_set = 'priority_set-' + worker_group + '-' + worker_key + '-' + worker_role
+						r.zadd(priority_set, {priority : int(priority) })
+										
+						
 
 					else:
 						print("mark task timeout:%s" % task_key)

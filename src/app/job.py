@@ -134,7 +134,7 @@ def assign(request):
 			task_info['index'] = str(task_index)
 			
 			task_key = 'task-' + jsondata['worker_group'] + '-' + jsondata['worker_key'] + '-' + jsondata['worker_role'] + '-' + str(job_info['job_id']) + '-' + task_info['index']
-			p.hset(task_key, 'state', 'assigned')
+			p.hset(task_key, 'state', 'waiting')
 			p.hset(task_key, 'note', '')
 			p.hset(task_key, 'result', '')
 			
