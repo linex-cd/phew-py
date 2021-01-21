@@ -148,10 +148,9 @@ function checkcredential(){
 		$.get("state/sysstate", function(ret){
 			$("#db").attr('data-rel', ret['data']['db']);
 			$("#cpu").attr('data-rel', ret['data']['cpu']);
-			$("#gpu").attr('data-rel', ret['data']['gpu']);
+			$("#memory").attr('data-rel', ret['data']['memory']);
 			$("#systemdisk").attr('data-rel', ret['data']['systemdisk']);
 			$("#datadisk").attr('data-rel', ret['data']['datadisk']);
-			$("#temp").attr('data-rel', ret['data']['temp']);
 			
 			//knob
 			if(typeof($.fn.knob) != 'undefined') {

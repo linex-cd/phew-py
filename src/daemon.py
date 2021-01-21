@@ -2,28 +2,27 @@
 
 from app.init import *
 
-def deamon_thread(timeout = 60, try_times_limit = 3):
-	print("started deamon thread, timeout = %d" % timeout)
-	
+def deamon_thread():
+
 	while True:
-		time.sleep(30)
+		time.sleep(10)
 		print("seeking all tasks timeout...")
 		#seek all tasks pending
 		tasks_pending_all = 'tasks_pending_all'
 		
-		tasks_pending_keys = list(r.smembers(tasks_pending_all))
+		tasks_pending = list(r.smembers(tasks_pending_all))
 		
-		for tasks_pending_key in tasks_pending_keys:
+		for task_key in tasks_pending:
 			
-			tasks_pending_key = tasks_pending_key.decode()
-			tasks_waiting_key = tasks_pending_key.replace('tasks_pending-', 'tasks_waiting-')
+			task_key = task_key.decode()
 						
 			#remove from pending set if timeout and mark timeout
 		
-			task_key = tasks_pending_key
 			try:
 				job_id = r.hget(task_key, 'job_id').decode()
 				task_create_time = r.hget(task_key, 'start_time')
+				task_timeout = r.hget(task_key, 'timeout')
+				task_try_times_limit = r.hget(task_key, 'try_times_limit')
 				
 				tmp = task_key.split("-")
 				worker_group = tmp[1]
@@ -33,14 +32,15 @@ def deamon_thread(timeout = 60, try_times_limit = 3):
 				
 				job_key = 'job-' +worker_group + '-'+ worker_key + '-'+ worker_role + '-'+ job_id
 				
+				tasks_pending_key = 'tasks_waiting-' + worker_group + '-' + worker_key + '-' + worker_role + '-' + job_id
+				tasks_waiting_key = tasks_pending_key.replace('tasks_pending-', 'tasks_waiting-')
 				
-				
-				if int(time.time()) - int(task_create_time) > timeout:
+				if int(time.time()) - int(task_create_time) > int(task_timeout):
 					
 					#try_times under limit
 					try_times = int(r.hget(task_key, 'try_times').decode())
 					
-					if try_times < try_times_limit:
+					if try_times < int(task_try_times_limit):
 						print("resend task to work list:%s" % task_key)
 			
 						#increase try_times

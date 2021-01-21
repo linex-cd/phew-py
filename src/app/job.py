@@ -154,6 +154,8 @@ def assign(request):
 			p.hset(task_key, 'meta', task_info['meta'])
 			p.hset(task_key, 'addressing', task_info['addressing'])
 			p.hset(task_key, 'port', task_info['port'])
+			p.hset(task_key, 'timeout', task_info['timeout'])
+			p.hset(task_key, 'try_times_limit', task_info['try_times_limit'])
 			
 			#add to the job's task set
 			task_index = task_index + 1
